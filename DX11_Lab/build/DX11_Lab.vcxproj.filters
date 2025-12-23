@@ -1,25 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\main.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\App.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Core\DX11Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\AssimpLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Shaders\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Shaders\TextureShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Window\Win32Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\DX11Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\AssimpLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Mesh.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -27,22 +36,31 @@
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Core\DX11Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\AssimpLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Resources\VertexTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Shaders\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Shaders\TextureShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Window\Win32Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\DX11Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\AssimpLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Renderer\VertexTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
