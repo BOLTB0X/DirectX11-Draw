@@ -9,16 +9,23 @@
 ```
 DX11_Lab/
 ├─ CMakeLists.txt
+├─ build/
+├─ assets/
+├─ hlsl/
 ├─ src/
-│  ├─ Renderer/
-│  │  ├─ VertexTypes.h
-│  │  ├─ Mesh.cpp / Mesh.h
-│  │  ├─ Model.cpp / Model.h
-│  │  ├─ AssimpLoader.cpp / AssimpLoader.h
-│  │  ├─ DX11Renderer.cpp / DX11Renderer.h
-│  ├─ Window/
-│  │  ├─ Win32Window.cpp / Win32Window.h
-│  ├─ App.cpp / App.h
+│  ├─ Application/
+│  │  ├─ App.h/cpp
+│  │  ├─ Camera/
+│  │  │  └─ Camera.h/cpp
+│  │  ├─ D3DRenderer
+│  │  │  └─ D3DRenderer.h/cpp
+│  │  ├─ Shaders/
+│  │  │  ├─ Shader.h/cpp
+│  │  ├─ Model/
+│  │  │  ├─ Model.h/cpp
+│  │  │  ├─ Texture.h/cpp
+│  ├─ Input/
+│  │  └─ Input.h/cpp
 │  └─ main.cpp
 ```
 

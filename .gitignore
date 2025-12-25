@@ -494,3 +494,7 @@ CMakeUserPresets.json
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+
+# 빌드 결과물 폴더 전체 제외
+build/
+[Bb]uild/
