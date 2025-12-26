@@ -498,3 +498,4 @@ CMakeUserPresets.json
 # 빌드 결과물 폴더 전체 제외
 build/
 [Bb]uild/
+build/**
