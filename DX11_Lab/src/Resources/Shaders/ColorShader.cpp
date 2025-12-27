@@ -5,19 +5,11 @@
 
 
 ColorShader::ColorShader()
-	: m_vertexShader(nullptr),
-	m_pixelShader(nullptr),
-	m_layout(nullptr),
-	m_matrixBuffer(nullptr)
 {
 } // ColorShader
 
 
 ColorShader::ColorShader(const ColorShader& other)
-	: m_vertexShader(nullptr),
-	m_pixelShader(nullptr),
-	m_layout(nullptr),
-	m_matrixBuffer(nullptr)
 {
 } // ColorShader
 
@@ -29,37 +21,10 @@ ColorShader::~ColorShader()
 
 bool ColorShader::Init(ID3D11Device* device, HWND hwnd)
 {
-	bool result;
-	wchar_t vsFilename[128];
-	wchar_t psFilename[128];
-	int error;
-
-	//wchar_t currentPath[MAX_PATH];
-	//if (_wgetcwd(currentPath, MAX_PATH) != NULL)
-	//{
-	//	MessageBoxW(hwnd, currentPath, L"현재 작업 디렉터리 확인", MB_OK);
-	//}
-	// 
-	
-	error = wcscpy_s(vsFilename, 128, L"./hlsl/Color.vs");
-	if (error != 0)
-	{
-		return false;
-	}
-
-	error = wcscpy_s(psFilename, 128, L"./hlsl/Color.ps");
-	if (error != 0)
-	{
-		return false;
-	}
-
-	result = InitShader(device, hwnd, vsFilename, psFilename);
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
+	return BaseShader::Init(device, 
+		hwnd, 
+		L"./hlsl/Color.vs", 
+		L"./hlsl/Color.ps");
 } // Init
 
 
@@ -74,11 +39,9 @@ void ColorShader::Shutdown()
 bool ColorShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix)
 {
-	bool result;
-
 	// 렌더링에 사용할 셰이더 매개변수를 설정
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
+	if (SetShaderParameters(deviceContext, 
+		worldMatrix, viewMatrix, projectionMatrix) == false)
 	{
 		return false;
 	}
@@ -91,175 +54,53 @@ bool ColorShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMM
 
 bool ColorShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
-	HRESULT result;
-	ID3D10Blob* errorMessage;
-	ID3D10Blob* vertexShaderBuffer;
-	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
-	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
-
-
-	// 사용할 포인터를 null로 초기화
-	errorMessage = 0;
-	vertexShaderBuffer = 0;
-	pixelShaderBuffer = 0;
+	//ID3D10Blob* errorMessage;
+	ID3D10Blob* vertexShaderBuffer = nullptr;
+	ID3D10Blob* pixelShaderBuffer = nullptr;
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[2] = { '\0' };
+	unsigned int numElements = 0;
+	//D3D11_BUFFER_DESC matrixBufferDesc;
 
 	// 컴파일할 버텍스 셰이더 코드
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
-		&vertexShaderBuffer, &errorMessage);
-	if (FAILED(result))
-	{
-		if (errorMessage)
-		{
-			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
-		}
-		else
-		{
-			MessageBox(hwnd, vsFilename, L"Missing Shader File", MB_OK);
-		}
-
+	if (CompileShaderFromFile(device, hwnd, vsFilename, 
+		"ColorVertexShader", "vs_5_0", &vertexShaderBuffer)
+		== false)
 		return false;
-	}
 
-	// 컴파일할 픽셀 셰이더 코드
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
-		&pixelShaderBuffer, &errorMessage);
-	if (FAILED(result))
-	{
-		if (errorMessage)
-		{
-			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
-		}
-		else
-		{
-			MessageBox(hwnd, psFilename, L"Missing Shader File", MB_OK);
-		}
-
+	if (CompileShaderFromFile(device, hwnd, psFilename, 
+		"ColorPixelShader", "ps_5_0", &pixelShaderBuffer)
+		== false)
 		return false;
-	}
-
+	
 	// 버퍼로부터 정점 셰이더를 생성
-	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
+	device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
 	// 버퍼로부터 픽셀 셰이더를 생성
-	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// vertex input layout description 생성
-	// ModelClass와 셰이더의 VertexType 구조와 일치해야 함
-	polygonLayout[0].SemanticName = "POSITION";
-	polygonLayout[0].SemanticIndex = 0;
-	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	polygonLayout[0].InputSlot = 0;
-	polygonLayout[0].AlignedByteOffset = 0;
-	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonLayout[0].InstanceDataStepRate = 0;
-
-	polygonLayout[1].SemanticName = "COLOR";
-	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	polygonLayout[1].InputSlot = 0;
-	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonLayout[1].InstanceDataStepRate = 0;
+	device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
 
 	// 레이아웃에 있는 요소의 개수를 셈
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
+	const char* names[] = { "POSITION", "COLOR" };
+	DXGI_FORMAT formats[] = { DXGI_FORMAT_R32G32B32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT };
 
 	// 버텍스 입력 레이아웃을 생성
-	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), &m_layout);
-	if (FAILED(result))
-	{
+	if (BaseShader::CreateVertexInputLayout(device, vertexShaderBuffer, names, formats, numElements)
+		== false) 
 		return false;
-	}
 
 	vertexShaderBuffer->Release();
-	vertexShaderBuffer = 0;
-
 	pixelShaderBuffer->Release();
-	pixelShaderBuffer = 0;
 
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
-
-	// 이 클래스 내부에서 정점 셰이더 상수 버퍼에 접근할 수 있도록 상수
-	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
-	if (FAILED(result))
-	{
+	if (!CreateMatrixBuffer(device))
 		return false;
-	}
-
 	return true;
 } // InitShader
 
 
 void ColorShader::ShutdownShader()
 {
-	if (m_matrixBuffer)
-	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = 0;
-	}
-
-	if (m_layout)
-	{
-		m_layout->Release();
-		m_layout = 0;
-	}
-
-	if (m_pixelShader)
-	{
-		m_pixelShader->Release();
-		m_pixelShader = 0;
-	}
-
-	if (m_vertexShader)
-	{
-		m_vertexShader->Release();
-		m_vertexShader = 0;
-	}
-
+	BaseShader::ShutdownShader();
 	return;
 } // ShutdownShader
-
-
-void ColorShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
-{
-	char* compileErrors;
-	unsigned long long bufferSize, i;
-	ofstream fout;
-
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-	bufferSize = errorMessage->GetBufferSize();
-
-	fout.open("shader-error.txt");
-
-	for (i = 0; i < bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-
-	fout.close();
-
-	errorMessage->Release();
-	errorMessage = 0;
-	MessageBoxW(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
-
-	return;
-} // OutputShaderErrorMessage
 
 
 bool ColorShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,

@@ -473,6 +473,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\src\Framework\Renderer\D3DRenderer.h" />
     <ClInclude Include="..\src\Resources\Light\Light.h" />
     <ClInclude Include="..\src\Resources\Model\Model.h" />
+    <ClInclude Include="..\src\Resources\Shaders\BaseShader.h" />
     <ClInclude Include="..\src\Resources\Shaders\ColorShader.h" />
     <ClInclude Include="..\src\Resources\Shaders\LightShader.h" />
     <ClInclude Include="..\src\Resources\Shaders\NormalMapShader.h" />
@@ -498,6 +499,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Resources\Light\Light.cpp" />
     <ClCompile Include="..\src\Resources\Model\Model.cpp" />
+    <ClCompile Include="..\src\Resources\Shaders\BaseShader.cpp" />
     <ClCompile Include="..\src\Resources\Shaders\ColorShader.cpp" />
     <ClCompile Include="..\src\Resources\Shaders\LightShader.cpp" />
     <ClCompile Include="..\src\Resources\Shaders\NormalMapShader.cpp" />

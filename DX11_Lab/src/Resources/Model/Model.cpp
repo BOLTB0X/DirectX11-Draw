@@ -96,8 +96,6 @@ void Model::Render(ID3D11DeviceContext* deviceContext)
 {
 	// 정점 및 인덱스 버퍼를 그래픽 파이프라인에 추가하여 그리기 준비
 	RenderBuffers(deviceContext);
-
-
 	return;
 } // Render
 
@@ -116,45 +114,7 @@ ID3D11ShaderResourceView* Model::GetTexture()
 ID3D11ShaderResourceView* Model::GetTexture(int index)
 {
 	return m_Textures[index].GetTexture();
-}
-
-
-//void Model::SetPosition(float x, float y, float z) {
-//	m_position.x = x; m_position.y = y; m_position.z = z;
-//} // SetRotation
-
-
-//void Model::SetRotation(float x, float y, float z) {
-//	m_rotation.x = x; m_rotation.y = y; m_rotation.z = z;
-//} // SetRotation
-
-
-//Model::VectorType Model::GetPosition() {
-//	return m_position;
-//} // GetPosition
-//
-//Model::VectorType Model::GetRotation() {
-//	return m_rotation;
-//} // GetRotation
-
-//void Model::Update(float rotX, float rotY)
-//{
-//	m_rotation.x += rotX;
-//	m_rotation.y += rotY;
-//
-//	if (m_rotation.x > XM_2PI) m_rotation.x -= XM_2PI;
-//	if (m_rotation.y > XM_2PI) m_rotation.y -= XM_2PI;
-//} // Update
-
-
-//XMMATRIX Model::GetWorldMatrix() {
-//	// 회전 행렬 (Yaw, Pitch, Roll 순서)
-//	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(m_rotation.x, m_rotation.y, m_rotation.z);
-//	// 이동 행렬
-//	XMMATRIX translationMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
-//
-//	return XMMatrixMultiply(rotationMatrix, translationMatrix); //  월드 행렬 = 회전 * 이동 (자전 효과)
-//} // GetWorldMatrix
+} // GetTexture
 
 
 bool Model::InitBuffers(ID3D11Device* device)

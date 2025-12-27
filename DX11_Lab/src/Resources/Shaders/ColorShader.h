@@ -12,6 +12,8 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <fstream>
+#include "BaseShader.h"
+
 using namespace DirectX;
 using namespace std;
 
@@ -19,38 +21,24 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ColorShader
 ////////////////////////////////////////////////////////////////////////////////
-class ColorShader
+class ColorShader : public BaseShader
 {
-private:
-	struct MatrixBufferType
-	{
-		XMMATRIX world;
-		XMMATRIX view;
-		XMMATRIX projection;
-	};
-
 public:
 	ColorShader();
 	ColorShader(const ColorShader&);
-	~ColorShader();
+	virtual ~ColorShader();
 
 	bool Init(ID3D11Device*, HWND);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
 
 private:
-	bool InitShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
-	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
-
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
-	void RenderShader(ID3D11DeviceContext*, int);
+	bool InitShader(ID3D11Device*, HWND, WCHAR*, WCHAR*) override;
 
 private:
-	ID3D11VertexShader* m_vertexShader;
-	ID3D11PixelShader* m_pixelShader;
-	ID3D11InputLayout* m_layout;
-	ID3D11Buffer* m_matrixBuffer;
+	void ShutdownShader();
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
+	void RenderShader(ID3D11DeviceContext*, int);
 }; // ColorShader
 
 #endif
