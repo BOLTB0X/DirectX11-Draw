@@ -14,7 +14,8 @@ Input::Input()
 	m_mouseY(0),
 	m_F1_released(true),
 	m_F2_released(true),
-	m_F3_released(true)
+	m_F3_released(true),
+	m_F4_released(true)
 {
 	m_mouseState = {};
 	memset(m_keyboardState, 0, sizeof(m_keyboardState));
@@ -31,7 +32,8 @@ Input::Input(const Input& other)
 	m_mouseY(0),
 	m_F1_released(true),
 	m_F2_released(true),
-	m_F3_released(true)
+	m_F3_released(true),
+	m_F4_released(true)
 {
 	m_mouseState = {};
 	memset(m_keyboardState, 0, sizeof(m_keyboardState));
@@ -443,6 +445,26 @@ bool Input::IsF3Toggled()
 
 	return false;
 } // IsF3Toggled
+
+
+bool Input::IsF4Toggled()
+{
+	// 키보드 상태에 대해 비트 단위 AND 연산을 수행하여 해당 키가 현재 눌려 있는지 확인
+	if (m_keyboardState[DIK_F4] & 0x80)
+	{
+		if (m_F3_released)
+		{
+			m_F3_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F3_released = true;
+	}
+
+	return false;
+} // IsF4Toggled
 
 
 int Input::GetMouseWheelDelta()

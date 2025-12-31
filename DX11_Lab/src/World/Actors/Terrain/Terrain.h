@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include "TerrainCell.h"
+#include "Graphics/Camera/Frustum.h"
 
 using namespace DirectX;
 using namespace std;
@@ -25,15 +26,15 @@ using namespace std;
 class Terrain
 {
 private:
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-		XMFLOAT3 binormal;
-		XMFLOAT3 color;
-	};
+	//struct VertexType
+	//{
+	//	XMFLOAT3 position;
+	//	XMFLOAT2 texture;
+	//	XMFLOAT3 normal;
+	//	XMFLOAT3 tangent;
+	//	XMFLOAT3 binormal;
+	//	XMFLOAT3 color;
+	//};
 
 	struct HeightMapType
 	{
@@ -71,10 +72,13 @@ public:
 
 	bool Init(ID3D11Device*, char*);
 	void Shutdown();
+
+	void Frame();
 	bool Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
 
+	bool RenderCell(ID3D11DeviceContext*, int, Frustum*);
 	bool RenderCell(ID3D11DeviceContext*, int);
 	void RenderCellLines(ID3D11DeviceContext*, int);
 
@@ -82,9 +86,15 @@ public:
 	int GetCellLinesIndexCount(int);
 	int GetCellCount();
 
+	int GetRenderCount();
+	int GetCellsDrawn();
+	int GetCellsCulled();
+
+	bool GetHeightAtPosition(float, float, float&);
+
 private:
 	bool LoadSetupFile(char*);
-	bool LoadBitmapHeightMap();
+	//bool LoadBitmapHeightMap();
 	bool LoadRawHeightMap();
 
 	void ShutdownHeightMap();
@@ -100,10 +110,10 @@ private:
 
 	bool InitBuffers(ID3D11Device*);
 	void ShutdownBuffers();
-	void RenderBuffers(ID3D11DeviceContext*);
+	//void RenderBuffers(ID3D11DeviceContext*);
 	bool LoadTerrainCells(ID3D11Device*);
 	void ShutdownTerrainCells();
-
+	bool CheckHeightOfTriangle(float, float, float&, float[3], float[3], float[3]);
 
 private:
 	ID3D11Buffer* m_vertexBuffer, * m_indexBuffer;
@@ -115,7 +125,7 @@ private:
 	ModelType* m_terrainModel;
 
 	TerrainCell* m_TerrainCells;
-	int m_cellCount;
+	int m_cellCount, m_renderCount, m_cellsDrawn, m_cellsCulled;
 }; // Terrain
 
 #endif

@@ -20,6 +20,7 @@ Terrain::Terrain()
 	m_terrainModel = 0;
 	m_TerrainCells = nullptr;
 	m_cellCount = 0;
+	m_renderCount = 0, m_cellsDrawn = 0, m_cellsCulled = 0;
 } // Terrain
 
 
@@ -39,6 +40,7 @@ Terrain::Terrain(const Terrain& other)
 	m_terrainModel = 0;
 	m_TerrainCells = nullptr;
 	m_cellCount = 0;
+	m_renderCount = 0, m_cellsDrawn = 0, m_cellsCulled = 0;
 } // Terrain
 
 
@@ -139,9 +141,18 @@ void Terrain::Shutdown()
 } // Shutdown
 
 
+void Terrain::Frame()
+{
+	m_renderCount = 0;
+	m_cellsDrawn = 0;
+	m_cellsCulled = 0;
+	return;
+} // Frame
+
+
 bool Terrain::Render(ID3D11DeviceContext* deviceContext)
 {
-	RenderBuffers(deviceContext);
+	//RenderBuffers(deviceContext);
 
 	return true;
 } // Render
@@ -219,7 +230,7 @@ bool Terrain::LoadSetupFile(char* filename)
 	return true;
 } // LoadSetupFile
 
-
+/*
 bool Terrain::LoadBitmapHeightMap()
 {
 	int error, imageSize, i, j, k, index;
@@ -318,7 +329,7 @@ bool Terrain::LoadBitmapHeightMap()
 
 	return true;
 } // LoadBitmapHeightMap
-
+*/
 
 bool Terrain::LoadRawHeightMap()
 {
@@ -926,6 +937,7 @@ bool Terrain::LoadTerrainCells(ID3D11Device* device)
 	return true;
 } // LoadTerrainCells
 
+/*
 bool Terrain::InitBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
@@ -1018,7 +1030,7 @@ bool Terrain::InitBuffers(ID3D11Device* device)
 
 	return true;
 } // InitBuffers
-
+*/
 
 void Terrain::ShutdownBuffers()
 {
@@ -1037,7 +1049,7 @@ void Terrain::ShutdownBuffers()
 	return;
 } // ShutdownBuffers
 
-
+/*
 void Terrain::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	unsigned int stride = sizeof(VertexType);
@@ -1055,14 +1067,12 @@ void Terrain::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	return;
 } // RenderBuffers
-
+*/
 
 void Terrain::ShutdownTerrainCells()
 {
-	int i;
+	unsigned int i;
 
-
-	// Release the terrain cell array.
 	if (m_TerrainCells)
 	{
 		for (i = 0; i < m_cellCount; i++)
@@ -1084,26 +1094,270 @@ bool Terrain::RenderCell(ID3D11DeviceContext* deviceContext, int cellId)
 	return true;
 }
 
+bool Terrain::RenderCell(ID3D11DeviceContext* deviceContext, int cellId, Frustum* Frustum)
+{
+	float maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth;
+	bool result;
+
+
+	// 지형 셀의 크기를 구함
+	m_TerrainCells[cellId].GetCellDimensions(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+
+	// 셀이 보이는지 확인
+	// 보이지 않으면 렌더링하지 않고 그대로 반환
+	result = Frustum->CheckRectangle2(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+	if (!result)
+	{
+		// 제거된 세포 수를 증가
+		m_cellsCulled++;
+
+		return false;
+	}
+
+	// 보이는 것이라면 렌더링
+	m_TerrainCells[cellId].Render(deviceContext);
+
+	// 셀에 있는 다각형을 렌더링 횟수에 추가.
+	m_renderCount += (m_TerrainCells[cellId].GetVertexCount() / 3);
+
+	// 실제로 그려진 셀의 수를 늘림
+	m_cellsDrawn++;
+
+	return true;
+} // RenderCell
+
 
 void Terrain::RenderCellLines(ID3D11DeviceContext* deviceContext, int cellId)
 {
 	m_TerrainCells[cellId].RenderLineBuffers(deviceContext);
 	return;
-}
+} // RenderCellLines
 
 
 int Terrain::GetCellIndexCount(int cellId)
 {
 	return m_TerrainCells[cellId].GetIndexCount();
-}
+} // GetCellIndexCount
+
 
 int Terrain::GetCellLinesIndexCount(int cellId)
 {
 	return m_TerrainCells[cellId].GetLineBuffersIndexCount();
-}
+} // GetCellLinesIndexCount
 
 
 int Terrain::GetCellCount()
 {
 	return m_cellCount;
-}
+} // GetCellCount
+
+
+int Terrain::GetRenderCount()
+{
+	return m_renderCount;
+} // GetRenderCount
+
+
+int Terrain::GetCellsDrawn()
+{
+	return m_cellsDrawn;
+} // GetCellsDrawn
+
+
+int Terrain::GetCellsCulled()
+{
+	return m_cellsCulled;
+} // GetCellsCulled
+
+
+bool Terrain::GetHeightAtPosition(float inputX, float inputZ, float& height)
+{
+	int i, cellId, index;
+	float vertex1[3], vertex2[3], vertex3[3];
+	bool foundHeight;
+	float maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth;
+
+
+	// 모든 지형 셀을 순회하여 inputX와 inputZ가 어느 셀 안에 있는지 확인
+	cellId = -1;
+	for (i = 0; i < m_cellCount; i++)
+	{
+		// 현재 셀 크기를 가져옴
+		m_TerrainCells[i].GetCellDimensions(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+
+		// 해당 위치들이 이 셀에 있는지 확인
+		if ((inputX < maxWidth) && (inputX > minWidth) && (inputZ < maxDepth) && (inputZ > minDepth))
+		{
+			cellId = i;
+			i = m_cellCount;
+		}
+	}
+
+	// 셀을 찾지 못했다면 입력 위치가 지형 격자 범위를 벗어난 것
+	if (cellId == -1)
+	{
+		return false;
+	}
+
+	// 만약 이 셀이 맞는 셀이라면,
+	// 이 셀에 있는 모든 삼각형을 확인하여 이 위치에서의 삼각형 높이가 얼마인지 확인.
+	for (i = 0; i < (m_TerrainCells[cellId].GetVertexCount() / 3); i++)
+	{
+		index = i * 3;
+
+		vertex1[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex1[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex1[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+		index++;
+
+		vertex2[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex2[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex2[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+		index++;
+
+		vertex3[0] = m_TerrainCells[cellId].m_vertexList[index].x;
+		vertex3[1] = m_TerrainCells[cellId].m_vertexList[index].y;
+		vertex3[2] = m_TerrainCells[cellId].m_vertexList[index].z;
+
+		// 찾고 있는 다각형인지 확인
+		foundHeight = CheckHeightOfTriangle(inputX, inputZ, height, vertex1, vertex2, vertex3);
+		if (foundHeight)
+		{
+			return true;
+		}
+	}
+
+	return false;
+} // GetHeightAtPosition
+
+
+bool Terrain::CheckHeightOfTriangle(float x, float z, float& height, float v0[3], float v1[3], float v2[3])
+{
+	float startVector[3], directionVector[3], edge1[3], edge2[3], normal[3];
+	float Q[3], e1[3], e2[3], e3[3], edgeNormal[3], temp[3];
+	float magnitude, D, denominator, numerator, t, determinant;
+
+
+	// 투사되는 광선의 시작 위치
+	startVector[0] = x;
+	startVector[1] = 0.0f;
+	startVector[2] = z;
+
+	// 광선이 발사되는 방향
+	directionVector[0] = 0.0f;
+	directionVector[1] = -1.0f;
+	directionVector[2] = 0.0f;
+
+	// 주어진 세 점에서 두 변의 길이를 계산
+	edge1[0] = v1[0] - v0[0];
+	edge1[1] = v1[1] - v0[1];
+	edge1[2] = v1[2] - v0[2];
+
+	edge2[0] = v2[0] - v0[0];
+	edge2[1] = v2[1] - v0[1];
+	edge2[2] = v2[2] - v0[2];
+
+	// 두 변으로부터 삼각형의 법선을 계산
+	normal[0] = (edge1[1] * edge2[2]) - (edge1[2] * edge2[1]);
+	normal[1] = (edge1[2] * edge2[0]) - (edge1[0] * edge2[2]);
+	normal[2] = (edge1[0] * edge2[1]) - (edge1[1] * edge2[0]);
+
+	magnitude = (float)sqrt((normal[0] * normal[0]) + (normal[1] * normal[1]) + (normal[2] * normal[2]));
+	normal[0] = normal[0] / magnitude;
+	normal[1] = normal[1] / magnitude;
+	normal[2] = normal[2] / magnitude;
+
+	// 원점에서 평면까지의 거리
+	D = ((-normal[0] * v0[0]) + (-normal[1] * v0[1]) + (-normal[2] * v0[2]));
+
+	// 방정식의 분모
+	denominator = ((normal[0] * directionVector[0]) + (normal[1] * directionVector[1]) + (normal[2] * directionVector[2]));
+
+	// 0으로 나누는 오류를 방지하기 위해 결과값이 0에 너무 가까워지지 않도록 주의
+	if (fabs(denominator) < 0.0001f)
+	{
+		return false;
+	}
+
+	// 방정식의 분자
+	numerator = -1.0f * (((normal[0] * startVector[0]) + (normal[1] * startVector[1]) + (normal[2] * startVector[2])) + D);
+
+	// 두 선분이 삼각형과 만나는 점을 계산
+	t = numerator / denominator;
+
+	// 작교벡터
+	Q[0] = startVector[0] + (directionVector[0] * t);
+	Q[1] = startVector[1] + (directionVector[1] * t);
+	Q[2] = startVector[2] + (directionVector[2] * t);
+
+	// 삼각형의 꼭짓점
+	e1[0] = v1[0] - v0[0];
+	e1[1] = v1[1] - v0[1];
+	e1[2] = v1[2] - v0[2];
+
+	e2[0] = v2[0] - v1[0];
+	e2[1] = v2[1] - v1[1];
+	e2[2] = v2[2] - v1[2];
+
+	e3[0] = v0[0] - v2[0];
+	e3[1] = v0[1] - v2[1];
+	e3[2] = v0[2] - v2[2];
+
+	// 첫 번째 모서리의 법선을 계산
+	edgeNormal[0] = (e1[1] * normal[2]) - (e1[2] * normal[1]);
+	edgeNormal[1] = (e1[2] * normal[0]) - (e1[0] * normal[2]);
+	edgeNormal[2] = (e1[0] * normal[1]) - (e1[1] * normal[0]);
+
+	// 행렬식을 계산하여 내부, 외부 또는 모서리에 있는지 확인
+	temp[0] = Q[0] - v0[0];
+	temp[1] = Q[1] - v0[1];
+	temp[2] = Q[2] - v0[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// 바깥에 있는지 확인
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	// 두 번째 모서리의 법선을 계산
+	edgeNormal[0] = (e2[1] * normal[2]) - (e2[2] * normal[1]);
+	edgeNormal[1] = (e2[2] * normal[0]) - (e2[0] * normal[2]);
+	edgeNormal[2] = (e2[0] * normal[1]) - (e2[1] * normal[0]);
+
+	// 행렬식을 계산하여 내부, 외부 또는 모서리에 있는지 확인
+	temp[0] = Q[0] - v1[0];
+	temp[1] = Q[1] - v1[1];
+	temp[2] = Q[2] - v1[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// 바깥에 있는지 확인
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	// 세 번째 모서리의 법선을 계산
+	edgeNormal[0] = (e3[1] * normal[2]) - (e3[2] * normal[1]);
+	edgeNormal[1] = (e3[2] * normal[0]) - (e3[0] * normal[2]);
+	edgeNormal[2] = (e3[0] * normal[1]) - (e3[1] * normal[0]);
+
+	// 행렬식을 계산하여 내부, 외부 또는 모서리에 있는지 확인
+	temp[0] = Q[0] - v2[0];
+	temp[1] = Q[1] - v2[1];
+	temp[2] = Q[2] - v2[2];
+
+	determinant = ((edgeNormal[0] * temp[0]) + (edgeNormal[1] * temp[1]) + (edgeNormal[2] * temp[2]));
+
+	// 세 번째 모서리의 법선을 계산
+	if (determinant > 0.001f)
+	{
+		return false;
+	}
+
+	height = Q[1];
+
+	return true;
+} // CheckHeightOfTriangle

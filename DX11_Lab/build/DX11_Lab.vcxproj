@@ -501,10 +501,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Graphics\Camera\Frustum.cpp" />
     <ClCompile Include="..\src\Graphics\Resources\Texture\TextureManager.cpp" />
     <ClCompile Include="..\src\Graphics\Shaders\TerrainShader.cpp" />
     <ClCompile Include="..\src\World\Actors\Terrain\TerrainCell.cpp" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.cpp" />
+    <ClInclude Include="..\src\Graphics\Camera\Frustum.h" />
     <ClInclude Include="..\src\Graphics\Resources\Texture\TextureManager.h" />
     <ClInclude Include="..\src\Graphics\Shaders\TerrainShader.h" />
     <ClInclude Include="..\src\World\Actors\Terrain\TerrainCell.h" />

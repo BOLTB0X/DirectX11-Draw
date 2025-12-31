@@ -11,7 +11,10 @@
 #include "Base/Position/Position.h"
 
 #include "Graphics/Renderer/D3DRenderer.h"
+
 #include "Graphics/Camera/Camera.h"
+#include "Graphics/Camera/Frustum.h"
+
 #include "Graphics/Resources/Model/Model.h"
 #include "Graphics/Resources/Light/Light.h"
 #include "Graphics/Resources/Texture/TextureManager.h"
@@ -44,12 +47,13 @@ private:
 	Position* m_Position;
 	Terrain* m_Terrain;
 	Light* m_Light;
+	Frustum* m_Frustum;
 
 	Stone* m_PlayerStone;
 	Stone* m_WallStone;
 	//bool m_displayUI;
-	bool m_wireFrame, m_cellLines;
-};
+	bool m_wireFrame, m_cellLines, m_heightLocked;
+}; // Zone
 
 
 #endif

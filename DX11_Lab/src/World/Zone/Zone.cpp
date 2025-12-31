@@ -9,10 +9,12 @@ Zone::Zone()
 	m_Position(nullptr), 
 	m_Terrain(nullptr),
 	m_Light(nullptr),
+	m_Frustum(nullptr),
 	m_PlayerStone(nullptr), 
 	m_WallStone(nullptr),
 	m_wireFrame(false),
-	m_cellLines(false)
+	m_cellLines(false),
+	m_heightLocked(false)
 {
 } // Zone
 
@@ -21,11 +23,13 @@ Zone::Zone(const Zone& other)
 	: m_Camera(nullptr), 
 	m_Position(nullptr), 
 	m_Terrain(nullptr),
-	m_Light(nullptr), 
+	m_Light(nullptr),
+	m_Frustum(nullptr),
 	m_PlayerStone(nullptr), 
 	m_WallStone(nullptr),
 	m_wireFrame(false),
-	m_cellLines(false)
+	m_cellLines(false),
+	m_heightLocked(false)
 {
 } // Zone
 
@@ -69,6 +73,15 @@ bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd,
 	//m_Position->SetPosition(128.0f, 10.0f, -10.0f);
 	//m_Position->SetRotation(20.0f, 0.0f, 0.0f);
 
+	m_Frustum = new Frustum;
+	if (!m_Frustum)
+	{
+		return false;
+	}
+
+	// Initialize the frustum object.
+	m_Frustum->Init(screenDepth);
+
 	m_Terrain = new Terrain;
 	if (!m_Terrain)
 	{
@@ -91,7 +104,9 @@ bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd,
 
 	m_wireFrame = false;
 
-	m_cellLines = true;
+	m_cellLines = false;
+
+	m_heightLocked = true;
 
 	return true;
 } // init
@@ -106,6 +121,12 @@ void Zone::Shutdown()
 	if (m_PlayerStone) {
 		delete m_PlayerStone;
 		m_PlayerStone = 0;
+	}
+
+	if (m_Frustum)
+	{
+		delete m_Frustum;
+		m_Frustum = 0;
 	}
 
 	if (m_Terrain)
@@ -140,14 +161,28 @@ bool Zone::Frame(D3DRenderer* Direct3D, Input* input,
 	ShaderManager* shaderManager, TextureManager* textureManager, 
 	float frameTime, int fps)
 {
-	bool result;
-	float posX, posY, posZ, rotX, rotY, rotZ;
+	bool result, foundHeight;
+	float posX, posY, posZ, rotX, rotY, rotZ, height;
 
 	// 프레임 입력 처리를 수행
 	HandleMovementInput(input, frameTime);
 
 	m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
+
+	m_Terrain->Frame();
+
+	if (m_heightLocked)
+	{
+		// 주어진 카메라 위치 바로 아래에 있는 삼각형의 높이를 구함
+		foundHeight = m_Terrain->GetHeightAtPosition(posX, posZ, height);
+		if (foundHeight)
+		{
+			// 카메라 아래에 삼각형이 있다면 카메라를 그 삼각형 바로 위 1미터 위치에 놓음
+			m_Position->SetPosition(posX, height + 1.0f, posZ);
+			m_Camera->SetPosition(posX, height + 1.0f, posZ);
+		}
+	}
 
 	result = Render(Direct3D, shaderManager, textureManager);
 	if (!result)
@@ -163,6 +198,7 @@ bool Zone::Render(D3DRenderer* renderer,
 	ShaderManager* shaderManager, TextureManager* textureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
+	XMFLOAT3 cameraPosition;
 	bool result;
 
 
@@ -176,6 +212,19 @@ bool Zone::Render(D3DRenderer* renderer,
 	m_Camera->GetBaseViewMatrix(baseViewMatrix);
 	renderer->GetOrthoMatrix(orthoMatrix);
 
+	cameraPosition = m_Camera->GetPosition();
+	m_Frustum->ConstructFrustum(projectionMatrix, viewMatrix);
+
+	renderer->TurnOffCulling();
+	renderer->TurnZBufferOff();
+
+	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	renderer->GetWorldMatrix(worldMatrix);
+	renderer->TurnZBufferOn();
+	renderer->TurnOnCulling();
+
+
 	if (m_wireFrame)
 	{
 		renderer->EnableWireframe();
@@ -183,35 +232,34 @@ bool Zone::Render(D3DRenderer* renderer,
 
 	for (unsigned int i = 0; i < m_Terrain->GetCellCount(); i++)
 	{
-		// Put the terrain cell buffers on the pipeline.
-		result = m_Terrain->RenderCell(renderer->GetDeviceContext(), i);
-		if (!result)
+		// Render each terrain cell if it is visible only.
+		result = m_Terrain->RenderCell(renderer->GetDeviceContext(), i, m_Frustum);
+		if (result)
 		{
-			return false;
-
-		}
-
-		// Render the cell buffers using the terrain shader.
-		result = shaderManager->RenderTerrainShader(renderer->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
-			projectionMatrix, textureManager->GetTexture(0), textureManager->GetTexture(1),
-			m_Light->GetDirection(), m_Light->GetDiffuseColor());
-		if (!result)
-		{
-			return false;
-		}
-
-		// If needed then render the bounding box around this terrain cell using the color shader. 
-		if (m_cellLines)
-		{
-			m_Terrain->RenderCellLines(renderer->GetDeviceContext(), i);
-			shaderManager->RenderColorShader(renderer->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix, viewMatrix, projectionMatrix);
+			// Render the cell buffers using the terrain shader.
+			result = shaderManager->RenderTerrainShader(
+				renderer->GetDeviceContext(), 
+				m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+				projectionMatrix, textureManager->GetTexture(0), textureManager->GetTexture(1),
+				m_Light->GetDirection(), m_Light->GetDiffuseColor());
 			if (!result)
 			{
 				return false;
 			}
+
+			// If needed then render the bounding box around this terrain cell using the color shader. 
+			if (m_cellLines)
+			{
+				m_Terrain->RenderCellLines(renderer->GetDeviceContext(), i);
+				shaderManager->RenderColorShader(renderer->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
+					viewMatrix, projectionMatrix);
+				if (!result)
+				{
+					return false;
+				}
+			}
 		}
 	}
-
 
 	/*m_Terrain->Render(renderer->GetDeviceContext());
 	result = shaderManager->RenderTerrainShader(
@@ -343,6 +391,12 @@ void Zone::HandleMovementInput(Input* input, float frameTime)
 	{
 		m_cellLines = !m_cellLines;
 	}
+
+	if (input->IsF4Toggled())
+	{
+		m_heightLocked = !m_heightLocked;
+	}
+
 
 	return;
 } // HandleMovementInput
