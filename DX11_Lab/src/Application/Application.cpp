@@ -66,9 +66,9 @@ bool Application::Init(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Model = new Model;
 
-	result = m_Model->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), 
-		modelFilename, 
-		textureFilename1, 
+	result = m_Model->Init(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),
+		modelFilename,
+		textureFilename1,
 		textureFilename2);
 	if (!result)
 	{
@@ -242,8 +242,8 @@ bool Application::Frame()
 } // Frame
 
 
-Input* Application::GetInput() { 
-	return m_Input; 
+Input* Application::GetInput() {
+	return m_Input;
 } // GetInput
 
 
@@ -253,7 +253,7 @@ bool Application::Render()
 	bool result;
 
 	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-	
+
 	result = m_Zone->Render(m_Direct3D, m_ShaderManager, m_TextureManager);
 	if (!result)
 		return false;

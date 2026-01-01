@@ -21,6 +21,7 @@ using namespace std;
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "../Texture/Texture.h"
+#include "Common/CommonType.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,36 +30,6 @@ using namespace std;
 class Model
 {
 private:
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-		XMFLOAT3 binormal;
-	};
-
-	struct ModelType
-	{
-		float x, y, z;
-		float tu, tv;
-		float nx, ny, nz;
-		float tx, ty, tz;
-		float bx, by, bz;
-	};
-
-	struct TempVertexType
-	{
-		float x, y, z;
-		float tu, tv;
-		float nx, ny, nz;
-	};
-
-	struct VectorType
-	{
-		float x, y, z;
-	};
-
 public:
 	Model();
 	Model(const Model&);

@@ -22,6 +22,7 @@ target_include_directories(DX11_Lab PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Application"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Framework"
     "${ASSIMP_ROOT}/include"
     "C:/dev"
 )

@@ -56,7 +56,7 @@ private:
     //Stone* m_WallStone;
     TextureManager* m_TextureManager;
     ShaderManager* m_ShaderManager;
-	Input* m_Input;
+    Input* m_Input;
 
     Timer* m_Timer;
     Fps* m_Fps;

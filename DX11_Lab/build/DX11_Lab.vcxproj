@@ -87,7 +87,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/dev/vcpkg/installed/x64-windows/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -110,10 +110,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -176,7 +176,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/dev/vcpkg/installed/x64-windows/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -200,10 +200,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -266,7 +266,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/dev/vcpkg/installed/x64-windows/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -290,10 +290,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -356,7 +356,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/dev/vcpkg/installed/x64-windows/include"</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -379,10 +379,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application;C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Framework;C:\dev\External\assimp-6.0.2-build\include;C:\dev;C:\dev\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -501,16 +501,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Graphics\Camera\Frustum.cpp" />
-    <ClCompile Include="..\src\Graphics\Resources\Texture\TextureManager.cpp" />
-    <ClCompile Include="..\src\Graphics\Shaders\TerrainShader.cpp" />
-    <ClCompile Include="..\src\World\Actors\Terrain\TerrainCell.cpp" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.cpp" />
-    <ClInclude Include="..\src\Graphics\Camera\Frustum.h" />
-    <ClInclude Include="..\src\Graphics\Resources\Texture\TextureManager.h" />
-    <ClInclude Include="..\src\Graphics\Shaders\TerrainShader.h" />
-    <ClInclude Include="..\src\World\Actors\Terrain\TerrainCell.h" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.h" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Common\CommonType.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Fps\Fps.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Fps\Fps.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Input\Input.cpp" />
@@ -519,16 +512,18 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Position\Position.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Timer\Timer.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Timer\Timer.h" />
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Camera\Camera.cpp" />
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Camera\Camera.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Light\Light.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Light\Light.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Model\Model.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Model\Model.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\ResourceManager.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\ResourceManager.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\Texture.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\Texture.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\TextureManager.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\TextureManager.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\BaseShader.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\BaseShader.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ColorShader.cpp" />
@@ -539,14 +534,24 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\NormalMapShader.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ShaderManager.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ShaderManager.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TerrainShader.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TerrainShader.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TextureShader.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TextureShader.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System\System.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System\System.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\ActorObject.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\ActorObject.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Stone\Stone.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Stone\Stone.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\Terrain.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\Terrain.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\TerrainCell.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\TerrainCell.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Camera.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Camera.h" />
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Frustum.cpp" />
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Frustum.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Zone\Zone.cpp" />
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Zone\Zone.h" />
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\main.cpp" />

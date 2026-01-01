@@ -5,12 +5,12 @@
 
 
 Zone::Zone()
-	: m_Camera(nullptr), 
-	m_Position(nullptr), 
+	: m_Camera(nullptr),
+	m_Position(nullptr),
 	m_Terrain(nullptr),
 	m_Light(nullptr),
 	m_Frustum(nullptr),
-	m_PlayerStone(nullptr), 
+	m_PlayerStone(nullptr),
 	m_WallStone(nullptr),
 	m_wireFrame(false),
 	m_cellLines(false),
@@ -20,12 +20,12 @@ Zone::Zone()
 
 
 Zone::Zone(const Zone& other)
-	: m_Camera(nullptr), 
-	m_Position(nullptr), 
+	: m_Camera(nullptr),
+	m_Position(nullptr),
 	m_Terrain(nullptr),
 	m_Light(nullptr),
 	m_Frustum(nullptr),
-	m_PlayerStone(nullptr), 
+	m_PlayerStone(nullptr),
 	m_WallStone(nullptr),
 	m_wireFrame(false),
 	m_cellLines(false),
@@ -39,46 +39,26 @@ Zone::~Zone()
 } // ~Zone
 
 
-bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd, 
+bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd,
 	int screenWidth, int screenHeight, float screenDepth,
 	Model* sharedModel)
 {
 	bool result;
 
 	m_Camera = new Camera;
-	if (!m_Camera)
-	{
-		return false;
-	}
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 	m_Camera->Render();
 	m_Camera->RenderBaseViewMatrix();
 
 	m_Light = new Light;
-	if (!m_Light)
-	{
-		return false;
-	}
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(-0.5f, -1.0f, -0.5f);
 
 	m_Position = new Position;
-	if (!m_Position)
-	{
-		return false;
-	}
 	m_Position->SetPosition(128.0f, 10.0f, -10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
-	//m_Position->SetPosition(128.0f, 10.0f, -10.0f);
-	//m_Position->SetRotation(20.0f, 0.0f, 0.0f);
-
 	m_Frustum = new Frustum;
-	if (!m_Frustum)
-	{
-		return false;
-	}
-
 	// Initialize the frustum object.
 	m_Frustum->Init(screenDepth);
 
@@ -93,7 +73,7 @@ bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd,
 		MessageBoxW(hwnd, L"terrain 초기화 실패", L"Error", MB_OK);
 		return false;
 	}
-	
+
 	// 조종할 돌
 	m_PlayerStone = new Stone;
 	m_PlayerStone->Init(sharedModel, 128.0f, 5.0f, 128.0f, 1.0f);
@@ -115,7 +95,7 @@ bool Zone::Init(D3DRenderer* Direct3D, HWND hwnd,
 void Zone::Shutdown()
 {
 	if (m_WallStone) {
-		delete m_WallStone; 
+		delete m_WallStone;
 		m_WallStone = 0;
 	}
 	if (m_PlayerStone) {
@@ -157,30 +137,33 @@ void Zone::Shutdown()
 } // Shutdown
 
 
-bool Zone::Frame(D3DRenderer* Direct3D, Input* input, 
-	ShaderManager* shaderManager, TextureManager* textureManager, 
+bool Zone::Frame(D3DRenderer* Direct3D, Input* input,
+	ShaderManager* shaderManager, TextureManager* textureManager,
 	float frameTime, int fps)
 {
 	bool result, foundHeight;
-	float posX, posY, posZ, rotX, rotY, rotZ, height;
+	//float posX, posY, posZ, rotX, rotY, rotZ, height;
+	float height;
+
+	XMFLOAT3 pos, rot;
 
 	// 프레임 입력 처리를 수행
 	HandleMovementInput(input, frameTime);
 
-	m_Position->GetPosition(posX, posY, posZ);
-	m_Position->GetRotation(rotX, rotY, rotZ);
+	pos = m_Position->GetPosition();
+	rot = m_Position->GetRotation();
 
 	m_Terrain->Frame();
 
 	if (m_heightLocked)
 	{
 		// 주어진 카메라 위치 바로 아래에 있는 삼각형의 높이를 구함
-		foundHeight = m_Terrain->GetHeightAtPosition(posX, posZ, height);
+		foundHeight = m_Terrain->GetHeightAtPosition(pos.x, pos.z, height);
 		if (foundHeight)
 		{
 			// 카메라 아래에 삼각형이 있다면 카메라를 그 삼각형 바로 위 1미터 위치에 놓음
-			m_Position->SetPosition(posX, height + 1.0f, posZ);
-			m_Camera->SetPosition(posX, height + 1.0f, posZ);
+			m_Position->SetPosition(pos.x, height + 1.0f, pos.x);
+			m_Camera->SetPosition(pos.x, height + 1.0f, pos.z);
 		}
 	}
 
@@ -194,7 +177,7 @@ bool Zone::Frame(D3DRenderer* Direct3D, Input* input,
 } // Frame
 
 
-bool Zone::Render(D3DRenderer* renderer, 
+bool Zone::Render(D3DRenderer* renderer,
 	ShaderManager* shaderManager, TextureManager* textureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
@@ -238,7 +221,7 @@ bool Zone::Render(D3DRenderer* renderer,
 		{
 			// Render the cell buffers using the terrain shader.
 			result = shaderManager->RenderTerrainShader(
-				renderer->GetDeviceContext(), 
+				renderer->GetDeviceContext(),
 				m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
 				projectionMatrix, textureManager->GetTexture(0), textureManager->GetTexture(1),
 				m_Light->GetDirection(), m_Light->GetDiffuseColor());
@@ -263,7 +246,7 @@ bool Zone::Render(D3DRenderer* renderer,
 
 	/*m_Terrain->Render(renderer->GetDeviceContext());
 	result = shaderManager->RenderTerrainShader(
-		renderer->GetDeviceContext(), 
+		renderer->GetDeviceContext(),
 		m_Terrain->GetIndexCount(),
 		worldMatrix,
 		viewMatrix,
@@ -299,7 +282,8 @@ bool Zone::Render(D3DRenderer* renderer,
 void Zone::HandleMovementInput(Input* input, float frameTime)
 {
 	bool keyDown;
-	float posX, posY, posZ, rotX, rotY, rotZ;
+	XMFLOAT3 pos, rot;
+	//float posX, posY, posZ, rotX, rotY, rotZ;
 
 	float moveSpeed = 0.01f;
 	float rotateSpeed = 0.1f;
@@ -364,12 +348,14 @@ void Zone::HandleMovementInput(Input* input, float frameTime)
 	m_Position->LookDownward(keyDown);
 
 	// 뷰포트 position/rotation.
-	m_Position->GetPosition(posX, posY, posZ);
-	m_Position->GetRotation(rotX, rotY, rotZ);
+	pos = m_Position->GetPosition();
+	rot = m_Position->GetRotation();
+	//m_Position->GetPosition(posX, posY, posZ);
+	//m_Position->GetRotation(rotX, rotY, rotZ);
 
 	// 카메라 position
-	m_Camera->SetPosition(posX, posY, posZ);
-	m_Camera->SetRotation(rotX, rotY, rotZ);
+	m_Camera->SetPosition(pos.x, pos.y, pos.z);
+	m_Camera->SetRotation(rot.x, rot.y, rot.z);
 
 	if (input->IsF1Toggled())
 	{
@@ -400,4 +386,3 @@ void Zone::HandleMovementInput(Input* input, float frameTime)
 
 	return;
 } // HandleMovementInput
-

@@ -4,6 +4,15 @@
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.cpp">
+      <Filter>Source Files\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\ActorObject.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Camera.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Fps\Fps.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
@@ -16,56 +25,50 @@
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Timer\Timer.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Stone\Stone.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\TerrainCell.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\Terrain.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Zone\Zone.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Stone\Stone.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Frustum.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System\System.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ColorShader.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Zone\Zone.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\BaseShader.cpp">
       <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ShaderManager.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\NormalMapShader.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\Resources\Texture\TextureManager.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TextureShader.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ColorShader.cpp">
       <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\LightShader.cpp">
       <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graphics\Shaders\TerrainShader.cpp">
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\NormalMapShader.cpp">
       <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\World\Actors\Terrain\TerrainCell.cpp">
-      <Filter>Source Files\World</Filter>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ShaderManager.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Camera\Camera.cpp">
-      <Filter>Source Files\Graphics\Camera</Filter>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TerrainShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graphics\Camera\Frustum.cpp">
-      <Filter>Source Files\Graphics\Camera</Filter>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TextureShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\TextureManager.cpp">
+      <Filter>Source Files\Graphics\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.cpp">
+      <Filter>Source Files\Graphics\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Light\Light.cpp">
       <Filter>Source Files\Graphics\Resources</Filter>
@@ -76,25 +79,34 @@
     <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\Texture.cpp">
       <Filter>Source Files\Graphics\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\ResourceManager.cpp">
+      <Filter>Source Files\Graphics\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Timer\Timer.h">
-      <Filter>Header Files\Base</Filter>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\ActorObject.h">
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Position\Position.h">
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.h">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Camera.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Common\CommonType.h">
       <Filter>Header Files\Base</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Fps\Fps.h">
       <Filter>Header Files\Base</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Camera\Frustum.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Input\Input.h">
       <Filter>Header Files\Base</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Application\Application.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.h">
-      <Filter>Header Files\Graphics</Filter>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Position\Position.h">
+      <Filter>Header Files\Base</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\System\System.h">
       <Filter>Header Files\System</Filter>
@@ -105,6 +117,12 @@
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\Terrain.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Actors\Terrain\TerrainCell.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Base\Timer\Timer.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\World\Zone\Zone.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
@@ -114,10 +132,10 @@
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ColorShader.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\NormalMapShader.h">
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\LightShader.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\LightShader.h">
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\NormalMapShader.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\ShaderManager.h">
@@ -126,17 +144,11 @@
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TextureShader.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Graphics\Shaders\TerrainShader.h">
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Shaders\TerrainShader.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\World\Actors\Terrain\TerrainCell.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Camera\Camera.h">
-      <Filter>Header Files\Graphics\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\Camera\Frustum.h">
-      <Filter>Header Files\Graphics\Camera</Filter>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Renderer\D3DRenderer.h">
+      <Filter>Header Files\Graphics\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Light\Light.h">
       <Filter>Header Files\Graphics\Resources</Filter>
@@ -144,10 +156,13 @@
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Model\Model.h">
       <Filter>Header Files\Graphics\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\ResourceManager.h">
+      <Filter>Header Files\Graphics\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\Texture.h">
       <Filter>Header Files\Graphics\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Graphics\Resources\Texture\TextureManager.h">
+    <ClInclude Include="C:\Users\User\Documents\GitHub\Graphics-Draw\DX11_Lab\src\Graphics\Resources\Texture\TextureManager.h">
       <Filter>Header Files\Graphics\Resources</Filter>
     </ClInclude>
   </ItemGroup>
@@ -162,52 +177,58 @@
       <UniqueIdentifier>{691DB22C-4BFB-3476-95FA-9C694DC9C83C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Base">
-      <UniqueIdentifier>{6af7f2bd-28f5-44e2-82d9-61e0d9ac55e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Application">
-      <UniqueIdentifier>{179a7dd2-0e78-4094-845a-5fca0b66ed6b}</UniqueIdentifier>
+      <UniqueIdentifier>{cbe187a8-9b4a-4bc4-8ac4-03a95f7503f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Graphics">
-      <UniqueIdentifier>{cc2cb17b-74df-41ae-8b11-820d6135f897}</UniqueIdentifier>
+      <UniqueIdentifier>{614dfb62-4716-412a-99a5-595e3323dccd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Application">
+      <UniqueIdentifier>{38358811-0058-48d4-aa56-c46be9345b1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\System">
-      <UniqueIdentifier>{73f0c07d-74de-49bf-8b63-533bdf92eff8}</UniqueIdentifier>
+      <UniqueIdentifier>{1ca64e83-ada5-4618-9866-15c41a4811d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\World">
-      <UniqueIdentifier>{cc583b1f-e3e8-4b62-82b3-869731c6717a}</UniqueIdentifier>
+      <UniqueIdentifier>{c1768929-3852-4272-993a-b855415801ef}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Base">
-      <UniqueIdentifier>{1ce615ef-ad74-4b3e-9039-552f1630c740}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Application">
-      <UniqueIdentifier>{d95b94e1-c208-4db7-a0fd-e7a112606863}</UniqueIdentifier>
+      <UniqueIdentifier>{b6cbfe0b-9810-422d-b418-07dd3a601fa5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{d2e1cd54-437f-46a3-8766-16053e406a9f}</UniqueIdentifier>
+      <UniqueIdentifier>{0c1e95d7-a30c-46b2-bca0-8a179a7bef3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\World">
-      <UniqueIdentifier>{27f87d17-58d6-43bb-828c-09d28006fa55}</UniqueIdentifier>
+    <Filter Include="Source Files\Application">
+      <UniqueIdentifier>{6633dcbe-33f7-4309-b9ef-23bb91f3b1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework">
+      <UniqueIdentifier>{37990dfd-e067-4146-b5ac-1b30efffe4e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Framework">
+      <UniqueIdentifier>{badd7959-60b8-42e4-912e-4607bf92d8f0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\System">
-      <UniqueIdentifier>{60d316c4-cb5e-4d1c-bb97-a5638cfaf885}</UniqueIdentifier>
+      <UniqueIdentifier>{4261ab23-61cc-45ff-809d-b0be40489c8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics\Shaders">
-      <UniqueIdentifier>{d15f217f-e1f0-4b79-925d-57fad4585580}</UniqueIdentifier>
+    <Filter Include="Source Files\World">
+      <UniqueIdentifier>{d5dd6c15-3e0a-4f6a-8933-0e772b463b52}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Shaders">
-      <UniqueIdentifier>{2a0e66f3-8839-4419-bcaf-d623a774dc91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Graphics\Camera">
-      <UniqueIdentifier>{ace3cb1a-fe05-4c5e-a316-f6b6ed4c3fcd}</UniqueIdentifier>
+    <Filter Include="Header Files\Graphics\Renderer">
+      <UniqueIdentifier>{4991db90-1cb9-4036-b385-fb25bee6f22a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Graphics\Resources">
-      <UniqueIdentifier>{333c3f3e-0459-4e39-bdd9-955bf263fd82}</UniqueIdentifier>
+      <UniqueIdentifier>{1e778463-52aa-498f-a3e3-5a7e4e96787e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics\Camera">
-      <UniqueIdentifier>{b842baa0-02fe-4b6c-bb9e-f444cb2f9636}</UniqueIdentifier>
+    <Filter Include="Header Files\Graphics\Shaders">
+      <UniqueIdentifier>{d5f92303-f5c5-46a6-9312-e5925a754130}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Renderer">
+      <UniqueIdentifier>{d2df7d76-5fc3-4919-86f7-4fcb3233f913}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics\Resources">
-      <UniqueIdentifier>{9cebff1a-a2f3-4bcd-8e1c-3bd9525553ba}</UniqueIdentifier>
+      <UniqueIdentifier>{049c5228-da07-407b-9080-ae88e2a0e200}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Shaders">
+      <UniqueIdentifier>{5f661f41-114c-4065-86ac-d0317819ce1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

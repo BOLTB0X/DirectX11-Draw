@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #include "TerrainCell.h"
-#include "Graphics/Camera/Frustum.h"
+#include "Camera/Frustum.h"
 
 using namespace DirectX;
 using namespace std;

@@ -3,92 +3,65 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "Position.h"
 
+using namespace DirectX;
 
 Position::Position()
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	m_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_worldMatrix = XMMatrixIdentity();
+	m_isDirty = true; // 처음 호출 시 계산하도록 true
 
 	m_frameTime = 0.0f;
-
-	m_forwardSpeed = 0.0f;
-	m_backwardSpeed = 0.0f;
-	m_upwardSpeed = 0.0f;
-	m_downwardSpeed = 0.0f;
-	m_leftTurnSpeed = 0.0f;
-	m_rightTurnSpeed = 0.0f;
-	m_lookUpSpeed = 0.0f;
-	m_lookDownSpeed = 0.0f;
+	m_forwardSpeed = m_backwardSpeed = 0.0f;
+	m_upwardSpeed = m_downwardSpeed = 0.0f;
+	m_leftTurnSpeed = m_rightTurnSpeed = 0.0f;
+	m_lookUpSpeed = m_lookDownSpeed = 0.0f;
 } // Position
 
 
 Position::Position(const Position& other)
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	m_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_worldMatrix = XMMatrixIdentity();
+	m_isDirty = true; // 처음 호출 시 계산하도록 true
 
 	m_frameTime = 0.0f;
-
-	m_forwardSpeed = 0.0f;
-	m_backwardSpeed = 0.0f;
-	m_upwardSpeed = 0.0f;
-	m_downwardSpeed = 0.0f;
-	m_leftTurnSpeed = 0.0f;
-	m_rightTurnSpeed = 0.0f;
-	m_lookUpSpeed = 0.0f;
-	m_lookDownSpeed = 0.0f;
+	m_forwardSpeed = m_backwardSpeed = 0.0f;
+	m_upwardSpeed = m_downwardSpeed = 0.0f;
+	m_leftTurnSpeed = m_rightTurnSpeed = 0.0f;
+	m_lookUpSpeed = m_lookDownSpeed = 0.0f;
 } // Position
 
 
-Position::~Position()
-{
-} // ~Position
+Position::~Position(){} // ~Position
 
 
 void Position::SetPosition(float x, float y, float z)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
-	return;
+	m_position = XMFLOAT3(x, y, z);
+	m_isDirty = true;
 } // SetPosition
 
 
 void Position::SetRotation(float x, float y, float z)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
-	return;
+	m_scale = XMFLOAT3(x, y, z);
+	m_isDirty = true;
 } // SetRotation
 
 
-void Position::GetPosition(float& x, float& y, float& z)
+XMMATRIX Position::GetWorldMatrix()
 {
-	x = m_positionX;
-	y = m_positionY;
-	z = m_positionZ;
-	return;
-} // GetPosition
-
-
-void Position::GetRotation(float& x, float& y, float& z)
-{
-	x = m_rotationX;
-	y = m_rotationY;
-	z = m_rotationZ;
-	return;
-} // GetRotation
+	if (m_isDirty)
+	{
+		UpdateWorldMatrix();
+	}
+	return m_worldMatrix;
+} // // GetWorldMatrix
 
 
 void Position::SetFrameTime(float time)
@@ -122,12 +95,10 @@ void Position::MoveForward(bool keydown)
 		}
 	}
 
-	// degrees를 radian으로 변환
-	radians = m_rotationY * 0.0174532925f;
-
-	m_positionX += sinf(radians) * m_forwardSpeed;
-	m_positionZ += cosf(radians) * m_forwardSpeed;
-
+	radians = m_rotation.y * 0.0174532925f;
+	m_position.x += sinf(radians) * m_forwardSpeed;
+	m_position.z += cosf(radians) * m_forwardSpeed;
+	m_isDirty = true;
 	return;
 } // MoveForward
 
@@ -158,9 +129,9 @@ void Position::MoveBackward(bool keydown)
 	}
 
 	// degrees를 radian으로 변환
-	radians = m_rotationY * 0.0174532925f;
-	m_positionX -= sinf(radians) * m_backwardSpeed;
-	m_positionZ -= cosf(radians) * m_backwardSpeed;
+	radians = m_rotation.y * 0.0174532925f;
+	m_position.x -= sinf(radians) * m_backwardSpeed;
+	m_position.z -= cosf(radians) * m_backwardSpeed;
 
 	return;
 } // MoveBackward
@@ -188,7 +159,7 @@ void Position::MoveUpward(bool keydown)
 		}
 	}
 
-	m_positionY += m_upwardSpeed;
+	m_position.y += m_upwardSpeed;
 
 	return;
 } // MoveUpward
@@ -216,7 +187,7 @@ void Position::MoveDownward(bool keydown)
 		}
 	}
 
-	m_positionY -= m_downwardSpeed;
+	m_position.y -= m_downwardSpeed;
 
 	return;
 } // MoveDownward
@@ -244,10 +215,10 @@ void Position::TurnLeft(bool keydown)
 		}
 	}
 
-	m_rotationY -= m_leftTurnSpeed;
-	if (m_rotationY < 0.0f)
+	m_rotation.y -= m_leftTurnSpeed;
+	if (m_rotation.y < 0.0f)
 	{
-		m_rotationY += 360.0f;
+		m_rotation.y += 360.0f;
 	}
 
 	return;
@@ -276,10 +247,10 @@ void Position::TurnRight(bool keydown)
 		}
 	}
 
-	m_rotationY += m_rightTurnSpeed;
-	if (m_rotationY > 360.0f)
+	m_rotation.y += m_rightTurnSpeed;
+	if (m_rotation.y > 360.0f)
 	{
-		m_rotationY -= 360.0f;
+		m_rotation.y -= 360.0f;
 	}
 
 	return;
@@ -308,10 +279,10 @@ void Position::LookUpward(bool keydown)
 		}
 	}
 
-	m_rotationX -= m_lookUpSpeed;
-	if (m_rotationX > 90.0f)
+	m_rotation.x -= m_lookUpSpeed;
+	if (m_rotation.x > 90.0f)
 	{
-		m_rotationX = 90.0f;
+		m_rotation.x = 90.0f;
 	}
 
 	return;
@@ -340,11 +311,28 @@ void Position::LookDownward(bool keydown)
 		}
 	}
 
-	m_rotationX += m_lookDownSpeed;
-	if (m_rotationX < -90.0f)
+	m_rotation.x += m_lookDownSpeed;
+	if (m_rotation.x < -90.0f)
 	{
-		m_rotationX = -90.0f;
+		m_rotation.x = -90.0f;
 	}
 
 	return;
 } // LookDownward
+
+
+void Position::UpdateWorldMatrix()
+{
+	XMMATRIX s = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+
+	XMMATRIX r = XMMatrixRotationRollPitchYaw(
+		m_rotation.x * 0.0174532925f,
+		m_rotation.y * 0.0174532925f,
+		m_rotation.z * 0.0174532925f
+	);
+
+	XMMATRIX t = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+
+	m_worldMatrix = s * r * t;
+	m_isDirty = false;
+} // UpdateWorldMatrix

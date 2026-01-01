@@ -12,9 +12,6 @@
 
 #include "Graphics/Renderer/D3DRenderer.h"
 
-#include "Graphics/Camera/Camera.h"
-#include "Graphics/Camera/Frustum.h"
-
 #include "Graphics/Resources/Model/Model.h"
 #include "Graphics/Resources/Light/Light.h"
 #include "Graphics/Resources/Texture/TextureManager.h"
@@ -23,6 +20,9 @@
 #include "World/Actors/Terrain/Terrain.h"
 #include "World/Actors/Terrain/TerrainCell.h"
 #include "World/Actors/Stone/Stone.h"
+
+#include "World/Camera/Camera.h"
+#include "World/Camera/Frustum.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: Zone

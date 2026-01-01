@@ -238,9 +238,9 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 bool Model::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
 {
-	if (m_Texture) { 
-		m_Texture->Shutdown(); 
-		delete m_Texture; 
+	if (m_Texture) {
+		m_Texture->Shutdown();
+		delete m_Texture;
 	}
 
 	m_Texture = new Texture;

@@ -46,7 +46,7 @@ public:
     float GetRadius() { return m_radius; }
     XMFLOAT3 GetPosition() { return XMFLOAT3(m_position.x, m_position.y, m_position.z); }
     bool CheckCollision(Stone* other);
-    
+
 private:
     void UpdateWorldMatrix();
 

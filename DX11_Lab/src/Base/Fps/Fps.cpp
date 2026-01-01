@@ -5,18 +5,22 @@
 
 
 Fps::Fps()
+	: m_fps(0),
+	m_count(0),
+	m_startTime(0)
 {
 } // Fps
 
 
 Fps::Fps(const Fps& other)
+	: m_fps(0),
+	m_count(0),
+	m_startTime(0)
 {
 } // Fps
 
 
-Fps::~Fps()
-{
-} // ~Fps
+Fps::~Fps() {} // ~Fps
 
 
 void Fps::Init()
