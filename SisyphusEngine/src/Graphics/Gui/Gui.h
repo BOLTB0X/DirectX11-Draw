@@ -1,0 +1,18 @@
+// Graphics/Gui/Gui.h
+#pragma once
+
+#include <d3d11.h>
+
+class Gui {
+public:
+    Gui();
+    ~Gui();
+
+    bool Init(HWND, ID3D11Device*, ID3D11DeviceContext*);
+    void Shutdown();
+
+    void Begin();
+    void End();
+
+    //void RenderGui();
+}; // Gui
