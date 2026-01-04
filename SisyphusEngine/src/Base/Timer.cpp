@@ -13,16 +13,6 @@ Timer::Timer()
 } // Timer
 
 
-Timer::Timer(const Timer& other)
-	: m_frequency(0.0f),
-	m_startTime(0),
-	m_frameTime(0.0f),
-	m_beginTime(0),
-	m_endTime(0)
-{
-} // Timer
-
-
 Timer::~Timer() { } // ~Timer
 
 

@@ -9,6 +9,7 @@ using Microsoft::WRL::ComPtr;
 class DepthStencilState {
 public:
     DepthStencilState();
+	DepthStencilState(const DepthStencilState&) = delete;
     ~DepthStencilState();
 
     bool Init(ID3D11Device*);

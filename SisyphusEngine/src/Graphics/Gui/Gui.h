@@ -6,6 +6,7 @@
 class Gui {
 public:
     Gui();
+	Gui(const Gui&) = delete;
     ~Gui();
 
     bool Init(HWND, ID3D11Device*, ID3D11DeviceContext*);

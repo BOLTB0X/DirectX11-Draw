@@ -12,7 +12,7 @@ class Input
 {
 public:
 	Input();
-	Input(const Input&);
+	Input(const Input&) = delete;
 	~Input();
 
 	bool Init(HINSTANCE, HWND, int, int);

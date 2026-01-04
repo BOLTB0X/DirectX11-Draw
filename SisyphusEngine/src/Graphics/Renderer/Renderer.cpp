@@ -13,9 +13,9 @@
 
 Renderer::Renderer() : m_vsync_enabled(false) {}
 
-Renderer::Renderer(const Renderer &other) : m_vsync_enabled(false) {}
 
 Renderer::~Renderer() {}
+
 
 bool Renderer::Init(HWND hwnd, int screenWidth, int screenHeight)
 {

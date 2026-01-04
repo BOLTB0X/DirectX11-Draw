@@ -1,0 +1,45 @@
+// Graphics/Model/Model.cpp
+#include "Model.h"
+
+/* default */
+////////////////////////////////////////////////////////////////////////////
+
+Model::Model() {};
+
+Model::~Model() {};
+
+
+void Model::Render(ID3D11DeviceContext* context)
+{
+    for (const auto& mesh : m_meshes)
+    {
+        // 해당 메쉬의 머터리얼 인덱스 확인
+        unsigned int matIdx = mesh->GetMaterialIndex();
+
+        if (matIdx < m_materials.size())
+        {
+			const Material& material = m_materials[matIdx];
+            if (material.diffuse) material.diffuse->Bind(context, 0);
+            if (material.ambient) material.ambient->Bind(context, 1);
+            if (material.specular) material.specular->Bind(context, 2);
+            if (material.albedo) material.albedo->Bind(context, 3);
+            if (material.normal) material.normal->Bind(context, 4);
+            
+        }
+
+        // 메쉬 그리기
+        mesh->Bind(context);
+        context->DrawIndexed(mesh->GetIndexCount(), 0, 0);
+    }
+} // Render
+
+void Model::AddMesh(std::unique_ptr<Mesh> mesh)
+{
+    m_meshes.push_back(std::move(mesh));
+} // AddMesh
+
+
+void Model::AddMaterial(const Material& material)
+{
+    m_materials.push_back(material);
+} // AddMaterial

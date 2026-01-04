@@ -9,6 +9,7 @@ using Microsoft::WRL::ComPtr;
 class Rasterizer {
 public:
     Rasterizer();
+	Rasterizer(const Rasterizer&) = delete;
     ~Rasterizer();
 
     bool Init(ID3D11Device* device);

@@ -26,25 +26,6 @@ Position::Position()
 } // Position
 
 
-Position::Position(const Position& other)
-	:m_position(XMFLOAT3(0.0f, 0.0f, 0.0f)),
-	m_rotation(XMFLOAT3(0.0f, 0.0f, 0.0f)),
-	m_scale(XMFLOAT3(0.0f, 0.0f, 0.0f)),
-	m_worldMatrix(XMMatrixIdentity()),
-	m_isDirty(true),
-	m_frameTime(0),
-	m_forwardSpeed(0),
-	m_backwardSpeed(0),
-	m_upwardSpeed(0),
-	m_downwardSpeed(0),
-	m_leftTurnSpeed(0),
-	m_rightTurnSpeed(0),
-	m_lookUpSpeed(0),
-	m_lookDownSpeed(0)
-{
-} // Position
-
-
 Position::~Position() {} // ~Position
 /////////////////////////////////////////////////////////////////////
 

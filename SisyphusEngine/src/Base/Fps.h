@@ -10,7 +10,7 @@ class Fps
 {
 public:
 	Fps();
-	Fps(const Fps&);
+	Fps(const Fps&) = delete;
 	~Fps();
 
 	void Init();

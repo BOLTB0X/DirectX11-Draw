@@ -23,7 +23,7 @@ using Microsoft::WRL::ComPtr;
 class Renderer {
 public:
     Renderer();
-    Renderer(const Renderer&);
+    Renderer(const Renderer&) = delete;
     ~Renderer();
 
     bool Init(HWND, int, int);
@@ -35,9 +35,9 @@ public:
 public:
     DX11Device* GetDX11Device() const { return m_DX11Device.get(); }
     ID3D11DeviceContext* GetDeviceContext() const { return m_DX11Device->GetContext(); }
-    Rasterizer* GetRasterizer()   const { return m_Rasterizer.get(); }
+    Rasterizer* GetRasterizer() const { return m_Rasterizer.get(); }
     DepthStencilState* GetDepthStencil() const { return m_DepthStencilState.get(); }
-    BlendState* GetBlendState()    const { return m_BlendState.get(); }
+    BlendState* GetBlendState() const { return m_BlendState.get(); }
 
 public:
     void SetWireframeMode(bool);

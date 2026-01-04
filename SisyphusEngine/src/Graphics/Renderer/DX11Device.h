@@ -9,9 +9,11 @@ using Microsoft::WRL::ComPtr;
 class DX11Device {
 public:
     DX11Device();
+    DX11Device(const DX11Device&) = delete;
     ~DX11Device();
 
-    bool Init(HWND hwnd, int width, int height, bool fullscreen, bool vsync,
+    bool Init(HWND hwnd, int width, int height, 
+        bool fullscreen, bool vsync,
         unsigned int numerator, unsigned int denominator);
 
 public:

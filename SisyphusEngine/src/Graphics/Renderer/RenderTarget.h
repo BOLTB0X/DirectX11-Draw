@@ -10,6 +10,7 @@ using Microsoft::WRL::ComPtr;
 class RenderTarget {
 public:
     RenderTarget();
+	RenderTarget(const RenderTarget&) = delete;
     ~RenderTarget();
 
     bool Init(ID3D11Device*, IDXGISwapChain*, int, int);

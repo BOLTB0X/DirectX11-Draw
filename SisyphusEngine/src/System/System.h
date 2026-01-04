@@ -11,7 +11,7 @@
 class System {
 public:
     System();
-    System(const System&);
+    System(const System&) = delete;
     ~System();
 
     bool Init();

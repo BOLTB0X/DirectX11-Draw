@@ -8,7 +8,7 @@ class Position
 {
 public:
     Position();
-    Position(const Position&);
+    Position(const Position&) = delete;
     ~Position();
 
 public:

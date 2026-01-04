@@ -16,15 +16,6 @@ System::System()
 { } // System
 
 
-System::System(const System& other)
-	: m_applicationName(0),
-	m_hinstance(0),
-	m_hwnd(0),
-	m_InputPtr(nullptr),
-	m_Application(nullptr)
-{ } // System
-
-
 System::~System() { } // ~Syste
 
 

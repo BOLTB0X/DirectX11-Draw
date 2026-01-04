@@ -22,24 +22,6 @@ Input::Input()
 } // Input
 
 
-Input::Input(const Input& other)
-	: m_directInput(nullptr),
-	m_keyboard(nullptr),
-	m_mouse(nullptr),
-	m_screenWidth(0),
-	m_screenHeight(0),
-	m_mouseX(0),
-	m_mouseY(0),
-	m_F1_released(0),
-	m_F2_released(0),
-	m_F3_released(0),
-	m_F4_released(0)
-{
-	memset(m_keyboardState, 0, sizeof(m_keyboardState));
-	m_mouseState = {};
-} // Input
-
-
 Input::~Input() {} // ~Input
 
 

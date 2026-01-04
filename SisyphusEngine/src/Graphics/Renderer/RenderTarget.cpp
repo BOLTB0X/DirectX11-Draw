@@ -5,11 +5,7 @@
 /* default */
 /////////////////////////////////////////////////////////////////////
 
-RenderTarget::RenderTarget()
-{
-    m_viewport = { 0 };
-} // RenderTarget
-
+RenderTarget::RenderTarget() { m_viewport = { 0 }; } // RenderTarget
 
 RenderTarget::~RenderTarget() {} // ~RenderTarget
 

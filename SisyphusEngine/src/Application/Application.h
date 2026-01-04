@@ -12,7 +12,7 @@ class Application
 {
 public:
     Application();
-    Application(const Application&);
+    Application(const Application&) = delete;
     ~Application();
 
     bool Init(HWND, int, int);
@@ -25,12 +25,12 @@ public:
 private:
     bool Render();
 
-private: // 시스템 핵심 컴포넌트들
+private:
     Input* m_Input;
     Timer* m_Timer;
     Fps* m_Fps;
 
-private: // 그래픽 컴포넌트들
+private:
 	Renderer* m_Renderer;
 	Gui* m_Gui;
 

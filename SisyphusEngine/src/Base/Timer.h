@@ -8,7 +8,7 @@ class Timer
 {
 public:
 	Timer();
-	Timer(const Timer&);
+	Timer(const Timer&) = delete;
 	~Timer();
 
 	bool Init();

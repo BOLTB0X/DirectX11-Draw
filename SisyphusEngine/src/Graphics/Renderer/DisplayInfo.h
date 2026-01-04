@@ -7,6 +7,7 @@
 class DisplayInfo {
 public:
     DisplayInfo();
+	DisplayInfo(const DisplayInfo&) = delete;
     ~DisplayInfo();
 
     bool Init(int, int);

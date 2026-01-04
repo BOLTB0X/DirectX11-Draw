@@ -4,9 +4,9 @@
 #include "Common/EngineSettings.h"
 #include "Common/EngineHelper.h"
 
-#include "imgui.h"            // ImGui의 기본 기능 (Begin, End, Button 등)
-#include "imgui_impl_win32.h"  // Win32 플랫폼 연동
-#include "imgui_impl_dx11.h"   // DirectX 11 렌더링 연동
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
 /* default */
 /////////////////////////////////////////////////////////////////////
@@ -19,17 +19,6 @@ Application::Application()
 	m_Gui(nullptr)
 {
 } // Application
-
-
-Application::Application(const Application& other)
-	: m_Input(nullptr),
-	m_Timer(nullptr),
-	m_Fps(nullptr),
-	m_Renderer(nullptr),
-	m_Gui(nullptr)
-{
-} // Application
-
 
 Application::~Application() { } // ~Application
 

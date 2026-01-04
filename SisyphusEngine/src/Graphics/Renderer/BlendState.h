@@ -9,6 +9,7 @@ using Microsoft::WRL::ComPtr;
 class BlendState {
 public:
     BlendState();
+	BlendState(const BlendState&) = delete;
     ~BlendState();
 
     bool Init(ID3D11Device*);
