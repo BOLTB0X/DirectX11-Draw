@@ -55,20 +55,27 @@ target_link_libraries(${PROJECT_NAME}
     ${ZLIB_LIB_NAME}
 )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}")
+
 # --- 6. 리소스 및 셰이더 복사 로직 (중요!) ---
 
-file(GLOB_RECURSE SHADER_FILES "src/*.hlsl")
-foreach(SHADER_PATH ${SHADER_FILES})
-    get_filename_component(SHADER_NAME ${SHADER_PATH} NAME)
+file(GLOB_RECURSE HLSL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/hlsl/*.hlsl")
+
+foreach(SHADER_PATH ${HLSL_SOURCES})
+    file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/hlsl" ${SHADER_PATH})
+    set(DEST_PATH "${CMAKE_BINARY_DIR}/hlsl/${REL_PATH}")
+    get_filename_component(DEST_DIR ${DEST_PATH} DIRECTORY)
+    
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${SHADER_PATH} "$<TARGET_FILE_DIR:${PROJECT_NAME}>/hlsl/${SHADER_NAME}")
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${DEST_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SHADER_PATH}" "${DEST_PATH}"
+        COMMENT "Copying shader: ${REL_PATH}"
+    )
 endforeach()
 
+# 에셋 폴더도 build/assets로 복사
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets")
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${ASSIMP_BIN_DIR}/${ASSIMP_LIB_NAME}.dll" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/assets")

@@ -1,12 +1,37 @@
 # Graphics-Draw
 
-![어어어어엇!!](https://github.com/BOLTB0X/Graphics-Draw/blob/main/Img/%EB%98%A5%EA%BC%AC%EC%87%BC.gif?raw=true)
+![어어어어엇!!](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/%EB%98%A5%EA%BC%AC%EC%87%BC.gif?raw=true)
 
 그려그려
 
 ## - ing
 
+| 시지프스 엔진 (Sisyphus) | 유니티 (Unity) | 언리얼 (Unreal Engine) | 역할 |
+|------------------------|---------------|-------------------------|------|
+| Model                  | Mesh + Material | Static Mesh + Material | 변하지 않는 원본 데이터 (원본 그릇) |
+| ModelManager           | Asset Bundle / Project Window | Content Browser / Manager | 리소스를 로드하고 메모리에 유지함 |
+| ActorObject            | GameObject    | Actor                   | 게임 월드에 존재하는 개별 객체 |
+| Position (Component)   | Transform     | Scene Component          | 객체의 위치, 회전, 크기를 담당 |
+
+
 ```
+// ~ ing
+src/
+├─ Common/
+├─ System/
+├─ Base/
+├─ Graphics/
+│  ├─ Camera/
+│  ├─ Model/
+│  ├─ Shader/
+├─ Application/
+│  ├─ ModelManager/
+│  ├─ TextureManager/
+│  ├─ ShaderManager/
+├─ Framework/
+│  │  ├─ WorldObject.h (모든 객체의 부모)
+├─ World/
+│  ├─ Actors/
 ```
 
 ## used 라이브러리 및 툴
@@ -18,9 +43,7 @@
 
 - [Github - imgui](https://github.com/ocornut/imgui)
 
-<!--
 - [Github - assimp](https://github.com/assimp/assimp)
--->
 
 ## 참고
 

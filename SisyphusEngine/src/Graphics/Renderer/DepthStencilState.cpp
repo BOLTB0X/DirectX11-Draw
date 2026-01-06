@@ -12,7 +12,8 @@ DepthStencilState::DepthStencilState() {}
 DepthStencilState::~DepthStencilState() {}
 
 
-bool DepthStencilState::Init(ID3D11Device* device) {
+bool DepthStencilState::Init(ID3D11Device* device)
+{
     D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc = {};
     ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
 
@@ -56,7 +57,8 @@ bool DepthStencilState::Init(ID3D11Device* device) {
 } // Init
 
 
-void DepthStencilState::Bind(ID3D11DeviceContext* context, bool depthEnable) {
+void DepthStencilState::Bind(ID3D11DeviceContext* context, bool depthEnable)
+{
     if (depthEnable)
         context->OMSetDepthStencilState(m_depthEnabledState.Get(), 1);
     else 

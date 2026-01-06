@@ -151,7 +151,6 @@ bool System::InitWindows(int& screenWidth, int& screenHeight)
 		screenWidth = 800;
 		screenHeight = 600;
 
-		// 화면 중앙을 어디다 둘지
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}

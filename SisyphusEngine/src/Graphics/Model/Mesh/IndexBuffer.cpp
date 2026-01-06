@@ -15,15 +15,15 @@ bool IndexBuffer::Init(ID3D11Device* device, const std::vector<unsigned int>& in
 
     m_indexCount = (UINT)indices.size();
 
-    D3D11_BUFFER_DESC bd = {};
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(unsigned int) * m_indexCount;
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    D3D11_BUFFER_DESC bufDes = {};
+    bufDes.Usage = D3D11_USAGE_DEFAULT;
+    bufDes.ByteWidth = sizeof(unsigned int) * m_indexCount;
+    bufDes.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA sd = {};
-    sd.pSysMem = indices.data();
+    D3D11_SUBRESOURCE_DATA subResourceData = {};
+    subResourceData.pSysMem = indices.data();
 
-    HRESULT hr = device->CreateBuffer(&bd, &sd, m_buffer.GetAddressOf());
+    HRESULT hr = device->CreateBuffer(&bufDes, &subResourceData, m_buffer.GetAddressOf());
     return SUCCEEDED(hr);
 } // Init
 

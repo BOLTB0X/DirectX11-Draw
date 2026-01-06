@@ -1,4 +1,4 @@
-// Graphics/Resource/Model/Mesh.cpp
+// Graphics/Model/Mesh.cpp
 #include "Mesh.h"
 #include "Common/EngineHelper.h"
 
@@ -27,6 +27,7 @@ bool Mesh::Init(ID3D11Device* device, const MeshData& data, unsigned int matInde
 } // Init
 
 void Mesh::Bind(ID3D11DeviceContext* context) {
+    if (!vertexBuffer || !indexBuffer) return;
     vertexBuffer->Bind(context);
     indexBuffer->Bind(context);
 } // Render

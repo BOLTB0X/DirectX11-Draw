@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "TextureLoader.h"
+#include "Common/EngineHelper.h"
 
 bool TextureLoader::CreateTextureFromFile(
     ID3D11Device* device,
@@ -10,12 +11,19 @@ bool TextureLoader::CreateTextureFromFile(
     ID3D11ShaderResourceView** outSRV)
 {
     int width, height, channels;
-    stbi_set_flip_vertically_on_load(true);  // DX11의 텍스처 좌표계(좌상단 0,0)에 맞게 상하반전 로드
+    stbi_set_flip_vertically_on_load(true);
+ 
     unsigned char* imageData = stbi_load(filename.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    //if (EngineHelper::SuccessCheck(
+    //    imageData, "텍스처 로드: stbi_load 에러")
+    //    == false) return false;
+    //else
+    //{
+    //    char msg[256];
+    //    sprintf_s(msg, "텍스처 생성 시도: %s (%dx%d, %d channels)\n", filename.c_str(), width, height, channels);
+    //    OutputDebugStringA(msg);
+    //}
 
-    if (!imageData) return false;
-
-	// Texture2D description 설정
     D3D11_TEXTURE2D_DESC td = {};
     td.Width = width;
     td.Height = height;
@@ -28,7 +36,9 @@ bool TextureLoader::CreateTextureFromFile(
     td.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-    if (FAILED(device->CreateTexture2D(&td, nullptr, texture.GetAddressOf())))
+    HRESULT hr = device->CreateTexture2D(&td, nullptr, texture.GetAddressOf());
+    if (EngineHelper::SuccessCheck(hr, "텍스처로드: CreateTexture2D 실패")
+        == false)
     {
         stbi_image_free(imageData);
         return false;
@@ -38,22 +48,19 @@ bool TextureLoader::CreateTextureFromFile(
     unsigned int rowPitch = (width * 4) * sizeof(unsigned char);
     context->UpdateSubresource(texture.Get(), 0, NULL, imageData, rowPitch, 0);
 
-    // SRV 생성
     D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
     srvd.Format = td.Format;
     srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     srvd.Texture2D.MostDetailedMip = 0;
-    srvd.Texture2D.MipLevels = -1; // 모든 레벨 사용
+    srvd.Texture2D.MipLevels = -1;
 
-    if (FAILED(device->CreateShaderResourceView(texture.Get(), &srvd, outSRV)))
-    {
-        stbi_image_free(imageData);
-        return false;
-    }
+    hr = device->CreateShaderResourceView(texture.Get(), &srvd, outSRV);
 
-    // Mipmaps 생성 및 메모리 정리
+    if (EngineHelper::SuccessCheck(
+        hr, "텍스처 로드: CreateShaderResourceView 실패")
+        == false) return false;
+
     context->GenerateMips(*outSRV);
     stbi_image_free(imageData);
-
     return true;
-}
+} // CreateTextureFromFile

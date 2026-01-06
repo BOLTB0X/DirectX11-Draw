@@ -23,18 +23,18 @@ bool DX11Device::Init(
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
     ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
-    // 스왑 체인 설정
     swapChainDesc.BufferCount = 1;
     swapChainDesc.BufferDesc.Width = width;
     swapChainDesc.BufferDesc.Height = height;
     swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-    // 수직 동기화(Vsync) 여부에 따른 주사율 설정
-    if (vsync) {
+    if (vsync)
+    {
         swapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
         swapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
     }
-    else {
+    else
+    {
         swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
         swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
     }
@@ -73,7 +73,8 @@ bool DX11Device::Init(
     );
 
     if (EngineHelper::SuccessCheck(hr, "DX11 장치 및 스왑체인 생성 실패")
-        == false) {
+        == false)
+    {
         return false;
     }
 

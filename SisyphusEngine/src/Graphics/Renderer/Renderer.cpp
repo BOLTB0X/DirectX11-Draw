@@ -70,7 +70,7 @@ bool Renderer::Init(HWND hwnd, int screenWidth, int screenHeight)
         return false;
     }
 
-    // 초기 바인딩 (Depth 활성화)
+    // Depth 활성화
     m_DepthStencilState->Bind(m_DX11Device->GetContext(), true);
 
     m_BlendState = std::make_unique<BlendState>();
@@ -98,11 +98,7 @@ void Renderer::BeginScene(float r, float g, float b, float a)
 
 void Renderer::EndScene()
 {
-    //ImGui::Render();
-    //ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-    // DX11Device로부터 정보를 받아와 화면에 출력(Present)
-    bool vsync = EngineSettings::VSYNC_ENABLED; // 설정값 참조
+    bool vsync = EngineSettings::VSYNC_ENABLED;
     if (vsync)
     {
         m_DX11Device->GetSwapChain()->Present(1, 0);

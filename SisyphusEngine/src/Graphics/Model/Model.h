@@ -1,5 +1,6 @@
 // Graphics/Model/Model.h
 #pragma once
+
 #include <vector>
 #include "Mesh/Mesh.h"
 #include "Texture/Material.h"
@@ -20,4 +21,4 @@ public:
 private:
     std::vector<std::unique_ptr<Mesh>> m_meshes;
     std::vector<Material> m_materials;
-};
+}; // Model

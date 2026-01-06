@@ -8,7 +8,7 @@
 #include <assimp/postprocess.h>
 
 #include "Graphics/Model/Model.h"
-#include "TexturesManager.h"
+#include "TexturesManager/TexturesManager.h"
 
 class ModelManager {
 public:
@@ -16,7 +16,7 @@ public:
 	ModelManager(const ModelManager&) = delete;
     ~ModelManager();
 
-    bool Init();
+    bool Init(ID3D11Device*, ID3D11DeviceContext*, TexturesManager*);
     void Shutdown();
 
 public:

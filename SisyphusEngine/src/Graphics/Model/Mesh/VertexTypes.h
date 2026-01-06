@@ -8,6 +8,7 @@ struct ModelVertex {
     DirectX::XMFLOAT2 texture;
     DirectX::XMFLOAT3 normal;
     DirectX::XMFLOAT3 tangent;
+    DirectX::XMFLOAT3 binormal;
 }; // ModelVertex
 
 

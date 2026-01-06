@@ -1,5 +1,7 @@
 // Application/ModelManager/ModelManager.cpp
 #include "ModelManager.h"
+#include "Common/EngineHelper.h"
+#include "Common/EngineSettings.h"
 
 /* default */
 ///////////////////////////////////////////////////////////////////////////
@@ -8,10 +10,21 @@ ModelManager::ModelManager() { };
 
 ModelManager::~ModelManager() { Shutdown(); };
 
-bool ModelManager::Init()
+bool ModelManager::Init(ID3D11Device* device,
+    ID3D11DeviceContext* context,
+    TexturesManager* texManager)
 { 
+    EngineSettings::STONE_PATH;
+
+    if (GetModel(device, context, texManager, EngineSettings::STONE_PATH))
+        EngineHelper::SuccessCheck(true, "모델 로드 성공");
+    else
+    {
+        EngineHelper::SuccessCheck(false, "Stone 모델 로드 실패: " + EngineSettings::STONE_PATH);
+        return false;
+    }
 	return true;
-}
+} // Init
 
 
 void ModelManager::Shutdown()
@@ -20,7 +33,6 @@ void ModelManager::Shutdown()
 }
 
 /////////////////////////////////////////////////////////////////////////
-
 
 /* public */
 //////////////////////////////////////////////////////////////////////////
@@ -36,23 +48,34 @@ Model* ModelManager::GetModel(
 
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path,
-        aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
+        aiProcess_Triangulate | aiProcess_CalcTangentSpace
+    | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_ImproveCacheLocality
+    | aiProcess_ConvertToLeftHanded);
 
-    if (!scene || !scene->mRootNode) return nullptr;
+    if (scene == nullptr)
+    {
+        EngineHelper::SuccessCheck(false, "Assimp Scene 로드 실패: " + path);
+        return nullptr;
+    }
+
+    if (scene->mRootNode == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+    {
+        EngineHelper::SuccessCheck(false, "Assimp 데이터 불완전: " + path);
+        return nullptr;
+    }
 
     auto newModel = std::make_unique<Model>();
-    std::string directory = path.substr(0, path.find_last_of("\\/"));
+    size_t lastSlash = path.find_last_of("\\/");
+    std::string directory = (lastSlash == std::string::npos) ? "." : path.substr(0, lastSlash);
 
-    // 머테리어 처리
     ProcessMaterials(scene, device, context, texManager, directory, newModel.get());
-
-    // 노드 순회하며 메쉬 처리
     ProcessNode(scene->mRootNode, scene, device, newModel.get());
 
     m_modelLibrary[path] = std::move(newModel);
     return m_modelLibrary[path].get();
 } // GetModel
 //////////////////////////////////////////////////////////////////////////
+
 
 /* private */
 //////////////////////////////////////////////////////////////////////////
@@ -80,41 +103,53 @@ std::unique_ptr<Mesh> ModelManager::ProcessMesh(
     aiMesh* mesh, const aiScene* scene,
     ID3D11Device* device)
 {
-    MeshData data;
+    std::vector<ModelVertex> vertices;
+    std::vector<unsigned int> indices;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         ModelVertex vertex;
-        // 위치
         vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 
-        // UV 좌표
         if (mesh->mTextureCoords[0])
-            vertex.texture = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+        {
+            vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
+            vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+        }
         else
-            vertex.texture = { 0.0f, 0.0f };
+            vertex.texture = DirectX::XMFLOAT2(0.0f, 0.0f);
 
-        // 법선 벡터 (Normal)
         if (mesh->HasNormals())
             vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
-        // 탄젠트
         if (mesh->HasTangentsAndBitangents())
+        {
             vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+            vertex.binormal = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
+        }
+        else
+        {
+            vertex.tangent = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+            vertex.binormal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+        }
 
-        data.vertices.push_back(vertex);
+        vertices.push_back(vertex);
     }
 
-    // 인덱스 처리
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++)
-            data.indices.push_back(face.mIndices[j]);
+            indices.push_back(face.mIndices[j]);
     }
 
+    MeshData meshData;
+    meshData.vertices = vertices;
+    meshData.indices = indices;
+
     auto newMesh = std::make_unique<Mesh>();
-    newMesh->Init(device, data, mesh->mMaterialIndex); // MeshData를 이용해 버퍼 생성
+    if (!newMesh->Init(device, meshData, mesh->mMaterialIndex))
+        return nullptr;
     return newMesh;
 } // ProcessMesh
 
@@ -124,35 +159,50 @@ void ModelManager::ProcessMaterials(
     ID3D11DeviceContext* context, TexturesManager* texManager,
     const std::string& directory, Model* outModel)
 {
+    std::string pbrDir = directory + "/textures/";
+
+    size_t lastSlash = directory.find_last_of("\\/");
+    std::string parentDir = directory.substr(0, lastSlash); // "assets/Stone"
+    size_t modelSlash = parentDir.find_last_of("\\/");
+    std::string modelName = (modelSlash == std::string::npos) ? parentDir : parentDir.substr(modelSlash + 1);
+
     for (unsigned int i = 0; i < scene->mNumMaterials; i++)
     {
         aiMaterial* aiMat = scene->mMaterials[i];
         Material myMaterial;
         myMaterial.name = aiMat->GetName().C_Str();
 
-        auto loadTex = [&](aiTextureType type) -> std::shared_ptr<Texture> {
-            aiString path;
-            if (aiMat->GetTexture(type, 0, &path) == AI_SUCCESS)
-            {
-                // 절대 경로/상대 경로 아용하여 전체 경로 생성
-                std::string fullPath = directory + "/" + path.C_Str();
-                return texManager->GetTexture(device, context, fullPath);
-            }
-            return nullptr;
+        //// Assimp 로더
+        //auto loadTex = [&](aiTextureType type) -> std::shared_ptr<Texture> {
+        //    aiString path;
+        //    if (aiMat->GetTexture(type, 0, &path) == AI_SUCCESS) {
+        //        std::string fullPath = directory + "/" + path.C_Str();
+        //        auto tex = texManager->GetTexture(device, context, fullPath);
+
+        //        EngineHelper::SuccessCheck(tex != nullptr, "일반 텍스처 로드 실패: " + fullPath);
+        //        return tex;
+        //    }
+        //    return nullptr;
+        //};
+
+        //myMaterial.diffuse = loadTex(aiTextureType_DIFFUSE);
+        //myMaterial.ambient = loadTex(aiTextureType_AMBIENT);
+        //myMaterial.specular = loadTex(aiTextureType_SPECULAR);
+        //myMaterial.normal = loadTex(aiTextureType_NORMALS);
+
+        auto getPBR = [&](const std::string& suffix) -> std::shared_ptr<Texture> {
+            std::string fullPath = pbrDir + modelName + suffix;
+            auto tex = texManager->GetTexture(device, context, fullPath);
+
+            EngineHelper::SuccessCheck(tex != nullptr, "PBR 로드 실패: " + fullPath);
+            return tex;
         };
 
-        myMaterial.diffuse = loadTex(aiTextureType_DIFFUSE);
-        myMaterial.ambient = loadTex(aiTextureType_AMBIENT);
-        myMaterial.specular = loadTex(aiTextureType_SPECULAR);
-        myMaterial.albedo = loadTex(aiTextureType_BASE_COLOR);
-
-        myMaterial.normal = loadTex(aiTextureType_NORMALS);
-        if (!myMaterial.normal)
-            myMaterial.normal = loadTex(aiTextureType_HEIGHT);
-
-        // PBR 수치 로드
-        aiMat->Get(AI_MATKEY_ROUGHNESS_FACTOR, myMaterial.roughness);
-        aiMat->Get(AI_MATKEY_METALLIC_FACTOR, myMaterial.metalness);
+        myMaterial.albedo = getPBR("_BaseColor.png");
+        myMaterial.normal = getPBR("_normal.png");
+        myMaterial.metallic = getPBR("_Metallic.png");
+        myMaterial.roughness = getPBR("_Roughness.png");
+        myMaterial.ao = getPBR("_ao.png");
 
         outModel->AddMaterial(myMaterial);
     }

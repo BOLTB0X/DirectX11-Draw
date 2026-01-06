@@ -1,4 +1,4 @@
-// Graphics/Resource/Model/Mesh.h
+// Graphics/Model/Mesh.h
 #pragma once
 
 #include <memory>

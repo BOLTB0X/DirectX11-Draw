@@ -8,6 +8,12 @@
 #include "Graphics/Renderer/Renderer.h"
 #include "Graphics/Gui/Gui.h"
 
+#include "ShaderManager/ShaderManager.h"
+#include "ModelManager/ModelManager.h"
+#include "TexturesManager/TexturesManager.h"
+
+#include "World/World.h"
+
 class Application
 {
 public:
@@ -31,7 +37,11 @@ private:
     Fps* m_Fps;
 
 private:
-	Renderer* m_Renderer;
-	Gui* m_Gui;
+    std::unique_ptr<Renderer> m_Renderer;
+    std::unique_ptr<ShaderManager> m_ShaderManager;
+    std::unique_ptr<ModelManager> m_ModelManager;
+    std::unique_ptr<TexturesManager> m_TextureManager;
 
+    std::unique_ptr<World> m_World;
+	Gui* m_Gui;
 }; // Application
