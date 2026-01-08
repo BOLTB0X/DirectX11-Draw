@@ -29,8 +29,40 @@ DriectX 11 개발 연습 및 학습물들 정리
 
     Direct3D 11부터 멀티 스레딩을 통한 렌더링 파이프라인 효율 증대
 
+---
+
+<br/>
 
 </details>
+
+
+<details>
+<summary> DirectX 11 기본 구성 </summary>
+
+<br/>
+
+### DirectX 11 기본 구성
+
+#### 1. **Device** / **Device Context**
+
+| 구성요소                  | 역할            |
+| --------------------- | ------------- |
+| `ID3D11Device`        | GPU 리소스 생성 담당 |
+| `ID3D11DeviceContext` | 렌더링 명령 실행 담당  | 생성(`Device`)과 실행(`Context`)을 분리
+---
+
+#### 2. Input Layout / Vertex Buffer / Index Buffer
+
+#### 3. Vertex / Pixel Shader
+
+[OpenGL 기본구성 중 셰이더](https://github.com/BOLTB0X/OpenGL-Study?tab=readme-ov-file#intro) 내용과 동일
+
+---
+
+<br/>
+
+</details>
+
 
 ## 참고
 
