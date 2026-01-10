@@ -1,59 +1,79 @@
 // Framework/ActorObject.cpp
 #include "ActorObject.h"
-#include "Common/EngineHelper.h"
+#include "Position.h"
+#include "Model/MeshModel.h"
+#include "Shader/Shader.h"
+#include "EngineHelper.h"
 
 /* default */
 /////////////////////////////////////////////////////////////////
 
 ActorObject::ActorObject()
-	:m_name(""),
-	m_model(nullptr),
-	m_transform(std::make_unique<Position>())
+    :actor_name(""),
+    actor_Model(nullptr)
 {
+    actor_Position = std::make_unique<Position>();
 } // ActorObject
+
 
 ActorObject::~ActorObject() {}
 
 
-bool ActorObject::Init(Model* model, const std::string& name)
+bool ActorObject::Init(MeshModel* model, const std::string& name)
 {
     if (model == nullptr) return false;
 
-    m_model = model;
-    m_name = name;
+    actor_Model = model;
+    actor_name = name;
 
-	m_transform->SetPosition(0.0f, 0.0f, 0.0f);
-	m_transform->SetRotation(0.0f, 0.0f, 0.0f);
-    m_transform->SetScale(1.0f);
+	actor_Position->SetPosition(0.0f, 0.0f, 0.0f);
+	actor_Position->SetRotation(0.0f, 0.0f, 0.0f);
+    actor_Position->SetScale(1.0f);
 
     return true;
 } // Init
 
+void ActorObject::Shutdown()
+{
+    if (actor_Model)
+    {
+        actor_Model = nullptr;
+	}
+
+    actor_Position.reset();
+    return;
+} // Shutdown
+
 
 void ActorObject::Frame(float frameTime)
 {
-    if (m_transform)
+    if (actor_Position)
     {
-        m_transform->SetFrameTime(frameTime);
+        actor_Position->SetFrameTime(frameTime);
     }
 
     return;
 } // Frame
 
 
-void ActorObject::Render(
-    ID3D11DeviceContext* context, Shader* shader,
-    const XMMATRIX& view, const XMMATRIX& projection)
+void ActorObject::Render(const ActorRenderParams& params)
 {
-    if (EngineHelper::SuccessCheck(
-        m_model, "ActorObject::Render -> m_Model이 nullptr") == false) return;
-    if (EngineHelper::SuccessCheck(
-        context, "ActorObject::Render -> context가 nullptr") == false) return;
-    if (EngineHelper::SuccessCheck(
-        shader, "ActorObject::Render -> shader가 nullptr") == false) return;
+    if (EngineHelper::SuccessCheck(actor_Model, "ActorObject::Render -> actor_Model nullptr")
+        == false) return;
+    if (EngineHelper::SuccessCheck(params.context, "ActorObject::Render -> context nullptr")
+        == false) return;
 
-    shader->UpdateMatrixBuffer(context, m_transform->GetWorldMatrix(), view, projection);
+    Shader* targetShader = params.shader;
+    if (EngineHelper::SuccessCheck(targetShader, "ActorObject::Render -> targetShader nullptr")
+        == false) return;
 
-    shader->Bind(context);
-    m_model->Render(context);
+    targetShader->UpdateMatrixBuffer(
+        params.context,
+        actor_Position->GetWorldMatrix(),
+        params.view,
+        params.projection
+    );
+
+    targetShader->Bind(params.context);
+    actor_Model->Render(params.context);
 } // Render

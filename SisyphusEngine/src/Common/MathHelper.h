@@ -25,4 +25,19 @@ namespace MathHelper {
     // 변환 함수
     inline float ToRadians(float degrees) { return degrees * DEG_TO_RAD; }
     inline float ToDegrees(float radians) { return radians * RAD_TO_DEG; }
+
+
+    template <typename T>
+    T clamp(T value, T min_val, T max_val)
+    {
+        if (value < min_val)
+            return min_val;
+       
+        else if (value > max_val)
+            return max_val;
+        
+        else 
+            return value;
+    } // clamp
+
 } // MathHelper

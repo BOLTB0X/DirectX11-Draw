@@ -15,7 +15,7 @@ StatsWidget::StatsWidget(Fps* fps, Timer* timer)
 
 void StatsWidget::Frame()
 {
-	if (m_isVisible == false) return;
+	if (i_isVisible == false) return;
 
     if (ImGui::BeginChild("StatsChild", ImVec2(0, 80), true))
     {

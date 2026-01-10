@@ -2,7 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "TextureLoader.h"
-#include "Common/EngineHelper.h"
+#include "EngineHelper.h"
 
 bool TextureLoader::CreateTextureFromFile(
     ID3D11Device* device,

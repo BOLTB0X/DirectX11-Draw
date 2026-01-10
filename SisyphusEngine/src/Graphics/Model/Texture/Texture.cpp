@@ -1,7 +1,7 @@
 // Graphics/Model/Texture.cpp
 #include "Texture.h"
 #include "TextureLoader.h"
-#include "Common/EngineHelper.h"
+#include "EngineHelper.h"
 
 /* defualt */
 ///////////////////////////////////////////////////////////////////

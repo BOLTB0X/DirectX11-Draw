@@ -1,8 +1,10 @@
 // Framework/Widget/InspectorWidget.h
 #pragma once
 #include <vector>
+#include <memory>
 #include "IWidget.h"
-#include "Framework/Actor/ActorObject.h"
+
+class ActorObject;
 
 class InspectorWidget : public IWidget {
 public:
@@ -11,7 +13,6 @@ public:
     virtual ~InspectorWidget() = default;
 
     virtual void Frame() override;
-
 public:
     void SetTarget(ActorObject*);
     void SetActorList(const std::vector<std::unique_ptr<ActorObject>>& actors);

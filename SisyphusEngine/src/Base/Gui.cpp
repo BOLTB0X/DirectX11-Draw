@@ -74,10 +74,10 @@ void Gui::AddWidget(std::unique_ptr<IWidget> widget)
 } // AddWidget
 
 
-void Gui::FrameWidgets()
+void Gui::RenderWidgets()
 {
     for (auto& widget : m_widgets)
     {
         widget->Frame();
     }
-} // FrameWidgets
+} // RenderWidgets

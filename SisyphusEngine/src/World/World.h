@@ -1,11 +1,16 @@
 // World/World.h
 #pragma once
+#include <d3d11.h>
 #include <vector>
 #include <memory>
-#include "Stone/Stone.h"
+#include "Actor/ActorRenderParams.h"
 
-#include "Application/ModelManager/ModelManager.h"
-#include "Graphics/Camera/Camera.h"
+class ModelManager;
+class TexturesManager;
+class ActorObject;
+class Mountain;
+class Camera;
+
 
 class World {
 public:
@@ -13,17 +18,17 @@ public:
 	World(const World&) = delete;
     ~World();
 
-    bool Init(ID3D11Device* device, ID3D11DeviceContext* context,
-        ModelManager* modelManager, TexturesManager* texManager, int screenWidth, int screenHeight);
-
+    bool Init(ID3D11Device*, ID3D11DeviceContext*, ModelManager*, TexturesManager*, Camera*);
+    void Shutdown();
     void Frame(float frameTime, bool);
-    void Render(ID3D11DeviceContext* context, Shader* shader);
+    void Render(const ActorRenderParams& params);
 
 public:
     ActorObject* GetActor(size_t index) const;
     const std::vector<std::unique_ptr<ActorObject>>& GetActors() const;
 
 private:
-    std::vector<std::unique_ptr<ActorObject>> m_actors;
-    std::unique_ptr<Camera> m_mainCamera;
+    std::vector<std::unique_ptr<ActorObject>> m_Actors;
+    std::unique_ptr<Mountain> m_Mountain;
+    Camera* m_Camera;
 }; // World

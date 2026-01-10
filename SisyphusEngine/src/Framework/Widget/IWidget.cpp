@@ -5,7 +5,12 @@
 ////////////////////////////////////
 
 IWidget::IWidget()
-	: m_name("?"),
-	m_isVisible(true) 
+	: i_name("?"),
+	i_isVisible(true) 
 {
 }
+
+
+IWidget::IWidget(const std::string& name)
+	: i_name(name), i_isVisible(true)
+{}

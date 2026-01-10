@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-#include "Graphics/Shader/Shader.h"
+class Shader;
 
 class ShaderManager
 {

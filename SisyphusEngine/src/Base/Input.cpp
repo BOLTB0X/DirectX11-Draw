@@ -1,5 +1,6 @@
 // System/Input.cpp
 #include "Input.h"
+#include "Common/EngineHelper.h"
 
 /* default */
 /////////////////////////////////////////////////////////////////////

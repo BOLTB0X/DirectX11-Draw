@@ -27,7 +27,7 @@ public:
 	Shader(const Shader&) = delete;
     virtual ~Shader() = default;
 
-    virtual bool Init(ID3D11Device* device, HWND hwnd, const std::wstring& vsPath, const std::wstring& psPath) = 0;
+    virtual bool Init(ID3D11Device*, HWND, const std::wstring&, const std::wstring&) = 0;
     virtual void Bind(ID3D11DeviceContext* context = 0);
 
 public:

@@ -1,9 +1,17 @@
-// Graphics/Model/Texture/Material.h
+// Graphics/MeshModel/Texture/Material.h
 #pragma once
 #include "Texture.h"
 
 #include <string>
 #include <memory>
+
+enum class MaterialType : int
+{
+    BASE = 0,
+    CLIFF = 1,
+    CLOUD = 2,
+    STONE = 3
+};
 
 
 struct Material {

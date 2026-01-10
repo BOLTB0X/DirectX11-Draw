@@ -1,8 +1,9 @@
-// Graphics/Model/VertexBuffer.h
+// Graphics/MeshModel/VertexBuffer.h
 #pragma once
 #include <d3d11.h>
 #include <wrl/client.h>
-#include "VertexTypes.h"
+#include <vector>
+#include "Model/Mesh/VertexTypes.h"
 
 class VertexBuffer {
 public:

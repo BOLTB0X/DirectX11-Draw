@@ -16,3 +16,9 @@ struct MeshData {
     std::vector<ModelVertex> vertices;
     std::vector<unsigned int> indices;
 }; // MeshData
+
+
+namespace CellConfig {
+    const int CELLS_PER_ROW = 4;
+    const int VERTICES_PER_CELL = 0;
+} // CellConfig

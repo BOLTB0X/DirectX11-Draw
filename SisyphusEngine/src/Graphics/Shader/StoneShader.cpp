@@ -1,6 +1,6 @@
 // Graphics/Shader/StoneShader.cpp
 #include "StoneShader.h"
-#include "Common/EngineHelper.h"
+#include "EngineHelper.h"
 
 using namespace EngineHelper;
 

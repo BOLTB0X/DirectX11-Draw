@@ -1,14 +1,18 @@
 // Graphics/Model/Mesh.cpp
 #include "Mesh.h"
 #include "Common/EngineHelper.h"
+#include "Model/Texture/Material.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 /* defulat */
 ///////////////////////////////////////////////////////////////////
 
 Mesh::Mesh()
-    : m_materialIndex(0),
-    m_meshData({{}, {}})
-{}
+    : m_materialIndex(0)
+{
+    m_meshData = { {}, {} };
+}
 
 Mesh::~Mesh() {}
 
@@ -38,3 +42,26 @@ void Mesh::Bind(ID3D11DeviceContext* context)
     vertexBuffer->Bind(context);
     indexBuffer->Bind(context);
 } // Render
+
+///////////////////////////////////////////////////////////////////
+
+/* public */
+///////////////////////////////////////////////////////////////////
+
+
+unsigned int Mesh::GetMaterialIndex() const
+{
+    return m_materialIndex;
+} // GetMaterialIndex
+
+
+unsigned int Mesh::GetIndexCount() const
+{
+    return indexBuffer->GetIndexCount();
+} // GetIndexCount
+
+
+const MeshData& Mesh::GetMeshData() const
+{
+    return m_meshData;
+} // GetMeshData

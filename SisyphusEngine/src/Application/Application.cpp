@@ -1,14 +1,29 @@
 // Application/Application.h
 #include "Application.h"
-
-#include "Common/EngineHelper.h"
-#include "Common/EngineSettings.h"
-#include "Graphics/Shader/StoneShader.h"
-
-#include "Framework/Widget/StatsWidget.h"
-#include "Framework/Widget/InspectorWidget.h"
-#include "Framework/Widget/MainSideBarWidget.h"
-#include "Framework/Widget/ControlWidget.h"
+#include "ShaderManager/ShaderManager.h"
+#include "ModelManager/ModelManager.h"
+#include "TexturesManager/TexturesManager.h"
+// Base
+#include "Input.h"
+#include "Timer.h"
+#include "Fps.h"
+#include "Gui.h"
+// World
+#include "World.h"
+// Common
+#include "EngineHelper.h"
+#include "EngineSettings.h"
+// Graphics
+#include "Renderer/Renderer.h"
+#include "Shader/StoneShader.h"
+#include "Shader/ColorShader.h"
+#include "Camera/Camera.h"
+// Framework
+#include "Actor/ActorRenderParams.h"
+#include "Widget/MainSideBarWidget.h"
+#include "Widget/StatsWidget.h"
+#include "Widget/InspectorWidget.h"
+#include "Widget/ControlWidget.h"
 
 #include "imgui.h"
 #include "imgui_impl_win32.h"
@@ -21,9 +36,8 @@ Application::Application()
 	: m_Input(nullptr),
 	m_Timer(nullptr),
 	m_Fps(nullptr),
-	m_Renderer(nullptr),
-	m_Gui(nullptr),
-	m_mainSideBarWidget(nullptr)
+	m_SideBarWidget(nullptr),
+	m_Gui(nullptr)
 {
 } // Application
 
@@ -69,6 +83,10 @@ bool Application::Init(HWND hwnd, int screenWidth, int screenHeight)
 	}
 
 	m_ModelManager = std::make_unique<ModelManager>();
+	
+	m_Camera = std::make_unique<Camera>();
+	m_Camera->InitProjection(screenWidth, screenHeight,
+		EngineSettings::SCREEN_NEAR, EngineSettings::SCREEN_DEPTH);
 
 	m_World = std::make_unique<World>();
 	if (m_World->Init(
@@ -76,7 +94,7 @@ bool Application::Init(HWND hwnd, int screenWidth, int screenHeight)
 		m_Renderer->GetDeviceContext(),
 		m_ModelManager.get(),
 		m_TextureManager.get(),
-		screenWidth, screenHeight) == false)
+		m_Camera.get()) == false)
 	{
 		EngineHelper::ErrorBox(hwnd, L"World 초기화 실패");
 		return false;
@@ -106,6 +124,9 @@ void Application::Shutdown()
 		m_Gui = 0;
 	}
 
+	if (m_World)
+		m_World->Shutdown();
+	
 	if (m_ModelManager)
 		m_ModelManager->Shutdown();
 
@@ -156,11 +177,9 @@ bool Application::Frame()
 	m_Timer->Frame();
 	m_Fps->Frame();
 
-	HandleEditorMode();
+	HandleSideBar();
 	ImGuiIO& io = ImGui::GetIO();
-	bool canControlWorld = !io.WantCaptureMouse;
-
-	m_World->Frame(m_Timer->GetTime(), canControlWorld);
+	m_World->Frame(m_Timer->GetTime(), !io.WantCaptureMouse);
 
 	result = Render();
 	if (result == false) return false;
@@ -178,16 +197,22 @@ bool Application::Render()
 	m_Renderer->BeginScene(0.5f, 0.0f, 0.0f, 1.0f);
 	m_Gui->Begin();
 
-	RenderGui();
+	ApplySideBarRenderStates();
 
-	auto stoneShader = m_ShaderManager->GetShader<StoneShader>("Stone");
-	if (stoneShader)
-	{
-		m_World->Render(m_Renderer->GetDeviceContext(), stoneShader);
-	}
+	ActorRenderParams params = {
+		m_Renderer->GetDeviceContext(),
+		//m_ShaderManager->GetShader<ColorShader>("Color"),
+		m_ShaderManager->GetShader<StoneShader>("Stone"),
+		m_Camera->GetFrustum(),
+		m_Camera->GetViewMatrix(),
+		m_Camera->GetProjectionMatrix()
+	};
 
-	m_Gui->FrameWidgets();
+	m_World->Render(params);
+
+	m_Gui->RenderWidgets();
 	m_Gui->End();
+
 	m_Renderer->EndScene();
 
 	return true;
@@ -197,7 +222,7 @@ bool Application::Render()
 void Application::InitGui()
 {
 	auto sideBar = std::make_unique<MainSideBarWidget>("F1:Sisyphus Editor");
-	m_mainSideBarWidget = sideBar.get();
+	m_SideBarWidget = sideBar.get();
 
 	sideBar->AddComponent(std::make_unique<StatsWidget>(m_Fps, m_Timer));
 	sideBar->AddComponent(std::make_unique<ControlWidget>(m_Renderer.get()));
@@ -214,11 +239,11 @@ void Application::InitGui()
 } // InitGui
 
 
-void Application::RenderGui()
+void Application::ApplySideBarRenderStates()
 {
-	if (m_mainSideBarWidget && m_mainSideBarWidget->IsVisible())
+	if (m_SideBarWidget && m_SideBarWidget->IsVisible())
 	{
-		auto control = m_mainSideBarWidget->GetComponent<ControlWidget>();
+		auto control = m_SideBarWidget->GetComponent<ControlWidget>();
 		if (control)
 		{
 			m_Renderer->GetRasterizer()->Bind(
@@ -230,17 +255,17 @@ void Application::RenderGui()
 	}
 
 	return;
-} // RenderGui
+} // ApplySideBarRenderStates
 
 
-void Application::HandleEditorMode()
+void Application::HandleSideBar()
 {
-	if (m_Input == nullptr || m_mainSideBarWidget == nullptr)
+	if (m_Input == nullptr || m_SideBarWidget == nullptr)
 		return;
 
 	if (m_Input->IsF1Toggled())
 	{
-		m_mainSideBarWidget->SetVisible(m_mainSideBarWidget->IsVisible() == false);
+		m_SideBarWidget->SetVisible(m_SideBarWidget->IsVisible() == false);
 	}
 	return;
-} // HandleEditorMode
+} // HandleSideBar

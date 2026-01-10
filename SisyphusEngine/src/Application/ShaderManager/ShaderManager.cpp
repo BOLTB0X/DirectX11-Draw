@@ -1,7 +1,11 @@
 // Application/ShaderManager/ShaderManager.cpp
 #include "ShaderManager.h"
-#include "Graphics/Shader/StoneShader.h"
-#include "Common/EngineSettings.h"
+// Graphics
+#include "Shader/Shader.h"
+#include "Shader/StoneShader.h"
+#include "Shader/ColorShader.h"
+// Common
+#include "EngineSettings.h"
 
 /* default */
 ///////////////////////////////////////////////////
@@ -17,19 +21,23 @@ ShaderManager::~ShaderManager()
 
 bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
 {
-    // 1. StoneShader 등록
     auto stoneShader = std::make_unique<StoneShader>();
-
-    std::wstring vsPath = EngineSettings::SHADER_PATH + EngineSettings::STONE_VS;
-    std::wstring psPath = EngineSettings::SHADER_PATH + EngineSettings::STONE_PS;
     if (stoneShader->Init(device,
         hwnd,
-        vsPath,
-        psPath)
-        == false) {
-        return false;
-    }
+        EngineSettings::SHADER_PATH + EngineSettings::STONE_VS,
+        EngineSettings::SHADER_PATH + EngineSettings::STONE_PS)
+        == false) return false;
+    
     m_shaders["Stone"] = std::move(stoneShader);
+
+    auto colorShader = std::make_unique<ColorShader>();
+    if (colorShader->Init(device,
+        hwnd,
+        EngineSettings::SHADER_PATH + EngineSettings::COLOR_VS,
+        EngineSettings::SHADER_PATH + EngineSettings::COLOR_PS)
+        == false) return false;
+
+    m_shaders["Color"] = std::move(colorShader);
 
     return true;
 } // Init

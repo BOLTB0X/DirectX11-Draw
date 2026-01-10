@@ -1,5 +1,9 @@
 // World/Stone/Stone.cpp
 #include "Stone.h"
+#include "Position.h"
+#include "Model/MeshModel.h"
+#include "Shader/Shader.h"
+#include "EngineHelper.h" 
 
 /* default */
 /////////////////////////////////////////////////////////////////////
@@ -9,18 +13,27 @@ Stone::Stone()
 {
 } // Stone
 
-Stone::~Stone() {} // ~Stone
+Stone::~Stone()
+{
+    Shutdown();
+} // ~Stone
 
-bool Stone::Init(Model* model, const std::string& name)
+bool Stone::Init(MeshModel* model, const std::string& name)
 {
     if (ActorObject::Init(model, name) == false)
         return false;
     
 
-    m_transform->SetRotation(0.0f, 0.0f, 0.0f);
+    actor_Position->SetPosition(0.0f, 0.0f, 0.0f);
 
     return true;
 } // Init
+
+
+void Stone::Shutdown()
+{
+    ActorObject::Shutdown();
+} // Shutdown
 
 
 void Stone::Frame(float frameTime)
@@ -29,8 +42,8 @@ void Stone::Frame(float frameTime)
 } // Frame
 
 
-void Stone::Render(ID3D11DeviceContext* context, Shader* shader,
-    const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection)
+void Stone::Render(const ActorRenderParams& params)
 {
-    ActorObject::Render(context, shader, view, projection);
+    ActorObject::Render(params);
+    return;
 } // Render

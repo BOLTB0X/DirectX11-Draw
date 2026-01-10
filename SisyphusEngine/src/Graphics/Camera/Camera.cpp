@@ -1,16 +1,20 @@
 // Graphics/Camera/Camera.cpp
 #include "Camera.h"
+#include "Frustum.h"
+#include "Position.h"
 
 /* default */
 ////////////////////////////////////////////////////
 
-Camera::Camera(): Position(),
-    m_viewMatrix(DirectX::XMMatrixIdentity()),
+Camera::Camera()
+    : m_viewMatrix(DirectX::XMMatrixIdentity()),
     m_projectionMatrix(DirectX::XMMatrixIdentity()),
 	m_fieldOfView(DirectX::XM_PIDIV4),
 	m_screenNear(0.1f),
 	m_screenDepth(1000.0f)
 {
+    m_Position = std::make_unique<Position>();
+    m_Frustum = std::make_unique<Frustum>();
 } // Camera
 
 
@@ -26,13 +30,14 @@ void Camera::InitProjection(
     float aspectRatio = (float)width / (float)height;
 
     m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(m_fieldOfView, aspectRatio, screenNear, screenDepth);
+    m_Frustum->Init(screenDepth);
 } // InitProjection
 
 
 void Camera::Render()
 {
-    DirectX::XMFLOAT3 pos = Position::GetPosition();
-    DirectX::XMFLOAT3 rot = Position::GetRotation();
+    DirectX::XMFLOAT3 pos = m_Position->GetPosition();
+    DirectX::XMFLOAT3 rot = m_Position->GetRotation();
 
     DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     DirectX::XMVECTOR position = DirectX::XMVectorSet(pos.x, pos.y, pos.z, 0.0f);
@@ -50,5 +55,6 @@ void Camera::Render()
     lookAt = DirectX::XMVectorAdd(position, lookAt);
 
     m_viewMatrix = DirectX::XMMatrixLookAtLH(position, lookAt, up);
+    m_Frustum->ConstructFrustum(m_viewMatrix, m_projectionMatrix);
     return;
 } // Render

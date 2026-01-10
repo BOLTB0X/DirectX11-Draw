@@ -24,12 +24,12 @@ MainSideBarWidget::~MainSideBarWidget()
 
 void MainSideBarWidget::Frame()
 {
-    if (m_isVisible == false) return;
+    if (i_isVisible == false) return;
 
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(350, 800), ImGuiCond_FirstUseEver);
 
-    if (ImGui::Begin(m_name.c_str(), &m_isVisible))
+    if (ImGui::Begin(i_name.c_str(), &i_isVisible))
     {
         for (auto& comp : m_components)
         {

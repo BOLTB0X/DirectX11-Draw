@@ -1,6 +1,6 @@
 // Graphics/Shader/Shader.cpp
 #include "Shader.h"
-#include "Common/EngineHelper.h"
+#include "EngineHelper.h"
 
 #include <d3dcompiler.h>
 #include <fstream>

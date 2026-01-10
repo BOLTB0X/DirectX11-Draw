@@ -1,5 +1,7 @@
 // Common/EngineSeetings.h
 #pragma once
+#include <iostream>
+#include <string>
 
 namespace EngineSettings {
     // 화면 설정
@@ -19,6 +21,11 @@ namespace EngineSettings {
 
     const std::string STONE_PATH = ASSET_PATH + "Stone/source/Stone.fbx";
     const std::string TERRAIN_PATH = ASSET_PATH + "Terrain/source/Terrain.fbx";
+    const std::string MOUNTAIN_PATH = ASSET_PATH + "Mountain/source/Mountain.fbx";
+
+    const std::wstring COLOR_VS = L"ColorVS.hlsl";
+    const std::wstring COLOR_PS = L"ColorPS.hlsl";
+
     const std::wstring STONE_VS = L"Stone/StoneVS.hlsl";
     const std::wstring STONE_PS = L"Stone/StonePS.hlsl";
 

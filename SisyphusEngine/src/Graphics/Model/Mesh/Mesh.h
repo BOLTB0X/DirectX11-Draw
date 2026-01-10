@@ -2,8 +2,11 @@
 #pragma once
 
 #include <memory>
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include <d3d11.h>
+#include "VertexTypes.h"
+
+class VertexBuffer;
+class IndexBuffer;
 
 class Mesh {
 public:
@@ -16,9 +19,9 @@ public:
     void Bind(ID3D11DeviceContext* context);
 
 public:
-    unsigned int GetMaterialIndex() const { return m_materialIndex; }
-    unsigned int GetIndexCount() const { return indexBuffer->GetIndexCount(); }
-    const MeshData& GetMeshData() const { return m_meshData; }
+    unsigned int GetMaterialIndex() const;
+    unsigned int GetIndexCount() const;
+    const MeshData& GetMeshData() const;
 
 private:
     std::unique_ptr<VertexBuffer> vertexBuffer;

@@ -1,8 +1,12 @@
 // Graphics/Camera/Camera.h
 #pragma once
-#include "Base/Position.h"
+#include <memory>
+#include <directxmath.h>
 
-class Camera : public Position {
+class Position;
+class Frustum;
+
+class Camera {
 public:
     Camera();
 	Camera(const Camera&) = delete;
@@ -12,11 +16,15 @@ public:
     void Render();
 
 public:
+    Position* GetPosition() const { return m_Position.get(); }
+    Frustum* GetFrustum() const { return m_Frustum.get(); }
+
     DirectX::XMMATRIX GetViewMatrix() const { return m_viewMatrix; }
     DirectX::XMMATRIX GetProjectionMatrix() const { return m_projectionMatrix; }
-    DirectX::XMFLOAT3 GetPosition() const { return Position::GetPosition(); }
 
 private:
+    std::unique_ptr<Position> m_Position;
+    std::unique_ptr<Frustum> m_Frustum;
     DirectX::XMMATRIX m_viewMatrix;
     DirectX::XMMATRIX m_projectionMatrix;
 

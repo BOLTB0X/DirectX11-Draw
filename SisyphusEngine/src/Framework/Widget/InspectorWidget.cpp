@@ -1,6 +1,8 @@
 // Framework/Widget/InspectorWidget.cpp
 #include "InspectorWidget.h"
 #include "imgui.h"
+#include "Framework/Actor/ActorObject.h"
+#include "Base/Position.h"
 
 /* default */
 /////////////////////////////////////////////////////////////////////
@@ -48,14 +50,14 @@ void InspectorWidget::Frame()
         ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed, 80.0f);
         ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
 
-        auto transform = m_selectedActor->GetTransform();
+        auto transform = m_selectedActor->GetPosition();
 
         // Position Row
         ImGui::TableNextRow();
         ImGui::TableNextColumn(); ImGui::Text("Position");
         ImGui::TableNextColumn();
         ImGui::PushItemWidth(-1);
-        float pos[3] = { transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z };
+        float pos[3] = { transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z};
         if (ImGui::DragFloat3("##P", pos, 0.1f)) transform->SetPosition(pos[0], pos[1], pos[2]);
         ImGui::PopItemWidth();
 

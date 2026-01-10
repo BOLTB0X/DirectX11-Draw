@@ -21,7 +21,7 @@ public:
 
 public:
     void AddWidget(std::unique_ptr<IWidget>);
-    void FrameWidgets();
+    void RenderWidgets();
 
     template<typename T>
     T* GetWidget(const std::string& name)

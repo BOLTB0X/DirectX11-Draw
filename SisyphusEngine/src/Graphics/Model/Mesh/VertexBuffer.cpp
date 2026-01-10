@@ -1,4 +1,4 @@
-// Graphics/Model/VertexBuffer.cpp
+// Graphics/MeshModel/VertexBuffer.cpp
 #include "VertexBuffer.h"
 
 /* defualt */
@@ -13,9 +13,9 @@ bool VertexBuffer::Init(ID3D11Device* device, const std::vector<ModelVertex>& ve
 {
 	if (vertices.empty()) return false;
 
-	m_stride = sizeof(ModelVertex);
 	D3D11_BUFFER_DESC bufDes = {};
 
+	m_stride = sizeof(ModelVertex);
 	bufDes.Usage = D3D11_USAGE_DEFAULT;
 	bufDes.ByteWidth = m_stride * (UINT)vertices.size();
 	bufDes.BindFlags = D3D11_BIND_VERTEX_BUFFER;
