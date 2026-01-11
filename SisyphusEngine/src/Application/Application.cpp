@@ -17,6 +17,7 @@
 #include "Renderer/Renderer.h"
 #include "Shader/StoneShader.h"
 #include "Shader/ColorShader.h"
+#include "Shader/ActorsShader.h"
 #include "Camera/Camera.h"
 // Framework
 #include "Actor/ActorRenderParams.h"
@@ -201,8 +202,8 @@ bool Application::Render()
 
 	ActorRenderParams params = {
 		m_Renderer->GetDeviceContext(),
-		//m_ShaderManager->GetShader<ColorShader>("Color"),
-		m_ShaderManager->GetShader<StoneShader>("Stone"),
+		m_ShaderManager->GetShader<ActorsShader>("Actors"),
+		//m_ShaderManager->GetShader<StoneShader>("Stone"),
 		m_Camera->GetFrustum(),
 		m_Camera->GetViewMatrix(),
 		m_Camera->GetProjectionMatrix()

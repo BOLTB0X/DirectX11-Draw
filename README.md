@@ -94,3 +94,9 @@ src/
 - [벨로그 참고 - Imgui 사용법(charlese_note)](https://velog.io/@charlese_note/ImGUI)
 
 - [네이버 블로그 참고 - Dear ImGui를 공부해보자! 시작단계(AROMA)](https://m.blog.naver.com/sweetsmell9/221618574623)
+
+- [티스토리 참고 - Blender AO map Node | 엠비언트 맵 연결하기(lioicreim)](https://lioicreim.tistory.com/615)
+
+- [네이버 블로그 참고 - DirectX 트리 ( 쿼드트리, 옥트리 ) 기본 설명(로기)](https://m.blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=jsjhahi&logNo=201309282)
+
+- [티스토리 - 쿼드트리(copynull)](https://copynull.tistory.com/308)

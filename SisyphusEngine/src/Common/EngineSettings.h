@@ -29,6 +29,9 @@ namespace EngineSettings {
     const std::wstring STONE_VS = L"Stone/StoneVS.hlsl";
     const std::wstring STONE_PS = L"Stone/StonePS.hlsl";
 
+    const std::wstring ACTORS_VS = L"Actors/ActorsVS.hlsl";
+    const std::wstring ACTORS_PS = L"Actors/ActorsPS.hlsl";
+
     const std::wstring TERRAIN_VS = L"Terrain/TerrainVS.hlsl";
     const std::wstring TERRAIN_PS = L"Terrain/TerrainPS.hlsl";
 }

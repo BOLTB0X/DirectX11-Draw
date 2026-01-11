@@ -4,6 +4,7 @@
 
 #include <string>
 #include <memory>
+#include <DirectXMath.h>
 
 enum class MaterialType : int
 {
@@ -11,11 +12,13 @@ enum class MaterialType : int
     CLIFF = 1,
     CLOUD = 2,
     STONE = 3
-};
+}; // MaterialType
 
 
 struct Material {
     std::string name;
+    MaterialType type = MaterialType::BASE;
+
     std::shared_ptr<Texture> diffuse; // 확산
     std::shared_ptr<Texture> ambient; // 주변광 (그늘/환경)
     std::shared_ptr<Texture> specular; // 반사/투사 (반짝임)
@@ -24,4 +27,11 @@ struct Material {
     std::shared_ptr<Texture> metallic;
     std::shared_ptr<Texture> roughness;
     std::shared_ptr<Texture> ao;
-};
+}; // Material
+
+
+struct MaterialBuffer
+{
+    int type;
+    DirectX::XMFLOAT3 padding;
+}; // MaterialBuffer

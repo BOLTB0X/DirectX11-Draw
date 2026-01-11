@@ -41,7 +41,7 @@ bool World::Init(ID3D11Device* device, ID3D11DeviceContext* context,
 
     if (m_Camera)
     {
-        m_Camera->GetPosition()->SetPosition(0.0f, 150.0f, -300.0f);
+        m_Camera->GetPosition()->SetPosition(0.0f, 50.0f, -100.0f);
         m_Camera->GetPosition()->SetRotation(25.0f, 0.0f, 0.0f);
         m_Camera->Render();
     }
@@ -117,17 +117,17 @@ void World::Render(const ActorRenderParams& params)
 {
     m_Camera->Render();
 
-    if (m_Mountain)
-    {
-        // Mountain의 Render 인자에 맞게 전달 (frustum 포함)
-        m_Mountain->Render(
-            params.context,
-            params.shader,
-            m_Camera->GetFrustum(),
-            m_Camera->GetViewMatrix(),
-            m_Camera->GetProjectionMatrix()
-        );
-    }
+    //if (m_Mountain)
+    //{
+    //    // Mountain의 Render 인자에 맞게 전달 (frustum 포함)
+    //    m_Mountain->Render(
+    //        params.context,
+    //        params.shader,
+    //        m_Camera->GetFrustum(),
+    //        m_Camera->GetViewMatrix(),
+    //        m_Camera->GetProjectionMatrix()
+    //    );
+    //}
 
     for (auto& actor : m_Actors)
     {

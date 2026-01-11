@@ -32,7 +32,6 @@ void TerrainModel::Render(ID3D11DeviceContext* context, Frustum* frustum)
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    //printf("m_cells: %d\n", m_cells.size());
     if (m_cells.empty())
     {
         EngineHelper::DebugPrint("TerrainModel: m_cells 이 비어있음");
@@ -78,17 +77,14 @@ bool TerrainModel::BuildTerrainCells(ID3D11Device* device)
     float cellWidth = (maxX - minX) / cellsPerRow;
     float cellDepth = (maxZ - minZ) / cellsPerRow;
 
-    // 임시 바구니 생성
     std::vector<TempCell> tempCells(cellsPerRow * cellsPerRow);
 
     if (m_fullIndices.empty()) return false;
 
-    // 2. 삼각형 분할 로직 (3개씩 끊어서 처리)
     for (size_t i = 0; i < m_fullIndices.size(); i += 3)
     {
         ModelVertex v[3] = { m_fullVertices[m_fullIndices[i]], m_fullVertices[m_fullIndices[i + 1]], m_fullVertices[m_fullIndices[i + 2]] };
 
-        // 중심점 기준으로 어느 셀에 들어갈지 결정
         float cx = (v[0].position.x + v[1].position.x + v[2].position.x) / 3.0f;
         float cz = (v[0].position.z + v[1].position.z + v[2].position.z) / 3.0f;
 
@@ -96,7 +92,6 @@ bool TerrainModel::BuildTerrainCells(ID3D11Device* device)
         int iz = MathHelper::clamp(static_cast<int>((cz - minZ) / cellDepth), 0, cellsPerRow - 1);
         int cellIdx = (iz * cellsPerRow) + ix;
 
-        // 해당 셀에 정점과 인덱스 추가
         unsigned int base = (unsigned int)tempCells[cellIdx].v.size();
         for (int k = 0; k < 3; ++k)
             tempCells[cellIdx].v.push_back(v[k]);

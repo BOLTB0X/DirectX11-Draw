@@ -1,7 +1,8 @@
 // Graphics/Model/MeshModel.cpp
 #include "MeshModel.h"
 #include "Mesh/Mesh.h"
-
+#include "Texture/Material.h"
+#include "Shader/ActorsShader.h"
 /* default */
 ////////////////////////////////////////////////////////////////////////////
 
@@ -10,7 +11,7 @@ MeshModel::MeshModel() {};
 MeshModel::~MeshModel() {};
 
 
-void MeshModel::Render(ID3D11DeviceContext* context)
+void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader)
 {
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -25,6 +26,15 @@ void MeshModel::Render(ID3D11DeviceContext* context)
             //if (material.diffuse) material.diffuse->Bind(context, 0);
             //if (material.ambient) material.ambient->Bind(context, 1);
             //if (material.specular) material.specular->Bind(context, 2);
+
+            MaterialBuffer data;
+            data.type = (int)material.type;
+            shader->UpdateMaterialTag(context, (int)material.type);
+            if (m_materialBuffer)
+            {
+                m_materialBuffer->Update(context, data);
+                m_materialBuffer->BindPS(context, 2);
+            }
 
             if (material.albedo) material.albedo->Bind(context, 0);
             if (material.normal)    material.normal->Bind(context, 1);
@@ -50,6 +60,13 @@ void MeshModel::AddMaterial(const Material& material)
 {
     m_materials.push_back(material);
 } // AddMaterial
+
+
+bool MeshModel::InitConstantBuffer(ID3D11Device* device)
+{
+    m_materialBuffer = std::make_unique<ConstantBuffer<MaterialBuffer>>();
+    return m_materialBuffer->Init(device);
+} // InitConstantBuffer
 
 
 std::vector<MeshData> MeshModel::GetFullMeshData() const

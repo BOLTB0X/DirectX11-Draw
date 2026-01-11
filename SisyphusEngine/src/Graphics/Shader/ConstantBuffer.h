@@ -45,6 +45,14 @@ public:
 
     void BindPS(ID3D11DeviceContext* context, unsigned int slot)
     {
+
+        if (!context) return;
+
+        if (m_buffer.Get() == nullptr) {
+            OutputDebugStringA("Error: ConstantBuffer m_buffer is null!\n");
+            return;
+        }
+
         context->PSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
     } // BindPS
 

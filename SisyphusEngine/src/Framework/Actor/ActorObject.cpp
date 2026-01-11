@@ -3,6 +3,7 @@
 #include "Position.h"
 #include "Model/MeshModel.h"
 #include "Shader/Shader.h"
+#include "Shader/ActorsShader.h"
 #include "EngineHelper.h"
 
 /* default */
@@ -63,7 +64,7 @@ void ActorObject::Render(const ActorRenderParams& params)
     if (EngineHelper::SuccessCheck(params.context, "ActorObject::Render -> context nullptr")
         == false) return;
 
-    Shader* targetShader = params.shader;
+    ActorsShader* targetShader = params.shader;
     if (EngineHelper::SuccessCheck(targetShader, "ActorObject::Render -> targetShader nullptr")
         == false) return;
 
@@ -75,5 +76,5 @@ void ActorObject::Render(const ActorRenderParams& params)
     );
 
     targetShader->Bind(params.context);
-    actor_Model->Render(params.context);
+    actor_Model->Render(params.context, targetShader);
 } // Render

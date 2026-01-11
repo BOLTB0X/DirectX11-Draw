@@ -91,6 +91,11 @@ MeshModel* ModelManager::GetMeshModel(
     }
 
     auto newModel = std::make_unique<MeshModel>();
+
+    if (EngineHelper::SuccessCheck(newModel->InitConstantBuffer(device), 
+        "ModelManager: MeshModel->InitConstantBuffer 실패")
+        == false) return nullptr;
+
     size_t lastSlash = path.find_last_of("\\/");
     std::string directory = (lastSlash == std::string::npos) ? "." : path.substr(0, lastSlash);
 
@@ -257,6 +262,18 @@ void ModelManager::ProcessMaterials(
         //myMaterial.ambient = loadTex(aiTextureType_AMBIENT);
         //myMaterial.specular = loadTex(aiTextureType_SPECULAR);
         //myMaterial.normal = loadTex(aiTextureType_NORMALS);
+
+        std::string matName = myMaterial.name;
+        std::transform(matName.begin(), matName.end(), matName.begin(), ::tolower); // 소문자 변환
+
+        if (matName.find("cloud") != std::string::npos)
+            myMaterial.type = MaterialType::CLOUD;
+        else if (matName.find("cliff") != std::string::npos || matName.find("ciff") != std::string::npos)
+            myMaterial.type = MaterialType::CLIFF;
+        else if (matName.find("stone") != std::string::npos)
+            myMaterial.type = MaterialType::STONE;
+        else
+            myMaterial.type = MaterialType::BASE;
 
         auto getPBR = [&](const std::string& suffix) -> std::shared_ptr<Texture> {
             std::string fullPath = pbrDir + modelName + suffix;

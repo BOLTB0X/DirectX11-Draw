@@ -4,6 +4,7 @@
 #include "Shader/Shader.h"
 #include "Shader/StoneShader.h"
 #include "Shader/ColorShader.h"
+#include "Shader/ActorsShader.h"
 // Common
 #include "EngineSettings.h"
 
@@ -30,15 +31,23 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
     
     m_shaders["Stone"] = std::move(stoneShader);
 
-    auto colorShader = std::make_unique<ColorShader>();
-    if (colorShader->Init(device,
+    //auto colorShader = std::make_unique<ColorShader>();
+    //if (colorShader->Init(device,
+    //    hwnd,
+    //    EngineSettings::SHADER_PATH + EngineSettings::COLOR_VS,
+    //    EngineSettings::SHADER_PATH + EngineSettings::COLOR_PS)
+    //    == false) return false;
+
+    //m_shaders["Color"] = std::move(colorShader);
+
+    auto actorsShader = std::make_unique<ActorsShader>();
+    if (actorsShader->Init(device,
         hwnd,
-        EngineSettings::SHADER_PATH + EngineSettings::COLOR_VS,
-        EngineSettings::SHADER_PATH + EngineSettings::COLOR_PS)
+        EngineSettings::SHADER_PATH + EngineSettings::ACTORS_VS,
+        EngineSettings::SHADER_PATH + EngineSettings::ACTORS_PS)
         == false) return false;
 
-    m_shaders["Color"] = std::move(colorShader);
-
+    m_shaders["Actors"] = std::move(actorsShader);
     return true;
 } // Init
 

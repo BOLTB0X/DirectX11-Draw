@@ -6,9 +6,10 @@
 #include <vector>
 #include "Model/Mesh/VertexTypes.h"
 #include "Model/Texture/Material.h"
+#include "Shader/ConstantBuffer.h"
 
 class Mesh;
-
+class ActorsShader;
 
 class MeshModel {
 public:
@@ -16,11 +17,13 @@ public:
 	MeshModel(const MeshModel&) = delete;
 	~MeshModel();
 
-    void Render(ID3D11DeviceContext*);
+    void Render(ID3D11DeviceContext*, ActorsShader* shader);
 
 public:
     void AddMesh(std::unique_ptr<Mesh>);
     void AddMaterial(const Material&);
+
+    bool InitConstantBuffer(ID3D11Device*);
 
 public:
     std::vector<MeshData> GetFullMeshData() const;
@@ -28,4 +31,5 @@ public:
 private:
     std::vector<std::unique_ptr<Mesh>> m_meshes;
     std::vector<Material> m_materials;
+    std::unique_ptr<ConstantBuffer<MaterialBuffer>> m_materialBuffer;
 }; // MeshModel

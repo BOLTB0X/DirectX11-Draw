@@ -5,13 +5,13 @@
 
 class Position;
 class MeshModel;
-class Shader;
+class ActorsShader;
 class Frustum;
 
 
 struct ActorRenderParams {
     ID3D11DeviceContext* context;
-    Shader* shader;
+    ActorsShader* shader;
     Frustum* frustum;
 
     const DirectX::XMMATRIX& view;
