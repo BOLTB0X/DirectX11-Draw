@@ -3,6 +3,12 @@
 #include "Mesh/Mesh.h"
 #include "Texture/Material.h"
 #include "Shader/ActorsShader.h"
+#include "Camera/Frustum.h"
+// Common
+#include "EngineHelper.h"
+
+#include <string>
+
 /* default */
 ////////////////////////////////////////////////////////////////////////////
 
@@ -11,12 +17,27 @@ MeshModel::MeshModel() {};
 MeshModel::~MeshModel() {};
 
 
-void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader)
+void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum)
 {
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    int totalSubMeshes = (int)m_meshes.size();
+    int drawnSubMeshes = 0;
+
     for (const auto& mesh : m_meshes)
     {
+        if (frustum)
+        {
+            const auto& min = mesh->GetMin();
+            const auto& max = mesh->GetMax();
+
+            if (frustum->CheckBoundingBoxMinMax(max.x, max.y, max.z, min.x, min.y, min.z)
+                == false)
+            {
+                continue;
+            }
+        }
+
         // 해당 메쉬의 머터리얼 인덱스 확인
         unsigned int matIdx = mesh->GetMaterialIndex();
 
@@ -47,7 +68,9 @@ void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader)
         // 메쉬 그리기
         mesh->Bind(context);
         context->DrawIndexed(mesh->GetIndexCount(), 0, 0);
+        drawnSubMeshes++;
     }
+    EngineHelper::DebugPrint("Drawn: " + std::to_string(drawnSubMeshes) + "/" + std::to_string(totalSubMeshes) + "\n");
 } // Render
 
 void MeshModel::AddMesh(std::unique_ptr<Mesh> mesh)
@@ -67,6 +90,28 @@ bool MeshModel::InitConstantBuffer(ID3D11Device* device)
     m_materialBuffer = std::make_unique<ConstantBuffer<MaterialBuffer>>();
     return m_materialBuffer->Init(device);
 } // InitConstantBuffer
+
+
+void MeshModel::GetPhysicsData(std::vector<ModelVertex>& outVertices, std::vector<unsigned int>& outIndices) const
+{
+    outVertices.clear();
+    outIndices.clear();
+
+    unsigned int vertexOffset = 0;
+    for (const auto& mesh : m_meshes)
+    {
+        const auto& data = mesh->GetMeshData();
+
+        outVertices.insert(outVertices.end(), data.vertices.begin(), data.vertices.end());
+
+        for (auto idx : data.indices)
+        {
+            outIndices.push_back(idx + vertexOffset);
+        }
+
+        vertexOffset += static_cast<unsigned int>(data.vertices.size());
+    }
+} // GetPhysicsData
 
 
 std::vector<MeshData> MeshModel::GetFullMeshData() const

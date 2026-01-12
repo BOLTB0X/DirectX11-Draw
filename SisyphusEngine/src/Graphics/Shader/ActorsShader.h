@@ -1,9 +1,11 @@
 // Graphics/Shader/ActorsShader.h
 #pragma once
-#include "Shader.h"
-#include "ConstantBuffer.h"
-#include "Model/Texture/Material.h"
 #include <memory>
+#include "ConstantBuffer.h"
+// Framework
+#include "Shader/Shader.h"
+// Graphics
+#include "Model/Texture/Material.h"
 
 class ActorsShader : public Shader {
 public:

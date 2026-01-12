@@ -10,6 +10,7 @@
 
 class Mesh;
 class ActorsShader;
+class Frustum;
 
 class MeshModel {
 public:
@@ -17,14 +18,14 @@ public:
 	MeshModel(const MeshModel&) = delete;
 	~MeshModel();
 
-    void Render(ID3D11DeviceContext*, ActorsShader* shader);
+    void Render(ID3D11DeviceContext*, ActorsShader* shader, Frustum* frustum = nullptr);
 
 public:
     void AddMesh(std::unique_ptr<Mesh>);
     void AddMaterial(const Material&);
 
     bool InitConstantBuffer(ID3D11Device*);
-
+    void GetPhysicsData(std::vector<ModelVertex>& outVertices, std::vector<unsigned int>& outIndices) const;
 public:
     std::vector<MeshData> GetFullMeshData() const;
 

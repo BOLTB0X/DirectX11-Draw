@@ -1,28 +1,34 @@
 // World/World.cpp
+#include <string>
+
 #include "World.h"
-#include "Position.h"
-//
+#include "Stone/Stone.h"
+#include "Terrain/Ground.h"
+// Common
 #include "EngineSettings.h"
 #include "EngineHelper.h"
-//
-#include "Stone/Stone.h"
-#include "Terrain/Mountain.h"
 // Application
 #include "ModelManager/ModelManager.h"
+#include "ShaderManager/ShaderManager.h"
+#include "TexturesManager/TexturesManager.h"
 /// Framework
+#include "Position/Position.h"
 #include "Actor/ActorRenderParams.h"
 #include "Actor/ActorObject.h"
 /// Graphics
 #include "Camera/Camera.h"
+#include "Shader/GroundShader.h"
+#include "Shader/ActorsShader.h"
+
 
 /* default */
 /////////////////////////////////////////////////////////////////
 
 World::World()
 	: m_Actors(),
-    m_Camera(nullptr)
+    m_Camera(nullptr),
+    m_DeviceContext(nullptr)
 {
-    m_Mountain = std::make_unique<Mountain>();
 } // World
 
 World::~World()
@@ -31,56 +37,47 @@ World::~World()
 }
 
 
-bool World::Init(ID3D11Device* device, ID3D11DeviceContext* context,
-    ModelManager* modelManager, TexturesManager* texManager, Camera* camera)
+bool World::Init(const WorldInitParam& p)
 {
+    m_Camera = std::make_unique<Camera>();
+    m_Camera->InitProjection(
+        EngineSettings::SCREEN_WIDTH,
+        EngineSettings::SCREEN_HEIGHT,
+        EngineSettings::SCREEN_NEAR,
+        EngineSettings::SCREEN_DEPTH
+    );
 
-    MeshModel* stoneModel = modelManager->GetMeshModel(device, context, texManager, EngineSettings::STONE_PATH);
-    MeshModel* testModel = modelManager->GetMeshModel(device, context, texManager, EngineSettings::MOUNTAIN_PATH);
-    m_Camera = camera;
+    m_Camera->GetPosition()->SetPosition(0.0f, 50.0f, -100.0f);
+    m_Camera->GetPosition()->SetRotation(25.0f, 0.0f, 0.0f);
 
-    if (m_Camera)
+    if (p.context == nullptr) return false;
+    m_DeviceContext = p.context;
+
+    MeshModel* stoneModel = p.modelManager->GetMeshModel(p.device, m_DeviceContext, p.textureManager, EngineSettings::STONE_PATH);
+    MeshModel* mountainModel = p.modelManager->GetMeshModel(p.device, m_DeviceContext, p.textureManager, EngineSettings::MOUNTAIN_PATH);
+    ActorsShader* actorShader = p.shaderManager->GetShader<ActorsShader>("Actors");
+
+    if (stoneModel && actorShader)
     {
-        m_Camera->GetPosition()->SetPosition(0.0f, 50.0f, -100.0f);
-        m_Camera->GetPosition()->SetRotation(25.0f, 0.0f, 0.0f);
-        m_Camera->Render();
+        auto stone = std::make_unique<Stone>();
+        stone->Init(stoneModel, actorShader, "FirstStone");
+        stone->GetPosition()->SetPosition(50.0f, 0.0f, 5.0f);
+        m_Actors.push_back(std::move(stone));
     }
 
-    if (stoneModel)
-    {
-        auto stone1 = std::make_unique<Stone>();
-        stone1->Init(stoneModel, "FirstStone");
-        stone1->GetPosition()->SetPosition(0.0f, 0.0f, 5.0f);
-
-        auto stone2 = std::make_unique<Stone>();
-        stone2->Init(stoneModel, "SecondStone");
-        stone2->GetPosition()->SetPosition(-2.0f, 0.0f, 10.0f);
-
-
-        m_Actors.push_back(std::move(stone1));
-        m_Actors.push_back(std::move(stone2));
-    }
-
-    if (testModel) {
+    if (mountainModel && actorShader) {
         auto stone3 = std::make_unique<Stone>();
-        stone3->Init(testModel, "test");
+        stone3->Init(mountainModel, actorShader, "test");
         stone3->GetPosition()->SetPosition(0.0f, 0.0f, 10.0f);
         m_Actors.push_back(std::move(stone3));
     }
 
-    //TerrainModel* mountain = modelManager->GetTerrainModel(device, context, texManager, EngineSettings::MOUNTAIN_PATH);
-    //if (mountain) {
-    //    m_Mountain->Init(mountain, "TERRAIN");
-    //}
-    //else {
-    //    EngineHelper::DebugPrint("World: modelManager->GetTerrainModel(..) 이게 문제");
-    //}
  
     for (auto& actor : m_Actors)
     {
         DirectX::XMFLOAT3 pos = actor->GetPosition()->GetPosition();
-        float height = m_Mountain->GetHeight(pos.x, pos.z);
-        actor->GetPosition()->SetPosition(pos.x, height, pos.z);
+        //float height = m_Ground->GetHeight(pos.x, pos.z);
+        //actor->GetPosition()->SetPosition(pos.x, height, pos.z);
     }
 
     return true;
@@ -88,7 +85,7 @@ bool World::Init(ID3D11Device* device, ID3D11DeviceContext* context,
 
 void World::Shutdown()
 {
-    if (m_Mountain) m_Mountain->Shutdown();
+    //if (m_Ground) m_Ground->Shutdown();
 
     for (auto& actor : m_Actors)
         actor->Shutdown();
@@ -103,7 +100,7 @@ void World::Frame(float frameTime, bool canControlWorld)
 {
     if (canControlWorld)
     {
-        //m_Camera->Render();
+        m_Camera->Render();
     }
 
     for (auto& actor : m_Actors)
@@ -113,25 +110,15 @@ void World::Frame(float frameTime, bool canControlWorld)
 } // Frame
 
 
-void World::Render(const ActorRenderParams& params)
+void World::Render()
 {
+    if (m_Camera == nullptr) return;
     m_Camera->Render();
 
-    //if (m_Mountain)
-    //{
-    //    // Mountain의 Render 인자에 맞게 전달 (frustum 포함)
-    //    m_Mountain->Render(
-    //        params.context,
-    //        params.shader,
-    //        m_Camera->GetFrustum(),
-    //        m_Camera->GetViewMatrix(),
-    //        m_Camera->GetProjectionMatrix()
-    //    );
-    //}
 
     for (auto& actor : m_Actors)
     {
-        actor->Render(params);
+        actor->Render(m_DeviceContext, m_Camera.get());
     }
 } // Render
 
@@ -153,3 +140,19 @@ ActorObject* World::GetActor(size_t index) const
         return m_Actors[index].get();
     return nullptr;
 } // GetActor
+
+
+Camera* World::GetCamera() const
+{
+    return m_Camera.get();
+} // GetCamera
+
+
+Position* World::GetCameraPosition() const
+{
+    return m_Camera->GetPosition();
+} // GetCameraPosition
+
+/////////////////////////////////////////////////////////////////
+
+/* public */

@@ -9,7 +9,9 @@
 ///////////////////////////////////////////////////////////////////
 
 Mesh::Mesh()
-    : m_materialIndex(0)
+    : m_materialIndex(0),
+    m_min({ 0, 0, 0 }),
+    m_max({ 0, 0, 0 })
 {
     m_meshData = { {}, {} };
 }
@@ -21,6 +23,20 @@ bool Mesh::Init(ID3D11Device* device, const MeshData& data, unsigned int matInde
 {
     m_meshData = data;
     m_materialIndex = matIndex;
+
+    m_min = { FLT_MAX, FLT_MAX, FLT_MAX };
+    m_max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+    for (const auto& v : data.vertices)
+    {
+        m_min.x = (std::min)(m_min.x, v.position.x);
+        m_min.y = (std::min)(m_min.y, v.position.y);
+        m_min.z = (std::min)(m_min.z, v.position.z);
+
+        m_max.x = (std::max)(m_max.x, v.position.x);
+        m_max.y = (std::max)(m_max.y, v.position.y);
+        m_max.z = (std::max)(m_max.z, v.position.z);
+    }
 
     vertexBuffer = std::make_unique<VertexBuffer>();
     if (EngineHelper::SuccessCheck(

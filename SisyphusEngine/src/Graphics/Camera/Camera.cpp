@@ -1,7 +1,8 @@
 // Graphics/Camera/Camera.cpp
 #include "Camera.h"
 #include "Frustum.h"
-#include "Position.h"
+// Framework
+#include "Position/Position.h"
 
 /* default */
 ////////////////////////////////////////////////////
@@ -55,6 +56,8 @@ void Camera::Render()
     lookAt = DirectX::XMVectorAdd(position, lookAt);
 
     m_viewMatrix = DirectX::XMMatrixLookAtLH(position, lookAt, up);
-    m_Frustum->ConstructFrustum(m_viewMatrix, m_projectionMatrix);
+    if (m_Frustum)
+        m_Frustum->BuildFrustum(m_viewMatrix, m_projectionMatrix);
+    
     return;
 } // Render

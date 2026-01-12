@@ -1,6 +1,7 @@
 // Graphics/Shader/StoneShader.h
 #pragma once
-#include "Shader.h"
+// Framework
+#include "Shader/Shader.h"
 
 class StoneShader : public Shader
 {

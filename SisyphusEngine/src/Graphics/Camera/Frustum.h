@@ -9,10 +9,9 @@ public:
     ~Frustum();
 
     void Init(float);
-    void ConstructFrustum(DirectX::XMMATRIX, DirectX::XMMATRIX);
+    void BuildFrustum(DirectX::XMMATRIX, DirectX::XMMATRIX);
 
 public:
-    // 충돌 체크 함수들 (지형 셀이나 돌의 가시성 판단용)
     bool CheckPoint(float, float, float);
     bool CheckCube(float, float, float, float);
     bool CheckSphere(float, float, float, float);

@@ -1,6 +1,6 @@
 // World/Stone/Stone.cpp
 #include "Stone.h"
-#include "Position.h"
+#include "Position/Position.h"
 #include "Model/MeshModel.h"
 #include "Shader/Shader.h"
 #include "EngineHelper.h" 
@@ -18,9 +18,9 @@ Stone::~Stone()
     Shutdown();
 } // ~Stone
 
-bool Stone::Init(MeshModel* model, const std::string& name)
+bool Stone::Init(MeshModel* model, ActorsShader* shader, const std::string& name)
 {
-    if (ActorObject::Init(model, name) == false)
+    if (ActorObject::Init(model, shader, name) == false)
         return false;
     
 
@@ -42,8 +42,8 @@ void Stone::Frame(float frameTime)
 } // Frame
 
 
-void Stone::Render(const ActorRenderParams& params)
+void Stone::Render(ID3D11DeviceContext* context, Camera* camera)
 {
-    ActorObject::Render(params);
+    ActorObject::Render(context, camera);
     return;
 } // Render

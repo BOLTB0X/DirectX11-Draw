@@ -32,6 +32,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Application"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Framework"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Common"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/UserInterface"
     "${ASSIMP_ROOT}/include"
     "C:/dev"
 )

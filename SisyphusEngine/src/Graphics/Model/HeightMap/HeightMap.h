@@ -3,6 +3,7 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <string>
+// Graphics
 #include "Model/Mesh/VertexTypes.h"
 
 class HeightMap {
@@ -11,14 +12,14 @@ public:
     HeightMap(const HeightMap&) = delete;
     ~HeightMap();
 
-    bool Init(const std::vector<ModelVertex>& vertices, const std::vector<unsigned int>& indices);
+    bool Init(const std::vector<ModelVertex>&, const std::vector<unsigned int>&);
 
 public:
     void GetBounds(DirectX::XMFLOAT3&, DirectX::XMFLOAT3&) const;
     float GetHeightAt(float, float) const;
 
 public:
-    bool CheckHeightOfTriangle(float x, float z, float& height, float v0[3], float v1[3], float v2[3]);
+    bool CheckHeightOfTriangle(float, float, float&, float v0[3], float v1[3], float v2[3]);
 
 private:
     std::vector<ModelVertex> m_vertices;

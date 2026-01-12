@@ -14,15 +14,12 @@ bool TextureLoader::CreateTextureFromFile(
     stbi_set_flip_vertically_on_load(true);
  
     unsigned char* imageData = stbi_load(filename.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-    //if (EngineHelper::SuccessCheck(
-    //    imageData, "텍스처 로드: stbi_load 에러")
-    //    == false) return false;
-    //else
-    //{
-    //    char msg[256];
-    //    sprintf_s(msg, "텍스처 생성 시도: %s (%dx%d, %d channels)\n", filename.c_str(), width, height, channels);
-    //    OutputDebugStringA(msg);
-    //}
+    if (imageData == nullptr)
+    {
+        std::string errorMsg = "텍스처 로드 실패 (파일 없음 혹은 경로 오류): " + filename;
+        EngineHelper::ErrorBox(NULL, std::wstring(errorMsg.begin(), errorMsg.end()).c_str());
+        return false;
+    }
 
     D3D11_TEXTURE2D_DESC td = {};
     td.Width = width;

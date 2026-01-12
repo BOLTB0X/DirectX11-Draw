@@ -5,6 +5,7 @@
 #include "MathHelper.h"
 #include "EngineHelper.h"
 #include <cstdio>
+
 /* default */
 ////////////////////////////////////////////////////////////////////
 
@@ -32,11 +33,16 @@ void TerrainModel::Render(ID3D11DeviceContext* context, Frustum* frustum)
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    unsigned int drawCount = 0;
+    unsigned int cullCount = 0;
+
     if (m_cells.empty())
     {
         EngineHelper::DebugPrint("TerrainModel: m_cells 이 비어있음");
         return;
     }
+
+
     for (auto& cell : m_cells)
         cell->Render(context, frustum);
 } // Render

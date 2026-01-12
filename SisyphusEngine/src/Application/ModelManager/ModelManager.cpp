@@ -40,7 +40,7 @@ bool ModelManager::Init(ID3D11Device* device,
         return false;
     }
 
-    if (GetTerrainModel(device, context, texManager, EngineSettings::TERRAIN_PATH))
+    if (GetTerrainModel(device, context, texManager, EngineSettings::GROUND_PATH))
         EngineHelper::SuccessCheck(true, "TERRAIN 모델 로드 성공");
     else
     {

@@ -58,18 +58,15 @@ float HeightMap::GetHeightAt(float x, float z) const
 
 	float height = 0.0f;
 
-	// 모든 삼각형을 순회하며 (x, z) 위치에 걸리는 삼각형을 찾음
-	// (성능 최적화는 나중에 쿼드트리 등을 도입할 수 있음)
 	for (size_t i = 0; i < m_indices.size(); i += 3)
 	{
 		float v0[3] = { m_vertices[m_indices[i]].position.x, m_vertices[m_indices[i]].position.y, m_vertices[m_indices[i]].position.z };
 		float v1[3] = { m_vertices[m_indices[i + 1]].position.x, m_vertices[m_indices[i + 1]].position.y, m_vertices[m_indices[i + 1]].position.z };
 		float v2[3] = { m_vertices[m_indices[i + 2]].position.x, m_vertices[m_indices[i + 2]].position.y, m_vertices[m_indices[i + 2]].position.z };
 
-		// 사용자님이 작성하신 함수 호출 (const를 위해 비상태 함수이거나 래핑 필요)
 		if (const_cast<HeightMap*>(this)->CheckHeightOfTriangle(x, z, height, v0, v1, v2))
 		{
-			return height; // 찾았으면 즉시 반환
+			return height;
 		}
 	}
 

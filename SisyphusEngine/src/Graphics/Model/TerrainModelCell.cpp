@@ -56,11 +56,10 @@ void TerrainModelCell::Render(ID3D11DeviceContext* context, Frustum* frustum)
     {
         unsigned int stride = sizeof(ModelVertex);
         unsigned int offset = 0;;
-    }
-
-    EngineHelper::DebugPrint("Cell Draw: %d Indices: " + std::to_string(m_IndexBuffer->GetIndexCount()));
+        EngineHelper::DebugPrint("Cell Draw: %d Indices: " + std::to_string(m_IndexBuffer->GetIndexCount()));
         m_VertexBuffer->Bind(context);
         m_IndexBuffer->Bind(context);
 
         context->DrawIndexed(m_IndexBuffer->GetIndexCount(), 0, 0);
+    }
 } // Render

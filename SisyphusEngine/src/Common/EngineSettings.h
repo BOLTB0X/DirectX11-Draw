@@ -20,8 +20,9 @@ namespace EngineSettings {
     const std::wstring SHADER_PATH = L"hlsl/";
 
     const std::string STONE_PATH = ASSET_PATH + "Stone/source/Stone.fbx";
-    const std::string TERRAIN_PATH = ASSET_PATH + "Terrain/source/Terrain.fbx";
+    //const std::string TERRAIN_PATH = ASSET_PATH + "Terrain/source/Terrain.fbx";
     const std::string MOUNTAIN_PATH = ASSET_PATH + "Mountain/source/Mountain.fbx";
+    const std::string GROUND_PATH = ASSET_PATH + "Ground/source/Ground.fbx";
 
     const std::wstring COLOR_VS = L"ColorVS.hlsl";
     const std::wstring COLOR_PS = L"ColorPS.hlsl";
@@ -32,6 +33,9 @@ namespace EngineSettings {
     const std::wstring ACTORS_VS = L"Actors/ActorsVS.hlsl";
     const std::wstring ACTORS_PS = L"Actors/ActorsPS.hlsl";
 
-    const std::wstring TERRAIN_VS = L"Terrain/TerrainVS.hlsl";
-    const std::wstring TERRAIN_PS = L"Terrain/TerrainPS.hlsl";
+    const std::wstring GROUND_VS = L"Ground/GroundVS.hlsl";
+    const std::wstring GROUND_PS = L"Ground/GroundPS.hlsl";
+
+    //const std::wstring TERRAIN_VS = L"Terrain/TerrainVS.hlsl";
+    //const std::wstring TERRAIN_PS = L"Terrain/TerrainPS.hlsl";
 }

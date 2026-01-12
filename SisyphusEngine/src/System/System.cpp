@@ -1,9 +1,13 @@
 // System/System.cpp
 #include "System.h"
-
-#include "Common/EngineSettings.h"
-#include "Common/EngineHelper.h"
-
+#include "Input/Input.h"
+#include "Gui/Gui.h"
+// Common
+#include "EngineSettings.h"
+#include "EngineHelper.h"
+// Application
+#include "Application.h"
+// imgui
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
@@ -15,7 +19,8 @@ System::System()
 	: m_applicationName(0),
 	m_hinstance(0),
 	m_hwnd(0),
-	m_InputPtr(nullptr),
+	m_Input(nullptr),
+	m_Gui(nullptr),
 	m_Application(nullptr)
 { } // System
 
@@ -25,28 +30,43 @@ System::~System() { } // ~Syste
 
 bool System::Init()
 {
-	bool result;
 	int screenWidth = 0, screenHeight = 0;
 
 	if (InitWindows(screenWidth, screenHeight) == false) {
 		return false;
 	}
 
-	m_Application = new Application;
-	result = m_Application->Init(m_hwnd, screenWidth, screenHeight);
-	if (result == false) return false;
+	m_Input = std::make_shared<Input>();
+	if (m_Input->Init(m_hinstance, m_hwnd) == false)
+	{
+		EngineHelper::ErrorBox(m_hwnd, L"m_Input->Init 실패");
+		return false;
+	}
 
-	m_InputPtr = m_InputPtr = m_Application->GetInput();
+	m_Gui = std::make_shared<Gui>();
+
+	m_Application = std::make_unique<Application>();
+	if (m_Application->Init(m_hwnd, m_Input, m_Gui)
+		== false) return false;
+
 	return true;
 } // Init
 
 
-void System::Shutdown() {
+void System::Shutdown() {	
 	if (m_Application)
 	{
 		m_Application->Shutdown();
-		delete m_Application;
-		m_Application = 0;
+	}
+
+	if (m_Gui)
+	{
+		m_Gui->Shutdown();
+	}
+
+	if (m_Input)
+	{
+		m_Input->Shutdown();
 	}
 
 	ShutdownWindows();
@@ -85,12 +105,11 @@ void System::Run()
 
 bool System::Frame()
 {
-	bool result;
-	result = m_InputPtr->Frame();
-	if (result == false) return false;
+	if (m_Input->Frame()
+		== false) return false;
 
-	result = m_Application->Frame();
-	if (result == false) return false;
+	if (m_Application->Frame()
+		== false) return false;
 	return true;
 } // Frame
 
@@ -152,16 +171,13 @@ bool System::InitWindows(int& screenWidth, int& screenHeight)
 	}
 	else
 	{
-		screenWidth = 800;
-		screenHeight = 600;
-
-		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
-		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		posX = (GetSystemMetrics(SM_CXSCREEN) - EngineSettings::SCREEN_WIDTH) / 2;
+		posY = (GetSystemMetrics(SM_CYSCREEN) - EngineSettings::SCREEN_HEIGHT) / 2;
 	}
 
 	m_hwnd = CreateWindowExW(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
 		WS_OVERLAPPEDWINDOW,
-		posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
+		posX, posY, EngineSettings::SCREEN_WIDTH, EngineSettings::SCREEN_HEIGHT, NULL, NULL, m_hinstance, NULL);
 
 	ShowWindow(m_hwnd, SW_SHOW);
 	SetForegroundWindow(m_hwnd);

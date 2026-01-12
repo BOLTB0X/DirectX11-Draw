@@ -23,7 +23,7 @@ void Frustum::Init(float screenDepth)
 } // Init
 
 
-void Frustum::ConstructFrustum(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix)
+void Frustum::BuildFrustum(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix)
 {
 	XMFLOAT4X4 pMatrix, matrix;
 	float zMinimum, r, length;
@@ -126,7 +126,7 @@ void Frustum::ConstructFrustum(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX p
 	m_planes[5][3] /= length;
 
 	return;
-} // ConstructFrustum
+} // BuildFrustum
 
 /////////////////////////////////////////////////////
 
@@ -136,15 +136,14 @@ void Frustum::ConstructFrustum(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX p
 bool Frustum::CheckPoint(float x, float y, float z)
 {
 	// 점이 여섯 개의 평면 모두 내부에 있는지, 
-	// 따라서 절두체 내부에 있는지 확인하기 위해 여섯 개의 평면 각각을 검사
+	// 절두체 내부에 있는지 확인하기 위해 여섯 개의 평면 각각을 검사
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		// 평면과 3D 점의 내적
 		float dotProduct = (m_planes[i][0] * x) + (m_planes[i][1] * y) + (m_planes[i][2] * z) + (m_planes[i][3] * 1.0f);
 
 		// 해당 지점이 현재 평면의 올바른 쪽에 있는지 확인하고 그렇지 않으면 종료
-		if (dotProduct <= 0.0f)
-			return false;
+		if (dotProduct <= 0.0f) return false;
 	}
 
 	return true;
@@ -153,7 +152,7 @@ bool Frustum::CheckPoint(float x, float y, float z)
 
 bool Frustum::CheckCube(float xCenter, float yCenter, float zCenter, float radius)
 {
-	// 정육면체가 원뿔대 안에 있는지 확인하기 위해 6개의 평면 각각을 검사
+	// 정육면체가 원뿔대 안에 있는지 확인하기 위해 6개의 평면 각각을 체크
 	// 정육면체의 여덟 꼭짓점이 모두 원뿔대 안에 있는지 확인
 	for (unsigned int i = 0; i < 6; i++)
 	{
@@ -202,10 +201,10 @@ bool Frustum::CheckSphere(float xCenter, float yCenter, float zCenter, float rad
 
 
 // 중심점(Center)과 반지름(Extent/Size) 을 기준
-// 보통 물리 엔진이나 특정 캐릭터의 바운딩 박스를 다룰 때 중심 위치를 기준으로 크기를 더하고 빼는 방식이 편리할 때 사용
+// 보통 물리 엔진이나 특정 캐릭터의 바운딩 박스를 다룰 때 중심 위치를 기준으로 크기를 더하고 빼는 방식이 편리할 때 주로 사용한다함
 bool Frustum::CheckBoundingBox(float xCenter, float yCenter, float zCenter, float xSize, float ySize, float zSize)
 {
-	// 직사각형이 원뿔대 안에 있는지 여부를 확인하기 위해 여섯 개의 평면 각각을 검사
+	// 직사각형이 원뿔대 안에 있는지 여부를 확인하기 위해 여섯 개의 평면 각각을 체크
 	for (unsigned int i = 0; i < 6; i++)
 	{
 		float dotProduct = (m_planes[i][0] * (xCenter - xSize)) + (m_planes[i][1] * (yCenter - ySize)) + (m_planes[i][2] * (zCenter - zSize)) + (m_planes[i][3] * 1.0f);
@@ -240,7 +239,7 @@ bool Frustum::CheckBoundingBox(float xCenter, float yCenter, float zCenter, floa
 
 
 // 최소점(Min)과 최대점(Max) 좌표를 직접 입력
-// Terrain의 Cell이나 버텍스 데이터의 전체 범위를 계산할 때 가장 직관적으로 얻을 수 있는 값(Min/Max)을 그대로 사용할 때 편리함
+// Terrain의 Cell이나 버텍스 데이터의 전체 범위를 계산할 때 가장 직관적으로 얻을 수 있는 값(Min/Max)을 그대로 사용할 때 편리하다 함
 bool Frustum::CheckBoundingBoxMinMax(float maxWidth, float maxHeight, float maxDepth, float minWidth, float minHeight, float minDepth)
 {
 	// 직사각형의 6개 평면 중 어느 하나라도 뷰 절두체 내부에 있는지 확인

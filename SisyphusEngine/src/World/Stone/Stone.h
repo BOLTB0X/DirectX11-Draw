@@ -4,6 +4,8 @@
 #include "Actor/ActorRenderParams.h"
 
 class MeshModel;
+class ActorsShader;
+class Camera;
 
 class Stone : public ActorObject
 {
@@ -12,10 +14,10 @@ public:
 	Stone(const Stone&) = delete;
     virtual ~Stone();
 
-    virtual bool Init(MeshModel*, const std::string&) override;
+    virtual bool Init(MeshModel*, ActorsShader*, const std::string&) override;
     virtual void Shutdown() override;
     virtual void Frame(float) override;
-    virtual void Render(const ActorRenderParams&) override;
+    virtual void Render(ID3D11DeviceContext*, Camera*) override;
 
 private:
 }; // Stone

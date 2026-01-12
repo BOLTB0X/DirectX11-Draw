@@ -2,10 +2,12 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 
+#include <memory>
 #include <windows.h>
 
-#include "Base/Input.h"
-#include "Application/Application.h"
+class Input;
+class Gui;
+class Application;
 
 
 class System {
@@ -30,9 +32,10 @@ private:
     HWND m_hwnd;
 
 private:
-    Input* m_InputPtr;
-    Application* m_Application;
-};
+    std::shared_ptr<Input> m_Input;
+    std::shared_ptr<Gui> m_Gui;
+    std::unique_ptr<Application> m_Application;
+}; // System
 
 //static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 static System* ApplicationHandle = nullptr;

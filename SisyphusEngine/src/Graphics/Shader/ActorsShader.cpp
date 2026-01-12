@@ -9,7 +9,7 @@
 
 using namespace EngineHelper;
 
-ActorsShader::ActorsShader() {};
+ActorsShader::ActorsShader() : Shader() {};
 
 
 ActorsShader::~ActorsShader() {};
@@ -22,11 +22,11 @@ bool ActorsShader::Init(ID3D11Device* device, HWND hwnd, const std::wstring& vsP
 
     // 셰이더 컴파일
     if (SuccessCheck(Compile(device, hwnd,
-        vsPath, "VS_Main", "vs_5_0",
+        vsPath, "main", "vs_5_0",
         vsBlob.GetAddressOf()), "버텍스 셰이더 컴파일 에러")
         == false) return false;
     if (SuccessCheck(Compile(device, hwnd,
-        psPath, "PS_Main", "ps_5_0",
+        psPath, "main", "ps_5_0",
         psBlob.GetAddressOf()), "픽셀 셰이더 컴파일 에러")
         == false) return false;
 

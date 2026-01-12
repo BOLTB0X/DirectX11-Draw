@@ -8,7 +8,7 @@ cbuffer TransformBuffer : register(b0)
     matrix projection;
 };
 
-PS_INPUT VS_Main(VS_INPUT input)
+PS_INPUT main(VS_INPUT input)
 {
     PS_INPUT output;
     

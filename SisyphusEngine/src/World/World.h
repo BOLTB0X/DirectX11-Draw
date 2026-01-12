@@ -1,15 +1,27 @@
 // World/World.h
 #pragma once
+#include <windows.h>
 #include <d3d11.h>
 #include <vector>
 #include <memory>
+// Framework
 #include "Actor/ActorRenderParams.h"
 
 class ModelManager;
 class TexturesManager;
+class ShaderManager;
 class ActorObject;
-class Mountain;
 class Camera;
+class Position;
+
+struct WorldInitParam {
+    ID3D11Device* device;
+    ID3D11DeviceContext* context;
+    ModelManager* modelManager;
+    ShaderManager* shaderManager;
+    TexturesManager* textureManager;
+    HWND hwnd;
+}; // WorldInitParam
 
 
 class World {
@@ -18,17 +30,19 @@ public:
 	World(const World&) = delete;
     ~World();
 
-    bool Init(ID3D11Device*, ID3D11DeviceContext*, ModelManager*, TexturesManager*, Camera*);
+    bool Init(const WorldInitParam& param);
     void Shutdown();
     void Frame(float frameTime, bool);
-    void Render(const ActorRenderParams& params);
+    void Render();
 
 public:
     ActorObject* GetActor(size_t index) const;
     const std::vector<std::unique_ptr<ActorObject>>& GetActors() const;
+    Camera* GetCamera() const;
+    Position* GetCameraPosition() const;
 
 private:
+    std::unique_ptr<Camera> m_Camera;
     std::vector<std::unique_ptr<ActorObject>> m_Actors;
-    std::unique_ptr<Mountain> m_Mountain;
-    Camera* m_Camera;
+    ID3D11DeviceContext* m_DeviceContext;
 }; // World

@@ -1,10 +1,12 @@
 // Application/ShaderManager/ShaderManager.cpp
 #include "ShaderManager.h"
-// Graphics
+// Framework
 #include "Shader/Shader.h"
+// Graphics
 #include "Shader/StoneShader.h"
 #include "Shader/ColorShader.h"
 #include "Shader/ActorsShader.h"
+#include "Shader/GroundShader.h"
 // Common
 #include "EngineSettings.h"
 
@@ -22,14 +24,14 @@ ShaderManager::~ShaderManager()
 
 bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
 {
-    auto stoneShader = std::make_unique<StoneShader>();
-    if (stoneShader->Init(device,
-        hwnd,
-        EngineSettings::SHADER_PATH + EngineSettings::STONE_VS,
-        EngineSettings::SHADER_PATH + EngineSettings::STONE_PS)
-        == false) return false;
-    
-    m_shaders["Stone"] = std::move(stoneShader);
+    //auto stoneShader = std::make_unique<StoneShader>();
+    //if (stoneShader->Init(device,
+    //    hwnd,
+    //    EngineSettings::SHADER_PATH + EngineSettings::STONE_VS,
+    //    EngineSettings::SHADER_PATH + EngineSettings::STONE_PS)
+    //    == false) return false;
+    //
+    //m_shaders["Stone"] = std::move(stoneShader);
 
     //auto colorShader = std::make_unique<ColorShader>();
     //if (colorShader->Init(device,
@@ -48,6 +50,11 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
         == false) return false;
 
     m_shaders["Actors"] = std::move(actorsShader);
+
+    auto groundShader = std::make_unique<GroundShader>();
+    if (groundShader->Init(device, hwnd, EngineSettings::SHADER_PATH + EngineSettings::GROUND_VS, EngineSettings::SHADER_PATH + EngineSettings::GROUND_PS) == false)
+        return false;
+
     return true;
 } // Init
 

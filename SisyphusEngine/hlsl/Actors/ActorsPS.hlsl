@@ -13,7 +13,7 @@ SamplerState DefaultSampler : register(s0);
 #define TYPE_CLOUD 2
 #define TYPE_STONE 3
 
-float4 PS_Main(PS_INPUT input) : SV_TARGET
+float4 main(PS_INPUT input) : SV_TARGET
 {
     float4 albedo = AlbedoMap.Sample(DefaultSampler, input.tex);
     float ao = AOMap.Sample(DefaultSampler, input.tex).r;

@@ -1,6 +1,7 @@
 // Graphics/Shader/ColorShader.h
 #pragma once
-#include "Shader.h"
+// Framework
+#include "Shader/Shader.h"
 
 
 class ColorShader : public Shader
