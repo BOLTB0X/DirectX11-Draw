@@ -1,7 +1,6 @@
 // Graphics/MeshModel/TerrainModelCell.cpp
 #include "TerrainModelCell.h"
 #include "EngineHelper.h"
-#include "Camera/Frustum.h"
 #include "Mesh/VertexBuffer.h"
 #include "Mesh/IndexBuffer.h"
 
@@ -50,16 +49,10 @@ bool TerrainModelCell::Init(ID3D11Device* device,
 } // Init
 
 
-void TerrainModelCell::Render(ID3D11DeviceContext* context, Frustum* frustum)
+void TerrainModelCell::Render(ID3D11DeviceContext* context)
 { 
-    if (frustum->CheckBoundingBoxMinMax(m_maxWidth, m_maxHeight, m_maxDepth, m_minWidth, m_minHeight, m_minDepth))
-    {
-        unsigned int stride = sizeof(ModelVertex);
-        unsigned int offset = 0;;
-        EngineHelper::DebugPrint("Cell Draw: %d Indices: " + std::to_string(m_IndexBuffer->GetIndexCount()));
-        m_VertexBuffer->Bind(context);
-        m_IndexBuffer->Bind(context);
+    m_VertexBuffer->Bind(context);
+    m_IndexBuffer->Bind(context);
 
-        context->DrawIndexed(m_IndexBuffer->GetIndexCount(), 0, 0);
-    }
+    context->DrawIndexed(m_IndexBuffer->GetIndexCount(), 0, 0);
 } // Render

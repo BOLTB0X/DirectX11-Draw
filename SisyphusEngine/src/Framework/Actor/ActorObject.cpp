@@ -75,9 +75,13 @@ void ActorObject::Render(ID3D11DeviceContext* context, Camera* camera)
     if (EngineHelper::SuccessCheck(camera, "ActorObject::Render -> camera nullptr")
         == false) return;
 
+    if (camera == nullptr) return;
+
+    DirectX::XMMATRIX worldMatrix = actor_Position->GetWorldMatrix();
+
     actor_Shader->UpdateMatrixBuffer(
         context,
-        actor_Position->GetWorldMatrix(),
+        worldMatrix,
         camera->GetViewMatrix(),
         camera->GetProjectionMatrix()
     );
@@ -86,11 +90,30 @@ void ActorObject::Render(ID3D11DeviceContext* context, Camera* camera)
     auto frustum = camera->GetFrustum();
     if (frustum)
     {
-        actor_Model->Render(context, actor_Shader, frustum);
+        actor_Model->Render(context, actor_Shader, frustum, worldMatrix);
     }
     else
     {
-        actor_Model->Render(context, actor_Shader);
+        actor_Model->Render(context, actor_Shader, nullptr, worldMatrix);
     }
     return;
 } // Render
+
+
+void ActorObject::PlaceOnTerrain(float terrainWorldHeight, float footingBias)
+{
+    if (actor_Model == nullptr) return;
+
+    // 모델 자체의 로컬 minY 보정값
+    float offset = actor_Model->GetBottomOffset();
+
+    // 현재 월드 위치(X, Z) 유지
+    DirectX::XMFLOAT3 currentPos = actor_Position->GetPosition();
+
+    // 최종 Y = 지형 높이 + 모델 보정값 - 개별 바이어스
+    actor_Position->SetPosition(
+        currentPos.x,
+        terrainWorldHeight + offset - footingBias,
+        currentPos.z
+    );
+} // PlaceOnTerrain

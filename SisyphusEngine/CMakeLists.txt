@@ -26,7 +26,6 @@ add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE 
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/System"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Base"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Application"

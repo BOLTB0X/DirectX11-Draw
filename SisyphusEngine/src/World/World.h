@@ -13,6 +13,9 @@ class ShaderManager;
 class ActorObject;
 class Camera;
 class Position;
+class CloudOcean;
+class ActorsShader;
+class TerrainShader;
 
 struct WorldInitParam {
     ID3D11Device* device;
@@ -33,7 +36,7 @@ public:
     bool Init(const WorldInitParam& param);
     void Shutdown();
     void Frame(float frameTime, bool);
-    void Render();
+    void Render(ShaderManager* shaderManager);
 
 public:
     ActorObject* GetActor(size_t index) const;
@@ -44,5 +47,10 @@ public:
 private:
     std::unique_ptr<Camera> m_Camera;
     std::vector<std::unique_ptr<ActorObject>> m_Actors;
+    std::unique_ptr<CloudOcean> m_CloudOcean;
     ID3D11DeviceContext* m_DeviceContext;
+
+    ActorsShader* actorsShaderPtr;
+    TerrainShader* terrainShaderPtr;
+
 }; // World

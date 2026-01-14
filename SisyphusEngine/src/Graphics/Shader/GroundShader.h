@@ -14,4 +14,4 @@ public:
         const std::wstring& vsPath, const std::wstring& psPath);
 
     void Bind(ID3D11DeviceContext* context) override;
-}; // Ground
+}; // CloudTerrain

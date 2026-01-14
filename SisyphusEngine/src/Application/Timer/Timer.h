@@ -1,4 +1,4 @@
-// System/Timer.h
+// Application/Timer.h
 #pragma once
 
 #include <windows.h>

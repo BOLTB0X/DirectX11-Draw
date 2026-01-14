@@ -23,7 +23,8 @@ public:
     virtual void Render(ID3D11DeviceContext*, Camera*) override;
 
 public:
-    float GetHeightAt(float x, float z) const;
+    float GetHeightAtMesh(float x, float z) const;
+    float GetHeightAtWorld(float worldX, float worldZ) const;
 
 private:
     std::unique_ptr<HeightMap> m_heightMap;

@@ -152,33 +152,60 @@ bool Frustum::CheckPoint(float x, float y, float z)
 
 bool Frustum::CheckCube(float xCenter, float yCenter, float zCenter, float radius)
 {
-	// 정육면체가 원뿔대 안에 있는지 확인하기 위해 6개의 평면 각각을 체크
-	// 정육면체의 여덟 꼭짓점이 모두 원뿔대 안에 있는지 확인
-	for (unsigned int i = 0; i < 6; i++)
+	unsigned int i;
+	float dotProduct;
+
+	// 정육면체가 원뿔대 안에 있는지 확인하기 위해 6개의 평면 각각을 검사
+	for (i = 0; i < 6; i++)
 	{
-		float dotProduct = (m_planes[i][0] * (xCenter - radius)) + (m_planes[i][1] * (yCenter - radius)) + (m_planes[i][2] * (zCenter - radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
-		
+		// 정육면체의 여덟 꼭짓점이 모두 원뿔대 안에 있는지 확인
+		dotProduct = (m_planes[i][0] * (xCenter - radius)) + (m_planes[i][1] * (yCenter - radius)) + (m_planes[i][2] * (zCenter - radius)) + (m_planes[i][3] * 1.0f);
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
+
 		dotProduct = (m_planes[i][0] * (xCenter + radius)) + (m_planes[i][1] * (yCenter - radius)) + (m_planes[i][2] * (zCenter - radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		dotProduct = (m_planes[i][0] * (xCenter - radius)) + (m_planes[i][1] * (yCenter + radius)) + (m_planes[i][2] * (zCenter - radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		dotProduct = (m_planes[i][0] * (xCenter + radius)) + (m_planes[i][1] * (yCenter + radius)) + (m_planes[i][2] * (zCenter - radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		dotProduct = (m_planes[i][0] * (xCenter - radius)) + (m_planes[i][1] * (yCenter - radius)) + (m_planes[i][2] * (zCenter + radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
-		
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
+
 		dotProduct = (m_planes[i][0] * (xCenter + radius)) + (m_planes[i][1] * (yCenter - radius)) + (m_planes[i][2] * (zCenter + radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		dotProduct = (m_planes[i][0] * (xCenter - radius)) + (m_planes[i][1] * (yCenter + radius)) + (m_planes[i][2] * (zCenter + radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		dotProduct = (m_planes[i][0] * (xCenter + radius)) + (m_planes[i][1] * (yCenter + radius)) + (m_planes[i][2] * (zCenter + radius)) + (m_planes[i][3] * 1.0f);
-		if (dotProduct > 0.0f) continue;
+		if (dotProduct > 0.0f)
+		{
+			continue;
+		}
 
 		return false;
 	}
@@ -242,10 +269,12 @@ bool Frustum::CheckBoundingBox(float xCenter, float yCenter, float zCenter, floa
 // Terrain의 Cell이나 버텍스 데이터의 전체 범위를 계산할 때 가장 직관적으로 얻을 수 있는 값(Min/Max)을 그대로 사용할 때 편리하다 함
 bool Frustum::CheckBoundingBoxMinMax(float maxWidth, float maxHeight, float maxDepth, float minWidth, float minHeight, float minDepth)
 {
+	float dotProduct;
+
 	// 직사각형의 6개 평면 중 어느 하나라도 뷰 절두체 내부에 있는지 확인
 	for (unsigned int i = 0; i < 6; i++)
 	{
-		float dotProduct = ((m_planes[i][0] * minWidth) + (m_planes[i][1] * minHeight) + (m_planes[i][2] * minDepth) + (m_planes[i][3] * 1.0f));
+		dotProduct = ((m_planes[i][0] * minWidth) + (m_planes[i][1] * minHeight) + (m_planes[i][2] * minDepth) + (m_planes[i][3] * 1.0f));
 		if (dotProduct >= 0.0f) continue;
 		
 		dotProduct = ((m_planes[i][0] * maxWidth) + (m_planes[i][1] * minHeight) + (m_planes[i][2] * minDepth) + (m_planes[i][3] * 1.0f));
@@ -274,3 +303,4 @@ bool Frustum::CheckBoundingBoxMinMax(float maxWidth, float maxHeight, float maxD
 
 	return true;
 } // CheckBoundingBoxMinMax
+

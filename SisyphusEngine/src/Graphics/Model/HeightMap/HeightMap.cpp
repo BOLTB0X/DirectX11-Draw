@@ -1,19 +1,66 @@
 // World/Terrain/HeightMap.cpp
 #include "HeightMap.h"
+// Common
+#include "EngineHelper.h"
+// etc
+#include <fstream>
+#include <iostream>
+
 
 /* default */
 /////////////////////////////////////////////////////
 
 HeightMap::HeightMap()
-    : m_gridWidth(0),
-    m_gridHeight(0),
-    m_cellSpacing(0.0f)
+    : m_width(0),
+    m_height(0),
+    m_cellSpacing(0.0f),
+	m_heightScale(0.0f)
 {
     m_minBounds = { 0, 0, 0 };
     m_maxBounds = { 0, 0, 0 };
 } // HeightMap
 
-HeightMap::~HeightMap() {} // ~HeightMap
+
+HeightMap::~HeightMap()
+{
+	Shutdown();
+} // ~HeightMap
+
+
+bool HeightMap::Init(int width, int height, float scale, const std::string& filename)
+{
+	m_width = width;
+	m_height = height;
+	m_heightScale = scale;
+
+	std::vector<unsigned short> rawImage;
+	if (LoadRawFile(filename, rawImage) == false)
+	{
+		EngineHelper::DebugPrint("HeightMap::Init : 파일 로드 실패 - " + filename);
+		return false;
+	}
+
+	m_HeightMap.clear();
+	m_HeightMap.resize(rawImage.size());
+	ResetBounds();
+
+	for (int j = 0; j < m_height; j++)
+	{
+		for (int i = 0; i < m_width; i++)
+		{
+			int index = (m_width * j) + i;
+
+			m_HeightMap[index].x = (float)i;
+			m_HeightMap[index].y = (float)rawImage[index] / m_heightScale;
+			m_HeightMap[index].z = (float)j;
+
+			UpdateBounds(m_HeightMap[index].x, m_HeightMap[index].y, m_HeightMap[index].z);
+		}
+	}
+
+	CalculateNormals();
+	return true;
+} // Init
 
 
 bool HeightMap::Init(const std::vector<ModelVertex>& vertices, const std::vector<unsigned int>& indices)
@@ -22,23 +69,22 @@ bool HeightMap::Init(const std::vector<ModelVertex>& vertices, const std::vector
 
 	m_vertices = vertices;
 	m_indices = indices;
-
-    m_minBounds = { FLT_MAX, FLT_MAX, FLT_MAX };
-    m_maxBounds = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+	ResetBounds();
 
 	for (const auto& v : m_vertices)
 	{
-		m_minBounds.x = (std::min)(m_minBounds.x, v.position.x);
-		m_minBounds.y = (std::min)(m_minBounds.y, v.position.y);
-		m_minBounds.z = (std::min)(m_minBounds.z, v.position.z);
-
-		m_maxBounds.x = (std::max)(m_maxBounds.x, v.position.x);
-		m_maxBounds.y = (std::max)(m_maxBounds.y, v.position.y);
-		m_maxBounds.z = (std::max)(m_maxBounds.z, v.position.z);
+		UpdateBounds(v.position.x, v.position.y, v.position.z);
 	}
 
-    return true;
+	return true;
 } // Init
+
+
+void HeightMap::Shutdown()
+{
+	m_HeightMap.clear();
+	return;
+} // Shutdown
 
 
 /* public: get */
@@ -51,7 +97,34 @@ void HeightMap::GetBounds(DirectX::XMFLOAT3& min, DirectX::XMFLOAT3& max) const
 } // GetBounds
 
 
-float HeightMap::GetHeightAt(float x, float z) const
+float HeightMap::GetHeightAtGrid(float x, float z) const
+{
+	if (x < m_minBounds.x || x >= m_maxBounds.x - 1.0f || z < m_minBounds.z || z >= m_maxBounds.z - 1.0f)
+		return m_minBounds.y;
+
+	// 현재 좌표가 속한 그리드 셀의 인덱스 찾기
+	int gridX = static_cast<int>(floor(x));
+	int gridZ = static_cast<int>(floor(z));
+
+	// 셀의 네 모서리 높이값 추출
+	float h00 = m_HeightMap[(gridZ * m_width) + gridX].y; // 좌하
+	float h10 = m_HeightMap[(gridZ * m_width) + (gridX + 1)].y; // 우하
+	float h01 = m_HeightMap[((gridZ + 1) * m_width) + gridX].y; // 좌상
+	float h11 = m_HeightMap[((gridZ + 1) * m_width) + (gridX + 1)].y; // 우상
+
+	//  셀 내부에서의 (0.0 ~ 1.0)
+	float dx = x - static_cast<float>(gridX);
+	float dz = z - static_cast<float>(gridZ);
+
+	// 이중 선형 보간
+	float topHeight = h00 + (h10 - h00) * dx;
+	float bottomHeight = h01 + (h11 - h01) * dx;
+
+	return topHeight + (bottomHeight - topHeight) * dz;
+} // GetHeightAtGrid
+
+
+float HeightMap::GetHeightAtMesh(float x, float z) const
 {
 	if (x < m_minBounds.x || x > m_maxBounds.x || z < m_minBounds.z || z > m_maxBounds.z)
 		return m_minBounds.y;
@@ -71,7 +144,7 @@ float HeightMap::GetHeightAt(float x, float z) const
 	}
 
 	return m_minBounds.y;
-} // GetHeightAt
+} // GetHeightAtMesh
 ////////////////////////////////////////////////////////////
 
 /* public: check */
@@ -206,3 +279,88 @@ bool HeightMap::CheckHeightOfTriangle(float x, float z, float& height, float v0[
 
 	return true;
 } // CheckHeightOfTriangle
+
+////////////////////////////////////////////////////////////
+
+/* private */
+////////////////////////////////////////////////////////////
+
+
+bool HeightMap::LoadRawFile(const std::string& filename, std::vector<unsigned short>& outRawData)
+{
+	FILE* filePtr;
+	if (fopen_s(&filePtr, filename.c_str(), "rb") != 0)
+	{
+		EngineHelper::DebugPrint("HeightMap::Init : LoadRawFile 에러");
+		return false;
+	}
+
+	size_t imageSize = (size_t)m_width * m_height;
+	outRawData.resize(imageSize);
+
+	size_t count = fread(outRawData.data(), sizeof(unsigned short), imageSize, filePtr);
+	fclose(filePtr);
+
+	return (count == imageSize);
+} // LoadRawFile
+
+
+void HeightMap::ResetBounds()
+{
+	m_minBounds = { FLT_MAX, FLT_MAX, FLT_MAX };
+	m_maxBounds = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+} // ResetBounds
+
+
+void HeightMap::UpdateBounds(float x, float y, float z)
+{
+	m_minBounds.x = (std::min)(m_minBounds.x, x);
+	m_minBounds.y = (std::min)(m_minBounds.y, y);
+	m_minBounds.z = (std::min)(m_minBounds.z, z);
+
+	m_maxBounds.x = (std::max)(m_maxBounds.x, x);
+	m_maxBounds.y = (std::max)(m_maxBounds.y, y);
+	m_maxBounds.z = (std::max)(m_maxBounds.z, z);
+} // UpdateBounds
+
+
+void HeightMap::CalculateNormals()
+{
+	// 모든 버테글 순회하며 노말 계산
+	for (int j = 0; j < m_height; j++)
+	{
+		for (int i = 0; i < m_width; i++)
+		{
+			// 인접한 점들의 위치 가져오기 (경계 처리 포함)
+			// 좌, 우 점의 높이 차이로 X축 기울기 계산
+			int left = (std::max)(i - 1, 0);
+			int right = (std::min)(i + 1, m_width - 1);
+			float hL = m_HeightMap[(j * m_width) + left].y;
+			float hR = m_HeightMap[(j * m_width) + right].y;
+
+			// 상, 하 점의 높이 차이로 Z축 기울기 계산
+			int up = (std::max)(j - 1, 0);
+			int down = (std::min)(j + 1, m_height - 1);
+			float hU = m_HeightMap[(up * m_width) + i].y;
+			float hD = m_HeightMap[(down * m_width) + i].y;
+
+			// 중앙 차분법을 이용한 법선 벡터 계산
+			// 수평 벡터: (2, hR - hL, 0)
+			// 수직 벡터: (0, hD - hU, 2)
+			DirectX::XMFLOAT3 normal;
+			float nx = hL - hR;
+			float ny = 2.0f;
+			float nz = hU - hD;
+
+			DirectX::XMVECTOR vNormal = DirectX::XMVectorSet(nx, ny, nz, 0.0f);
+			vNormal = DirectX::XMVector3Normalize(vNormal);
+
+			int index = (j * m_width) + i;
+			DirectX::XMStoreFloat3(&normal, vNormal);
+
+			m_HeightMap[index].nx = normal.x;
+			m_HeightMap[index].ny = normal.y;
+			m_HeightMap[index].nz = normal.z;
+		}
+	}
+} // CalculateNormals

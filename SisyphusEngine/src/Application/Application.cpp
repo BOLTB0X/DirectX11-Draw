@@ -2,9 +2,9 @@
 #include "Application.h"
 #include "Timer/Timer.h"
 #include "Fps/Fps.h"
-#include "ShaderManager/ShaderManager.h"
-#include "ModelManager/ModelManager.h"
-#include "TexturesManager/TexturesManager.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/ModelManager.h"
+#include "Manager/TexturesManager.h"
 // System
 #include "Input/Input.h"
 #include "Gui/Gui.h"
@@ -18,18 +18,13 @@
 #include "EngineSettings.h"
 // Graphics
 #include "Renderer/Renderer.h"
-#include "Shader/StoneShader.h"
-#include "Shader/ColorShader.h"
-#include "Shader/ActorsShader.h"
 #include "Camera/Camera.h"
-// Framework
-#include "Actor/ActorRenderParams.h"
 // UserInterface
 #include "Widget/MainSideBarWidget.h"
 #include "Widget/StatsWidget.h"
 #include "Widget/InspectorWidget.h"
 #include "Widget/ControlWidget.h"
-
+// imgui
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -186,7 +181,7 @@ bool Application::Render()
 	m_Renderer->BeginScene(0.5f, 0.0f, 0.0f, 1.0f);
 
 	m_UserInterface->ApplyRenderStates(m_Renderer.get());
-	m_World->Render();
+	m_World->Render(m_ShaderManager.get());
 	m_UserInterface->Render();
 
 	m_Renderer->EndScene();

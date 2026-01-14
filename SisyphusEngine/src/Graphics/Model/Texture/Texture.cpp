@@ -1,6 +1,7 @@
 // Graphics/Model/Texture.cpp
 #include "Texture.h"
-#include "TextureLoader.h"
+#include "Model/Loader/TextureLoader.h"
+// Common
 #include "EngineHelper.h"
 
 /* defualt */

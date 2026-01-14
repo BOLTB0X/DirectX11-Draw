@@ -1,4 +1,4 @@
-// Graphics/Model/VertexTypes.h
+// Graphics/Model/Mesh/VertexTypes.h
 #pragma once
 #include <directxmath.h>
 #include <vector>

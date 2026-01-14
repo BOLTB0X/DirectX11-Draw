@@ -17,8 +17,14 @@ MeshModel::MeshModel() {};
 MeshModel::~MeshModel() {};
 
 
-void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum)
+void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix)
 {
+    DirectX::XMFLOAT4X4 worldFB4;
+    DirectX::XMStoreFloat4x4(&worldFB4, worldMatrix);
+    float offsetX = worldFB4._41;
+    float offsetY = worldFB4._42;
+    float offsetZ = worldFB4._43;
+
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     int totalSubMeshes = (int)m_meshes.size();
@@ -31,8 +37,9 @@ void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frust
             const auto& min = mesh->GetMin();
             const auto& max = mesh->GetMax();
 
-            if (frustum->CheckBoundingBoxMinMax(max.x, max.y, max.z, min.x, min.y, min.z)
-                == false)
+            if (frustum->CheckBoundingBoxMinMax(
+                max.x + offsetX, max.y + offsetY, max.z + offsetZ,
+                min.x + offsetX, min.y + offsetY, min.z + offsetZ) == false)
             {
                 continue;
             }
@@ -122,3 +129,17 @@ std::vector<MeshData> MeshModel::GetFullMeshData() const
     
     return allData;
 } // GetFullMeshData
+
+
+float MeshModel::GetBottomOffset()
+{
+    float minY = 0.0f;
+
+    for (const auto& mesh : m_meshes)
+    {
+        if (mesh->GetMin().y < minY)
+            minY = mesh->GetMin().y;
+    }
+    
+    return -minY;
+} // GetBottomOffset

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include <directxmath.h>
 #include <memory>
 #include <vector>
 #include "Model/Mesh/VertexTypes.h"
@@ -18,7 +19,7 @@ public:
 	MeshModel(const MeshModel&) = delete;
 	~MeshModel();
 
-    void Render(ID3D11DeviceContext*, ActorsShader* shader, Frustum* frustum = nullptr);
+    void Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix);
 
 public:
     void AddMesh(std::unique_ptr<Mesh>);
@@ -26,6 +27,8 @@ public:
 
     bool InitConstantBuffer(ID3D11Device*);
     void GetPhysicsData(std::vector<ModelVertex>& outVertices, std::vector<unsigned int>& outIndices) const;
+    float GetBottomOffset();
+
 public:
     std::vector<MeshData> GetFullMeshData() const;
 

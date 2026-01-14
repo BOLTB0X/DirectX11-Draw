@@ -1,4 +1,4 @@
-// Base/Gui.h
+// System/Gui/Gui.h
 #pragma once
 
 #include <d3d11.h>

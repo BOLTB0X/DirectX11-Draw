@@ -1,0 +1,5 @@
+Terrain Filename: assets/Terrain/heightmap.r16
+Terrain Height: 1025
+Terrain Width: 1025
+Terrain Scaling: 900.0
+Color Map Filename: assets/Terrain/colormap.bmp

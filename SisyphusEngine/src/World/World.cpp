@@ -1,40 +1,44 @@
 // World/World.cpp
-#include <string>
-
 #include "World.h"
 #include "Stone/Stone.h"
-#include "Terrain/Ground.h"
+#include "Terrain/CloudOcean.h"
+#include "MountPick/MountPick.h"
 // Common
 #include "EngineSettings.h"
 #include "EngineHelper.h"
 // Application
-#include "ModelManager/ModelManager.h"
-#include "ShaderManager/ShaderManager.h"
-#include "TexturesManager/TexturesManager.h"
+#include "Manager/ModelManager.h"
+#include "Manager/ShaderManager.h"
+#include "Manager/TexturesManager.h"
 /// Framework
+#include "Shader/Shader.h"
 #include "Position/Position.h"
-#include "Actor/ActorRenderParams.h"
 #include "Actor/ActorObject.h"
 /// Graphics
 #include "Camera/Camera.h"
-#include "Shader/GroundShader.h"
+#include "Shader/TerrainShader.h"
 #include "Shader/ActorsShader.h"
+// etc
+#include <string>
 
 
 /* default */
 /////////////////////////////////////////////////////////////////
 
 World::World()
-	: m_Actors(),
+    : m_Actors(),
     m_Camera(nullptr),
-    m_DeviceContext(nullptr)
+    m_DeviceContext(nullptr),
+    actorsShaderPtr(nullptr),
+    terrainShaderPtr(nullptr)
 {
 } // World
+
 
 World::~World()
 {
     Shutdown();
-}
+} // ~World
 
 
 bool World::Init(const WorldInitParam& p)
@@ -47,37 +51,58 @@ bool World::Init(const WorldInitParam& p)
         EngineSettings::SCREEN_DEPTH
     );
 
-    m_Camera->GetPosition()->SetPosition(0.0f, 50.0f, -100.0f);
-    m_Camera->GetPosition()->SetRotation(25.0f, 0.0f, 0.0f);
-
     if (p.context == nullptr) return false;
     m_DeviceContext = p.context;
 
+    TerrainModel* cloudModel = p.modelManager->GetTerrainModel(p.device, p.context, p.textureManager, EngineSettings::TERRAIN_PATH);
+    terrainShaderPtr = p.shaderManager->GetShader<TerrainShader>("Terrain");
+    float centerX = 400.0f;
+    float centerZ = 400.0f;
+
+    if (cloudModel && terrainShaderPtr)
+    {
+        m_CloudOcean = std::make_unique<CloudOcean>();
+        m_CloudOcean->Init(cloudModel, terrainShaderPtr, "CloudOcean");
+        m_CloudOcean->GetPosition()->SetPosition(0.0f, 0.0f, 0.0f);
+    }
+
+    actorsShaderPtr = p.shaderManager->GetShader<ActorsShader>("Actors");
     MeshModel* stoneModel = p.modelManager->GetMeshModel(p.device, m_DeviceContext, p.textureManager, EngineSettings::STONE_PATH);
     MeshModel* mountainModel = p.modelManager->GetMeshModel(p.device, m_DeviceContext, p.textureManager, EngineSettings::MOUNTAIN_PATH);
-    ActorsShader* actorShader = p.shaderManager->GetShader<ActorsShader>("Actors");
 
-    if (stoneModel && actorShader)
+    if (mountainModel && actorsShaderPtr)
+    {
+        auto mount = std::make_unique<MountPick>();
+        mount->Init(mountainModel, actorsShaderPtr, "MountPick");
+        mount->GetPosition()->SetPosition(centerX, 0.0, centerZ);
+        m_Actors.push_back(std::move(mount));
+    }
+
+    if (stoneModel && actorsShaderPtr)
     {
         auto stone = std::make_unique<Stone>();
-        stone->Init(stoneModel, actorShader, "FirstStone");
-        stone->GetPosition()->SetPosition(50.0f, 0.0f, 5.0f);
+        stone->Init(stoneModel, actorsShaderPtr, "Stone");
+        stone->GetPosition()->SetPosition(centerX - 100.0f, 0.0f, centerZ - 100.0f);
         m_Actors.push_back(std::move(stone));
     }
 
-    if (mountainModel && actorShader) {
-        auto stone3 = std::make_unique<Stone>();
-        stone3->Init(mountainModel, actorShader, "test");
-        stone3->GetPosition()->SetPosition(0.0f, 0.0f, 10.0f);
-        m_Actors.push_back(std::move(stone3));
-    }
-
- 
-    for (auto& actor : m_Actors)
+    if (m_CloudOcean)
     {
-        DirectX::XMFLOAT3 pos = actor->GetPosition()->GetPosition();
-        //float height = m_Ground->GetHeight(pos.x, pos.z);
-        //actor->GetPosition()->SetPosition(pos.x, height, pos.z);
+        for (auto& actor : m_Actors)
+        {
+            DirectX::XMFLOAT3 actorPos = actor->GetPosition()->GetPosition();
+            float worldHeight = m_CloudOcean->GetHeightAtWorld(actorPos.x, actorPos.z);
+
+            if (actor->GetName() == "MountPick")
+            {
+                actor->SetHeightOffset(10.0f);
+            }
+
+            actor->PlaceOnTerrain(worldHeight, actor->GetHeightOffset());
+        }
+
+        m_Camera->GetPosition()->SetPosition(centerX - 100, 100.0f, centerZ - 150.0f);
+        m_Camera->GetPosition()->SetRotation(30.0f, 0.0f, 0.0f);
     }
 
     return true;
@@ -85,14 +110,23 @@ bool World::Init(const WorldInitParam& p)
 
 void World::Shutdown()
 {
-    //if (m_Ground) m_Ground->Shutdown();
+    if (m_CloudOcean)
+    {
+        m_CloudOcean->Shutdown();
+        m_CloudOcean.reset();
+    }
 
     for (auto& actor : m_Actors)
-        actor->Shutdown();
-    
-    m_Camera = nullptr;
+    {
+        if (actor) actor->Shutdown();
+    }
     m_Actors.clear();
-    return;
+
+    actorsShaderPtr = nullptr;
+    terrainShaderPtr = nullptr;
+    m_DeviceContext = nullptr;
+
+    m_Camera = nullptr;
 } // Shutdown
 
 
@@ -100,6 +134,7 @@ void World::Frame(float frameTime, bool canControlWorld)
 {
     if (canControlWorld)
     {
+        m_Camera->GetPosition()->SetFrameTime(frameTime);
         m_Camera->Render();
     }
 
@@ -110,10 +145,15 @@ void World::Frame(float frameTime, bool canControlWorld)
 } // Frame
 
 
-void World::Render()
+void World::Render(ShaderManager* shaderManager)
 {
     if (m_Camera == nullptr) return;
     m_Camera->Render();
+
+    if (m_CloudOcean)
+    {
+        m_CloudOcean->Render(m_DeviceContext,m_Camera.get());
+    }
 
 
     for (auto& actor : m_Actors)

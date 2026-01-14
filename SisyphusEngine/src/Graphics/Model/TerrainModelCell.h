@@ -7,7 +7,6 @@
 
 class VertexBuffer;
 class IndexBuffer;
-class Frustum;
 
 class TerrainModelCell {
 public:
@@ -21,7 +20,15 @@ public:
         const std::vector<unsigned int>&);
 
     // Frustum을 받아 Culling 후 렌더링
-    void Render(ID3D11DeviceContext* context, Frustum* frustum);
+    void Render(ID3D11DeviceContext* context);
+
+public:
+    float GetMinWidth() const { return m_minWidth; }
+    float GetMinHeight() const { return m_minHeight; }
+    float GetMinDepth() const { return m_minDepth; }
+    float GetMaxWidth() const { return m_maxWidth; }
+    float GetMaxHeight() const { return m_maxHeight; }
+    float GetMaxDepth() const { return m_maxDepth; }
 
 private:
     std::unique_ptr<VertexBuffer> m_VertexBuffer;
