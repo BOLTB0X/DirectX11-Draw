@@ -50,6 +50,28 @@ ex. *삼각형 리스트(Triangle List)로 그리기로 변경하면서 한 사�
 
 ---
 
+
+### E4. 백터 범위 초가
+
+![](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/%ED%84%B0%EB%A0%88%EC%9D%B8%EB%A0%8C%EB%8D%94%EB%8F%84%EC%A4%91_%EB%B2%94%EC%9C%84%EC%B4%88%EA%B3%BC%EC%97%90%EB%9F%AC.png?raw=true)
+
+자동할당이라 맘 편히 쓰다, `TerrainModel`에서 정규화 하는 부분에서 기존 코드로 호출해서 마주했음
+
+---
+
+### E5. 카메라로 보는데 엔진에서 절두체 컬링을 적용해버리는 경우
+
+![스크린샷 하나가 어디있는지](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/%EC%B9%B4%EB%A9%94%EB%9D%BC_%EC%A0%88%EB%91%90%EC%B2%B4%ED%99%95%EC%9D%B8.png?raw=true)
+
+`Camera::Render` 가 호출될 때마다 `BuildFrustum` 을 수행하는데,
+
+이때 사용되는 `m_viewMatrix`가 최신 **카메라 상태(`Position`)** 를 제대로 반영하지 못하고 있다면 절두체는 엉뚱한 곳을 검사하게 됌
+
+로컬공간 -> 월드공간 변환 행렬 보정으로 해결
+더 정확하게 하려면 쿼드트리를 써야한다고 함
+
+[tistory 참조 - devshovelinglife](https://devshovelinglife.tistory.com/110#:~:text=%EC%BF%BC%EB%93%9C%20%ED%8A%B8%EB%A6%AC%20%EC%BB%AC%EB%A7%81%EC%9D%80%20%EC%A3%BC%EB%A1%9C%20%EC%A7%80%ED%98%95%EC%97%90%20%EB%8C%80%ED%95%B4%20%EB%A7%8E%EC%9D%B4%20%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94%20%EC%BB%AC%EB%A7%81%20%EB%B0%A9%EC%8B%9D%EC%9D%B4%EB%8B%A4.%20%EC%A7%80%ED%98%95&text=%EB%B6%80%EB%AA%A8%EA%B0%80%20%EC%A0%88%EB%91%90%EC%B2%B4%20%EB%B0%96%EC%97%90%20%EC%9E%88%EB%8B%A4%EB%A9%B4%2C%20%EC%A0%88%EB%91%90%EC%B2%B4%EA%B0%80%20%EB%AC%B4%ED%95%9C%20%ED%8F%89%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%9D%B4%EB%A3%A8%EC%96%B4%EC%A7%84%20%EB%A7%8C%ED%81%BC)
+
 ## 궁금했던 것들
 
 ### Q1. 그래픽스 분야에선 상속/추상화보다 의존성(Composition) 관리를 선호하나?
@@ -241,11 +263,11 @@ Q. *컴포넌트의 공통 특징 상 마야모델, 텍스처, 셰이더를 `App
 
 ---
 
-### Q6. 레스터택 vs 내가 한거
+### ~~Q6. 레스터택 vs 내가 한거~~
 
-레스터택은 주로 비트맵(RAW, BMP) 파일을 직접 읽어 높이맵을 생성
+~~레스터택은 주로 비트맵(RAW, BMP) 파일을 직접 읽어 높이맵을 생성~~
 
-내가 한것은 FBX 메쉬를 높이맵의 원천으로 사용
+~~내가 한것은 FBX 메쉬를 높이맵의 원천으로 사용~~
 
 | 구분            | Rastertek 방식                         | Me                              |
 |-----------------|----------------------------------------|----------------------------------|
@@ -256,3 +278,48 @@ Q. *컴포넌트의 공통 특징 상 마야모델, 텍스처, 셰이더를 `App
 | 물리 판정       | `CheckHeightOfTriangle` 사용             | 동일하게 사용 (필수)             |
 
 ----
+
+### Q7. Mesh와 그리드(Cell) 차이?
+
+`MeshModel`은 여러 개의 메시가 각각 다른 머터리얼을 가질 수 있어 루프 안에서 바인딩하지만,
+
+```
+MeshModel
+ ├─ Mesh 0 → Material 0
+ ├─ Mesh 1 → Material 2
+ ├─ Mesh 2 → Material 1
+```
+
+`TerrainModel`은 지형 전체가 하나의 큰 머터리얼(또는 텍스처 셋)을 공유하는 구조
+
+```
+TerrainModel
+ ├─ Material (1개)
+ ├─ Cell 0
+ ├─ Cell 1
+ ├─ Cell 2
+ ```
+
+즉
+
+- `MeshModel`
+   
+   > "이 조각은 가죽이야(바인딩) -> 그려!", "이 조각은 쇠야(바인딩) -> 그려!" (반복)
+
+- `TerrainModel`
+
+    > "자, 지금부터 그리는 건 전부 다 이 지형 텍스처야(바인딩)!" -> "1번 셀 보여?(Culling) -> 그려!", "2번 셀 보여? -> 안 보이면 패스!", "3번 셀 보여? -> 그려!" (반복)
+
+----
+
+### Q8. 언제 `전방 선언` 을 쓰고 언제 `include` 하나?
+
+- 전방 선언(class A;) 가능
+
+    멤버 변수가 **포인터(`A*`)** 나 **스마트 포인터(`unique_ptr<A>`)** 인 경우 (포인터 크기는 8바이트로 일정)
+
+- `Include(#include "A.h")` 필수
+
+    멤버 변수가 **값(`A a;`)** 일 때, or **해당 클래스의 내부 멤버 함수를 직접 호출할 때**
+
+---
