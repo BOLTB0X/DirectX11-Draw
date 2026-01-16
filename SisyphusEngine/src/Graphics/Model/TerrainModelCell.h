@@ -19,7 +19,6 @@ public:
         const std::vector<ModelVertex>&,
         const std::vector<unsigned int>&);
 
-    // Frustum을 받아 Culling 후 렌더링
     void Render(ID3D11DeviceContext* context);
 
 public:

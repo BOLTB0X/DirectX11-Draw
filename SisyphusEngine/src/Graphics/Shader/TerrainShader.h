@@ -12,11 +12,12 @@ class TerrainShader : public Shader {
 public:
     TerrainShader();
     TerrainShader(const TerrainShader& other) = delete;
-    virtual ~TerrainShader() override = default;
+    virtual ~TerrainShader() override;
 
 
     virtual bool Init(ID3D11Device* device, HWND hwnd, const std::wstring& vsPath, const std::wstring& psPath) override;
     virtual void Bind(ID3D11DeviceContext* context) override;
+    virtual void UpdateMaterialTag(ID3D11DeviceContext* context, int type, float time = 0.0f);
 
 private:
     std::unique_ptr<ConstantBuffer<MaterialBuffer>> m_materialBuffer;

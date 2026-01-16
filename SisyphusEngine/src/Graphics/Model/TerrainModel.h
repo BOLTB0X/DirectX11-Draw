@@ -20,12 +20,12 @@ public:
     TerrainModel(const TerrainModel&) = delete;
     ~TerrainModel();
 
-   // bool Init(ID3D11Device* device, HeightMap* heightMap, int cellDimension = 42);
     void Render(ID3D11DeviceContext* context, TerrainShader* shader, Frustum* frustuml, DirectX::XMMATRIX worldMatrix);
 
 public:
     bool InitConstantBuffer(ID3D11Device* device);
-    bool InitHeightMap();
+    void InitHeightMap();
+    void InitMaterial(const Material& mat);
     bool CreateCells(ID3D11Device* device, int cellDimension = 42);
 
 public:
@@ -38,8 +38,13 @@ public:
     const std::vector<unsigned int>& GetFullIndices() const { return m_fullIndices; }
     const Material& GetMaterial(size_t) const;
     const std::vector<std::unique_ptr<TerrainModelCell>>& GetCell() const { return m_cells; }
-    HeightMap* GetHeightMap() { return m_HeightMap.get(); }
+    const HeightMap* GetHeightMap() { return m_HeightMap.get(); }
+    const int GetWidth() const { return m_terrainWidth; }
+    const int GetHeight() const { return m_terrainHeight; }
+
     void SetHeightMap(std::unique_ptr<HeightMap>);
+    //void SetDimensions(int w, int h) { m_terrainWidth = w; m_terrainHeight = h; }
+    void SetTime(float time) { m_time = time; }
 
 private:
     struct TempCell { 
@@ -47,8 +52,8 @@ private:
         std::vector<unsigned int> i;
     };
 
-    void CalculateTangentBinormal(const ModelVertex& v1, const ModelVertex& v2, const ModelVertex& v3,
-        DirectX::XMFLOAT3& tangent, DirectX::XMFLOAT3& binormal);
+    //void CalculateTangentBinormal(const ModelVertex& v1, const ModelVertex& v2, const ModelVertex& v3,
+        //DirectX::XMFLOAT3& tangent, DirectX::XMFLOAT3& binormal);
 
 private:
     std::vector<ModelVertex> m_fullVertices;
@@ -59,4 +64,5 @@ private:
     std::unique_ptr<HeightMap> m_HeightMap;
 
     int m_terrainWidth, m_terrainHeight;
+    float m_time;
 }; // TerrainModel

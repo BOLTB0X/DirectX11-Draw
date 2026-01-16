@@ -6,6 +6,7 @@
 // Common
 #include "EngineSettings.h"
 #include "EngineHelper.h"
+#include "MathHelper.h"
 // Application
 #include "Manager/ModelManager.h"
 #include "Manager/ShaderManager.h"
@@ -56,8 +57,10 @@ bool World::Init(const WorldInitParam& p)
 
     TerrainModel* cloudModel = p.modelManager->GetTerrainModel(p.device, p.context, p.textureManager, EngineSettings::TERRAIN_PATH);
     terrainShaderPtr = p.shaderManager->GetShader<TerrainShader>("Terrain");
+
     float centerX = 400.0f;
     float centerZ = 400.0f;
+
 
     if (cloudModel && terrainShaderPtr)
     {
@@ -75,6 +78,7 @@ bool World::Init(const WorldInitParam& p)
         auto mount = std::make_unique<MountPick>();
         mount->Init(mountainModel, actorsShaderPtr, "MountPick");
         mount->GetPosition()->SetPosition(centerX, 0.0, centerZ);
+        mount->SetHeightOffset(-10.0f);
         m_Actors.push_back(std::move(mount));
     }
 
@@ -83,6 +87,7 @@ bool World::Init(const WorldInitParam& p)
         auto stone = std::make_unique<Stone>();
         stone->Init(stoneModel, actorsShaderPtr, "Stone");
         stone->GetPosition()->SetPosition(centerX - 100.0f, 0.0f, centerZ - 100.0f);
+        stone->SetHeightOffset(0.0f);
         m_Actors.push_back(std::move(stone));
     }
 
@@ -91,7 +96,8 @@ bool World::Init(const WorldInitParam& p)
         for (auto& actor : m_Actors)
         {
             DirectX::XMFLOAT3 actorPos = actor->GetPosition()->GetPosition();
-            float worldHeight = m_CloudOcean->GetHeightAtWorld(actorPos.x, actorPos.z);
+            float worldHeight = MathHelper::GetFBMHeight(actorPos.x, actorPos.z, 0.0f);
+            //float worldHeight = m_CloudOcean->GetHeightAtWorld(actorPos.x, actorPos.z);
 
             if (actor->GetName() == "MountPick")
             {
@@ -138,9 +144,23 @@ void World::Frame(float frameTime, bool canControlWorld)
         m_Camera->Render();
     }
 
+    if (m_CloudOcean)
+    {
+        m_CloudOcean->Frame(frameTime);
+    }
+
     for (auto& actor : m_Actors)
     {
         actor->Frame(frameTime);
+        DirectX::XMFLOAT3 pos = actor->GetPosition()->GetPosition();
+
+        // MathHelper를 통해 현재 시간(currentTime)에 맞는 구름 높이 계산
+        float cloudWorldHeight = MathHelper::GetFBMHeight(pos.x, pos.z, m_CloudOcean->GetTotalTime());
+
+        // 액터의 이름이나 종류에 따라 개별 footingBias(offset) 적용
+        float bias = actor->GetHeightOffset();
+
+        actor->PlaceOnTerrain(cloudWorldHeight, bias);
     }
 } // Frame
 

@@ -13,8 +13,9 @@ public:
     HeightMap(const HeightMap&) = delete;
     ~HeightMap();
 
-    bool Init(int width, int height, float scale, const std::string& filename);
+   // bool Init(int width, int height, float scale, const std::string& filename);
     bool Init(const std::vector<ModelVertex>&, const std::vector<unsigned int>&);
+    void InitPlane(int, int);
 
     void Shutdown();
 

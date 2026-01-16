@@ -19,15 +19,18 @@ public:
 
     void Render(ID3D11DeviceContext* context, Camera* camera);
     void Shutdown();
+    void Frame(float);
 
 public:
     float GetHeight(float x, float z) const;
     Position* GetPosition() const { return m_Position.get(); }
     float GetHeightAtWorld(float worldX, float worldZ) const;
+    const float GetTotalTime() const { return m_totalTime; }
 
 private:
     std::string m_name;
     std::unique_ptr<Position> m_Position;
-    TerrainModel* m_modelPtr;   // ModelManager로부터 받은 포인터
+    TerrainModel* m_modelPtr; // ModelManager로부터 받은 포인터
     TerrainShader* m_shaderPtr; // ShaderManager로부터 받은 포인터
+    float m_totalTime;
 }; // CloudOcean

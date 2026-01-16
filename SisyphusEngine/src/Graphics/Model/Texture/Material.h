@@ -27,11 +27,13 @@ struct Material {
     std::shared_ptr<Texture> metallic;
     std::shared_ptr<Texture> roughness;
     std::shared_ptr<Texture> ao;
+    std::shared_ptr<Texture> alpha;
 }; // Material
 
 
 struct MaterialBuffer
 {
     int type;
-    DirectX::XMFLOAT3 padding;
+    float gTime;
+    DirectX::XMFLOAT2 padding;
 }; // MaterialBuffer

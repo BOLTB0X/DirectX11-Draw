@@ -1,10 +1,11 @@
 // hlsl/Terrain/TerrainPS.hlsl
-Texture2D normalMap : register(t1); // 노말맵 (Material::normal은 t1 슬롯에 바인딩 예상)
-SamplerState sampleType : register(s0); // 샘플러 (기본 샘플러는 s0 슬롯에 바인딩 예상)
+Texture2D NormalMap : register(t0);
+SamplerState sampleType : register(s0);
 
-cbuffer MaterialBuffer : register(b2) // MaterialBuffer는 b2 슬롯에 바인딩 예상
+cbuffer MaterialBuffer : register(b2)
 {
-    int type; // 현재는 사용하지 않음
+    int type;
+    float gTime;
     float3 padding;
 };
 
@@ -15,25 +16,29 @@ struct PS_INPUT
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-    float3 worldPos : TEXCOORD1; // 픽셀 셰이더에서 월드 위치 필요시 사용
+    float3 worldPos : TEXCOORD1;
 };
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    float4 baseColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-
-    float4 normalSample = normalMap.Sample(sampleType, input.texCoord);
+    // 노말맵에서 미세 굴곡 가져오기
+    float2 scrollUV = input.texCoord * 10.0f + float2(gTime * 0.01f, gTime * 0.01f);
+    float3 normalSample = NormalMap.Sample(sampleType, scrollUV).rgb * 2.0f - 1.0f;
     
-    float3 bumpNormal = (normalSample.xyz * 2.0f) - 1.0f;
-    
+    // TBN 연산으로 월드 공간 노말 생성
     float3x3 TBN = float3x3(input.tangent, input.binormal, input.normal);
+    float3 worldNormal = normalize(mul(normalSample, TBN));
+
+    // 낮은 곳: 청회, 높은 곳: 흰색
+    float heightFactor = saturate(input.worldPos.y / 15.0f);
+    float3 baseColor = lerp(float3(0.5f, 0.55f, 0.65f), float3(1.0f, 1.0f, 1.0f), heightFactor);
+
+    // 간단한 조명
+    float3 lightDir = normalize(float3(0.5f, 1.0f, 0.5f));
+    float diff = saturate(dot(worldNormal, lightDir));
     
-    float3 worldNormal = normalize(mul(bumpNormal, TBN));
-
-
-    float3 lightDir = normalize(float3(0.5f, -1.0f, 0.5f));
-    float lightIntensity = saturate(dot(worldNormal, -lightDir));
-    float3 finalColor = baseColor.xyz * (lightIntensity + 0.2f);
+    // 최종 색상 조합
+    float3 finalColor = baseColor * (diff + 0.3f);
 
     return float4(finalColor, 1.0f);
 } // main

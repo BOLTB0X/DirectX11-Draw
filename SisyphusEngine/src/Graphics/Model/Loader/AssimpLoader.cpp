@@ -213,7 +213,13 @@ void AssimpLoader::ProcessMaterials(
         std::transform(matName.begin(), matName.end(), matName.begin(), ::tolower); // 소문자 변환
 
         if (matName.find("cloud") != std::string::npos)
+        {
             myMaterial.type = MaterialType::CLOUD;
+            myMaterial.normal = texManager->GetTexture(device, context, EngineSettings::TERRAINNORM_PATH);
+
+            if (myMaterial.normal == nullptr)
+                EngineHelper::DebugPrint("Warning: Cloud Normal Map 로드 실패 -> " + EngineSettings::TERRAINNORM_PATH);
+        }
         else if (matName.find("cliff") != std::string::npos || matName.find("ciff") != std::string::npos)
             myMaterial.type = MaterialType::CLIFF;
         else if (matName.find("stone") != std::string::npos)
@@ -234,11 +240,15 @@ void AssimpLoader::ProcessMaterials(
         //myMaterial.metallic = getPBR("_Metallic.png");
         //myMaterial.roughness = getPBR("_Roughness.png");
         //myMaterial.ao = getPBR("_ao.png");
-        myMaterial.albedo = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_BaseColor");
-        myMaterial.normal = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_normal");
-        myMaterial.metallic = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_Metallic");
-        myMaterial.roughness = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_Roughness");
-        myMaterial.ao = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_ao");
+        myMaterial.albedo = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_BaseColor);
+        //myMaterial.normal = LoadPBRTexture(device, context, texManager, pbrDir, modelName, "_normal");
+        if (myMaterial.normal == nullptr) {
+            myMaterial.normal = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_NORM);
+        }
+        myMaterial.metallic = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_META);
+        myMaterial.roughness = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_ROUG);
+        myMaterial.ao = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_AO);
+        myMaterial.alpha = LoadPBRTexture(device, context, texManager, pbrDir, modelName, EngineSettings::PBRT_SUFFIX_ALPHA);
 
         outModel->AddMaterial(myMaterial);
 

@@ -1,4 +1,4 @@
-// Application/TextureLoader.h
+// Model/Loader/TextureLoader.h
 #pragma once
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -6,9 +6,19 @@
 
 class TextureLoader {
 public:
+
     static bool CreateTextureFromFile(
         ID3D11Device* device,
         ID3D11DeviceContext* context,
         const std::string& filename,
         ID3D11ShaderResourceView** outSRV);
+
+private:
+
+    static bool LoadUsingDDSTex(ID3D11Device* device, ID3D11DeviceContext* context,
+        const std::string& filename, ID3D11ShaderResourceView** outSRV);
+
+    static bool LoadUsingStb(ID3D11Device* device, ID3D11DeviceContext* context,
+        const std::string& filename, ID3D11ShaderResourceView** outSRV);
+
 }; // TextureLoader

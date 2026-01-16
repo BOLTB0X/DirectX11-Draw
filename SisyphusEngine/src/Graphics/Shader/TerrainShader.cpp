@@ -3,8 +3,14 @@
 // Common
 #include "EngineHelper.h"
 
+/* default */
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 TerrainShader::TerrainShader() : Shader()
+{
+}
+
+TerrainShader::~TerrainShader()
 {
 }
 
@@ -43,7 +49,7 @@ bool TerrainShader::Init(ID3D11Device* device, HWND hwnd, const std::wstring& vs
     };
     device->CreateInputLayout(layoutDesc, 5, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), m_layout.GetAddressOf());
 
-    // Matrix Buffer 초기화 (베이스 클래스 멤버)
+    // Matrix Buffer 초기화
     if (EngineHelper::SuccessCheck(m_matrixBuffer.Init(device), "상수 버퍼 초기화 에러")
         == false) return false;
 
@@ -53,6 +59,7 @@ bool TerrainShader::Init(ID3D11Device* device, HWND hwnd, const std::wstring& vs
     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     return SUCCEEDED(device->CreateSamplerState(&samplerDesc, m_sampleState.GetAddressOf()));
@@ -61,9 +68,24 @@ bool TerrainShader::Init(ID3D11Device* device, HWND hwnd, const std::wstring& vs
 
 void TerrainShader::Bind(ID3D11DeviceContext* context)
 {
-    // 베이스 클래스의 레이아웃/VS/PS 바인딩 호출
     Shader::Bind(context);
+
+    m_matrixBuffer.BindVS(context, 0);
     m_matrixBuffer.BindPS(context, 0);
+
+    m_materialBuffer->BindVS(context, 2);
     m_materialBuffer->BindPS(context, 2);
+
     context->PSSetSamplers(0, 1, m_sampleState.GetAddressOf());
 } // Bind
+
+
+void TerrainShader::UpdateMaterialTag(ID3D11DeviceContext* context, int type, float time)
+{
+    MaterialBuffer data;
+    data.type = type;
+    data.gTime = time;
+    data.padding = DirectX::XMFLOAT2(0, 0);
+
+    m_materialBuffer->Update(context, data);
+} // UpdateMaterialTag

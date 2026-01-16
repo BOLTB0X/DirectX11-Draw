@@ -41,6 +41,7 @@ target_link_directories(${PROJECT_NAME} PRIVATE "${ASSIMP_LIB_DIR}" "${ZLIB_LIB_
 
 # 4. vcpkg 라이브러리 (ImGui)
 find_package(imgui CONFIG REQUIRED)
+find_package(directxtk CONFIG REQUIRED)
 
 # 5. 라이브러리 연결
 target_link_libraries(${PROJECT_NAME}
@@ -51,6 +52,7 @@ target_link_libraries(${PROJECT_NAME}
     dinput8
     dxguid
     imgui::imgui
+    Microsoft::DirectXTK
     ${ASSIMP_LIB_NAME}
     ${ZLIB_LIB_NAME}
 )

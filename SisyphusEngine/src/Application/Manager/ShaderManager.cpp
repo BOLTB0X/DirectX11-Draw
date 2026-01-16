@@ -31,6 +31,7 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
         == false) return false;
     m_shaders["Terrain"] = std::move(terrainShader);
 
+
     auto actorsShader = std::make_unique<ActorsShader>();
     if (actorsShader->Init(
         device,

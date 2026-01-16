@@ -115,17 +115,12 @@ TerrainModel* ModelManager::GetTerrainModel(
     // 상수 버퍼 초기화
     if (newTerrainModel->InitConstantBuffer(device) == false) return nullptr;
 
-    if (m_TerrainLoader->LoadTerrainFromSetup(device, context, texManager, path, newTerrainModel.get()) == false)
-    {
-        EngineHelper::DebugPrint("ModelManager::GetTerrainModel: LoadTerrainFromSetup 실패");
-        return nullptr;
-    }
+    newTerrainModel->InitHeightMap();
 
-    if (newTerrainModel->InitHeightMap() == false)
-    {
-        EngineHelper::DebugPrint("ModelManager::GetTerrainModel: InitHeightMap 실패");
-        return nullptr;
-    }
+    Material terrainMat;
+    terrainMat.name = "TerrainMaterial";
+    terrainMat.normal = texManager->GetTexture(device, context, EngineSettings::TERRAINNORM_PATH);
+    newTerrainModel->InitMaterial(terrainMat);
 
     if (newTerrainModel->CreateCells(device, 42) == false) // cellDimension 전달
     {
@@ -137,5 +132,6 @@ TerrainModel* ModelManager::GetTerrainModel(
     m_terrainLibrary[path] = std::move(newTerrainModel);
     return m_terrainLibrary[path].get();
 } // GetTerrainModel
+
 
 //////////////////////////////////////////////////////////////////////////

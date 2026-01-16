@@ -10,7 +10,7 @@
 #include "Shader/ConstantBuffer.h"
 
 class Mesh;
-class ActorsShader;
+class Shader;
 class Frustum;
 
 class MeshModel {
@@ -19,7 +19,7 @@ public:
 	MeshModel(const MeshModel&) = delete;
 	~MeshModel();
 
-    void Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix);
+    void Render(ID3D11DeviceContext* context, Shader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix);
 
 public:
     void AddMesh(std::unique_ptr<Mesh>);
@@ -28,6 +28,15 @@ public:
     bool InitConstantBuffer(ID3D11Device*);
     void GetPhysicsData(std::vector<ModelVertex>& outVertices, std::vector<unsigned int>& outIndices) const;
     float GetBottomOffset();
+    float GetMinWidth() const;
+    float GetMaxWidth() const;
+    float GetMinHeight() const;
+    float GetMaxHeight() const;
+    float GetMinDepth() const;
+    float GetMaxDepth() const;
+
+private:
+    void GetBoundingBox(DirectX::XMFLOAT3&, DirectX::XMFLOAT3&) const;
 
 public:
     std::vector<MeshData> GetFullMeshData() const;

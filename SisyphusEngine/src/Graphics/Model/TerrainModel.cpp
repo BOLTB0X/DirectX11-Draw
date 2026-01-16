@@ -8,6 +8,7 @@
 // Common
 #include "MathHelper.h"
 #include "EngineHelper.h"
+#include "EngineSettings.h"
 
 /* default */
 ////////////////////////////////////////////////////////////////////
@@ -15,7 +16,8 @@
 TerrainModel::TerrainModel()
     : m_HeightMap(nullptr),
     m_terrainWidth(0),
-    m_terrainHeight(0)
+    m_terrainHeight(0),
+    m_time(0.0f)
 {}
 
 
@@ -43,18 +45,18 @@ void TerrainModel::Render(
     const Material& terrainMaterial = m_materials.front();
     MaterialBuffer data;
     data.type = (int)terrainMaterial.type;
+    data.gTime = m_time;
 
     m_materialBuffer->Update(context, data);
     m_materialBuffer->BindPS(context, 2);
 
-    //if (terrainMaterial.albedo)    terrainMaterial.albedo->Bind(context, 0);
-    if (terrainMaterial.normal)    terrainMaterial.normal->Bind(context, 1);
-    //if (terrainMaterial.metallic)  terrainMaterial.metallic->Bind(context, 2);
-    //if (terrainMaterial.roughness) terrainMaterial.roughness->Bind(context, 3);
-    //if (terrainMaterial.ao)        terrainMaterial.ao->Bind(context, 4);
+    //if (terrainMaterial.normal) terrainMaterial.normal->Bind(context, 0);
+    //if (terrainMaterial.metallic) terrainMaterial.metallic->Bind(context, 1);
+    if (terrainMaterial.alpha) terrainMaterial.alpha->Bind(context, 0);
+    if (terrainMaterial.roughness) terrainMaterial.roughness->Bind(context, 1);
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+    
     if (m_cells.empty())
     {
         EngineHelper::DebugPrint("TerrainModel: m_cells 이 비어있음");
@@ -101,21 +103,34 @@ bool TerrainModel::InitConstantBuffer(ID3D11Device* device)
     return true;
 } // InitConstantBuffer
 
-bool TerrainModel::InitHeightMap()
+void TerrainModel::InitHeightMap()
 {
-    // 이미 소유권 이전을 통해 m_HeightMap이 설정되어 있는지 확인
-    if (m_HeightMap == nullptr)
-    {
-        EngineHelper::DebugPrint("TerrainModel: m_HeightMap이 nullptr, InitHeightMap 실패.");
-        return false;
-    }
-    DirectX::XMFLOAT3 minB, maxB;
-    m_HeightMap->GetBounds(minB, maxB);
-    m_terrainWidth = static_cast<int>(maxB.x - minB.x) + 1;
-    m_terrainHeight = static_cast<int>(maxB.z - minB.z) + 1;
+    m_HeightMap = std::make_unique<HeightMap>();
+    int w = EngineSettings::terrainWidth;
+    int h = EngineSettings::terrainHeight;
 
-    return true;
+    m_HeightMap->InitPlane(w, h);
+    m_terrainWidth = w;
+    m_terrainHeight = h;
+    //// 이미 소유권 이전을 통해 m_HeightMap이 설정되어 있는지 확인
+    //if (m_HeightMap == nullptr)
+    //{
+    //    EngineHelper::DebugPrint("TerrainModel: m_HeightMap이 nullptr, InitHeightMap 실패.");
+    //    return false;
+    //}
+    //DirectX::XMFLOAT3 minB, maxB;
+    //m_HeightMap->GetBounds(minB, maxB);
+    //m_terrainWidth = static_cast<int>(maxB.x - minB.x) + 1;
+    //m_terrainHeight = static_cast<int>(maxB.z - minB.z) + 1;
+
+    //return true;
 } // InitHeightMap
+
+
+void TerrainModel::InitMaterial(const Material& mat)
+{
+    this->AddMaterial(mat);
+} // InitMaterial
 
 
 void TerrainModel::AddTerrainData(const std::vector<ModelVertex>& vertices, const std::vector<unsigned int>& indices)
@@ -132,7 +147,6 @@ void TerrainModel::AddTerrainData(const std::vector<ModelVertex>& vertices, cons
             continue;
         }
         m_fullIndices.push_back(idx + startIdx);
-        //m_fullIndices.push_back(idx + vertexOffset);
     }
     return;
 } // AddTerrainData
@@ -251,11 +265,13 @@ bool TerrainModel::CreateCells(ID3D11Device* device, int cellDimension)
                     auto& hData = m_HeightMap->GetRawData()[(globalZ * m_terrainWidth) + globalX];
 
                     ModelVertex v;
-                    v.position = { hData.x, hData.y, hData.z };
+                    v.position = { hData.x, 0.0f, hData.z };
+                    //v.position = { hData.x, hData.y, hData.z };
                     v.texture = { (float)globalX / (m_terrainWidth - 1), (float)globalZ / (m_terrainHeight - 1) };
 
                     // HeightMap이 가진 고유 노말값을 그대로 복사
-                    v.normal = { hData.nx, hData.ny, hData.nz };
+                    v.normal = { 0.0f, 1.0f, 0.0f };
+                    //v.normal = { hData.nx, hData.ny, hData.nz };
 
                     // 벡터 누적을 위해 초기화
                     v.tangent = { 0, 0, 0 };
@@ -279,7 +295,7 @@ bool TerrainModel::CreateCells(ID3D11Device* device, int cellDimension)
                     auto accumulateVectors = [&](int idx0, int idx1, int idx2)
                         {
                         DirectX::XMFLOAT3 t, b;
-                        CalculateTangentBinormal(cellVertices[idx0], cellVertices[idx1], cellVertices[idx2], t, b);
+                        MathHelper::CalculateTangentBinormal(cellVertices[idx0], cellVertices[idx1], cellVertices[idx2], t, b);
 
                         // 공유되는 각 정점에 결과값을 더해줌
                         auto addVec = [](DirectX::XMFLOAT3& dest, const DirectX::XMFLOAT3& src) {
@@ -320,48 +336,48 @@ bool TerrainModel::CreateCells(ID3D11Device* device, int cellDimension)
 } // CreateCells
 
 
-void TerrainModel::CalculateTangentBinormal(
-    const ModelVertex& v1, const ModelVertex& v2, const ModelVertex& v3,
-    DirectX::XMFLOAT3& tangent, DirectX::XMFLOAT3& binormal)
-{
-    float vector1[3], vector2[3];
-    float tuVector[2], tvVector[2];
-
-    // 두 변의 벡터 계산
-    vector1[0] = v2.position.x - v1.position.x;
-    vector1[1] = v2.position.y - v1.position.y;
-    vector1[2] = v2.position.z - v1.position.z;
-
-    vector2[0] = v3.position.x - v1.position.x;
-    vector2[1] = v3.position.y - v1.position.y;
-    vector2[2] = v3.position.z - v1.position.z;
-
-    // UV 좌표 차이 계산
-    tuVector[0] = v2.texture.x - v1.texture.x;
-    tvVector[0] = v2.texture.y - v1.texture.y;
-
-    tuVector[1] = v3.texture.x - v1.texture.x;
-    tvVector[1] = v3.texture.y - v1.texture.y;
-
-    // 접선/종법선 공식 적용
-    float den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
-
-    tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
-    tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
-    tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
-
-    binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
-    binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
-    binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
-
-    // 정규화
-    DirectX::XMVECTOR t = DirectX::XMLoadFloat3(&tangent);
-    DirectX::XMVECTOR b = DirectX::XMLoadFloat3(&binormal);
-    DirectX::XMStoreFloat3(&tangent, DirectX::XMVector3Normalize(t));
-    DirectX::XMStoreFloat3(&binormal, DirectX::XMVector3Normalize(b));
-
-    return;
-} // CalculateTangentBinormal
+//void TerrainModel::CalculateTangentBinormal(
+//    const ModelVertex& v1, const ModelVertex& v2, const ModelVertex& v3,
+//    DirectX::XMFLOAT3& tangent, DirectX::XMFLOAT3& binormal)
+//{
+//    float vector1[3], vector2[3];
+//    float tuVector[2], tvVector[2];
+//
+//    // 두 변의 벡터 계산
+//    vector1[0] = v2.position.x - v1.position.x;
+//    vector1[1] = v2.position.y - v1.position.y;
+//    vector1[2] = v2.position.z - v1.position.z;
+//
+//    vector2[0] = v3.position.x - v1.position.x;
+//    vector2[1] = v3.position.y - v1.position.y;
+//    vector2[2] = v3.position.z - v1.position.z;
+//
+//    // UV 좌표 차이 계산
+//    tuVector[0] = v2.texture.x - v1.texture.x;
+//    tvVector[0] = v2.texture.y - v1.texture.y;
+//
+//    tuVector[1] = v3.texture.x - v1.texture.x;
+//    tvVector[1] = v3.texture.y - v1.texture.y;
+//
+//    // 접선/종법선 공식 적용
+//    float den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+//
+//    tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
+//    tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+//    tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+//
+//    binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
+//    binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+//    binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
+//
+//    // 정규화
+//    DirectX::XMVECTOR t = DirectX::XMLoadFloat3(&tangent);
+//    DirectX::XMVECTOR b = DirectX::XMLoadFloat3(&binormal);
+//    DirectX::XMStoreFloat3(&tangent, DirectX::XMVector3Normalize(t));
+//    DirectX::XMStoreFloat3(&binormal, DirectX::XMVector3Normalize(b));
+//
+//    return;
+//} // CalculateTangentBinormal
 
 
 void TerrainModel::SetHeightMap(std::unique_ptr<HeightMap> hMap)

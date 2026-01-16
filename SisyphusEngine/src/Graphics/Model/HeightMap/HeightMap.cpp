@@ -27,40 +27,41 @@ HeightMap::~HeightMap()
 } // ~HeightMap
 
 
-bool HeightMap::Init(int width, int height, float scale, const std::string& filename)
-{
-	m_width = width;
-	m_height = height;
-	m_heightScale = scale;
-
-	std::vector<unsigned short> rawImage;
-	if (LoadRawFile(filename, rawImage) == false)
-	{
-		EngineHelper::DebugPrint("HeightMap::Init : 파일 로드 실패 - " + filename);
-		return false;
-	}
-
-	m_HeightMap.clear();
-	m_HeightMap.resize(rawImage.size());
-	ResetBounds();
-
-	for (int j = 0; j < m_height; j++)
-	{
-		for (int i = 0; i < m_width; i++)
-		{
-			int index = (m_width * j) + i;
-
-			m_HeightMap[index].x = (float)i;
-			m_HeightMap[index].y = (float)rawImage[index] / m_heightScale;
-			m_HeightMap[index].z = (float)j;
-
-			UpdateBounds(m_HeightMap[index].x, m_HeightMap[index].y, m_HeightMap[index].z);
-		}
-	}
-
-	CalculateNormals();
-	return true;
-} // Init
+//bool HeightMap::Init(int width, int height, float scale, const std::string& filename)
+//{
+//	m_width = width;
+//	m_height = height;
+//	m_heightScale = scale;
+//
+//	std::vector<unsigned short> rawImage;
+//	if (LoadRawFile(filename, rawImage) == false)
+//	{
+//		EngineHelper::DebugPrint("HeightMap::Init : 파일 로드 실패 - " + filename);
+//		return false;
+//	}
+//
+//	m_HeightMap.clear();
+//	m_HeightMap.resize(rawImage.size());
+//	ResetBounds();
+//
+//	for (int j = 0; j < m_height; j++)
+//	{
+//		for (int i = 0; i < m_width; i++)
+//		{
+//			int index = (m_width * j) + i;
+//
+//			m_HeightMap[index].x = (float)i;
+//			m_HeightMap[index].y = 0.0f;
+//			//m_HeightMap[index].y = (float)rawImage[index] / m_heightScale;
+//			m_HeightMap[index].z = (float)j;
+//
+//			UpdateBounds(m_HeightMap[index].x, m_HeightMap[index].y, m_HeightMap[index].z);
+//		}
+//	}
+//
+//	CalculateNormals();
+//	return true;
+//} // Init
 
 
 bool HeightMap::Init(const std::vector<ModelVertex>& vertices, const std::vector<unsigned int>& indices)
@@ -80,12 +81,45 @@ bool HeightMap::Init(const std::vector<ModelVertex>& vertices, const std::vector
 } // Init
 
 
+void HeightMap::InitPlane(int width, int height)
+{
+	m_width = width;
+	m_height = height;
+	m_heightScale = 1.0f;
+
+	m_HeightMap.clear();
+	m_HeightMap.resize(m_width * m_height);
+	ResetBounds();
+
+	for (int j = 0; j < m_height; j++)
+	{
+		for (int i = 0; i < m_width; i++)
+		{
+			int index = (m_width * j) + i;
+
+			m_HeightMap[index].x = (float)i;
+			m_HeightMap[index].y = 0.0f;
+			m_HeightMap[index].z = (float)j;
+
+			m_HeightMap[index].nx = 0.0f;
+			m_HeightMap[index].ny = 1.0f;
+			m_HeightMap[index].nz = 0.0f;
+
+			UpdateBounds(m_HeightMap[index].x, m_HeightMap[index].y, m_HeightMap[index].z);
+		}
+	}
+
+	return;
+} // InitPlane
+
+
 void HeightMap::Shutdown()
 {
 	m_HeightMap.clear();
 	return;
 } // Shutdown
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* public: get */
 ////////////////////////////////////////////////////////////

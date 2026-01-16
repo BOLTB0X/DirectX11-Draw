@@ -2,7 +2,7 @@
 #include "MeshModel.h"
 #include "Mesh/Mesh.h"
 #include "Texture/Material.h"
-#include "Shader/ActorsShader.h"
+#include "Shader/Shader.h"
 #include "Camera/Frustum.h"
 // Common
 #include "EngineHelper.h"
@@ -17,7 +17,7 @@ MeshModel::MeshModel() {};
 MeshModel::~MeshModel() {};
 
 
-void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix)
+void MeshModel::Render(ID3D11DeviceContext* context, Shader* shader, Frustum* frustum, DirectX::XMMATRIX worldMatrix)
 {
     DirectX::XMFLOAT4X4 worldFB4;
     DirectX::XMStoreFloat4x4(&worldFB4, worldMatrix);
@@ -65,10 +65,10 @@ void MeshModel::Render(ID3D11DeviceContext* context, ActorsShader* shader, Frust
             }
 
             if (material.albedo) material.albedo->Bind(context, 0);
-            if (material.normal)    material.normal->Bind(context, 1);
-            if (material.metallic)  material.metallic->Bind(context, 2);
+            if (material.normal) material.normal->Bind(context, 1);
+            if (material.metallic) material.metallic->Bind(context, 2);
             if (material.roughness) material.roughness->Bind(context, 3);
-            if (material.ao)        material.ao->Bind(context, 4);
+            if (material.alpha) material.alpha->Bind(context, 4);
 
         }
 
@@ -143,3 +143,78 @@ float MeshModel::GetBottomOffset()
     
     return -minY;
 } // GetBottomOffset
+
+
+float MeshModel::GetMinWidth() const
+{
+    float minX = 0.0f;
+    for (const auto& mesh : m_meshes)
+        minX = (std::min)(minX, mesh->GetMin().x);
+    return minX;
+} // GetMinWidth
+
+
+float MeshModel::GetMaxWidth() const
+{
+    float maxX = 0.0f;
+    for (const auto& mesh : m_meshes)
+        maxX = (std::max)(maxX, mesh->GetMax().x);
+    return maxX;
+} // GetMaxWidth
+
+
+float MeshModel::GetMinHeight() const
+{
+    float minY = 0.0f;
+    for (const auto& mesh : m_meshes)
+        minY = (std::min)(minY, mesh->GetMin().y);
+    return minY;
+} // GetMinHeight
+
+
+float MeshModel::GetMaxHeight() const
+{
+    float maxY = 0.0f;
+    for (const auto& mesh : m_meshes)
+        maxY = (std::max)(maxY, mesh->GetMax().y);
+    return maxY;
+} // GetMaxHeight
+
+
+float MeshModel::GetMinDepth() const
+{
+    float minZ = 0.0f;
+    for (const auto& mesh : m_meshes)
+        minZ = (std::min)(minZ, mesh->GetMin().z);
+    return minZ;
+} // GetMinDepth
+
+
+float MeshModel::GetMaxDepth() const
+{
+    float maxZ = 0.0f;
+    for (const auto& mesh : m_meshes)
+        maxZ = (std::max)(maxZ, mesh->GetMax().z);
+    return maxZ;
+} // GetMaxDepth
+
+
+void MeshModel::GetBoundingBox(DirectX::XMFLOAT3& min, DirectX::XMFLOAT3& max) const
+{
+    min = { FLT_MAX, FLT_MAX, FLT_MAX };
+    max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+    for (const auto& mesh : m_meshes)
+    {
+        const auto& mMin = mesh->GetMin();
+        const auto& mMax = mesh->GetMax();
+
+        min.x = (std::min)(min.x, mMin.x);
+        min.y = (std::min)(min.y, mMin.y);
+        min.z = (std::min)(min.z, mMin.z);
+
+        max.x = (std::max)(max.x, mMax.x);
+        max.y = (std::max)(max.y, mMax.y);
+        max.z = (std::max)(max.z, mMax.z);
+    }
+} // GetBoundingBox

@@ -17,7 +17,8 @@
 CloudOcean::CloudOcean()
     : m_modelPtr(nullptr),
     m_shaderPtr(nullptr),
-    m_name("")
+    m_name(""),
+    m_totalTime(0.0f)
 {
 } // CloudOcean
 
@@ -62,9 +63,8 @@ void CloudOcean::Render(ID3D11DeviceContext* context, Camera* camera)
     );
 
     m_shaderPtr->Bind(context);
-
-    auto frustum = camera->GetFrustum();
-    m_modelPtr->Render(context, m_shaderPtr, frustum, worldMatrix);
+    m_modelPtr->Render(context, m_shaderPtr, camera->GetFrustum(), worldMatrix);
+    return;
 } // Render
 
 
@@ -78,6 +78,14 @@ void CloudOcean::Shutdown()
         m_Position.reset();
     }
 } // Shutdown
+
+
+void CloudOcean::Frame(float frameTime)
+{
+    m_totalTime += frameTime;
+    m_modelPtr->SetTime(m_totalTime);
+} // Frame
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -96,20 +104,13 @@ float CloudOcean::GetHeightAtWorld(float worldX, float worldZ) const
 {
     if (m_modelPtr == nullptr || m_modelPtr->GetHeightMap() == nullptr) return 0.0f;
 
-    // 1. 월드 좌표 -> 로컬 좌표 변환
     DirectX::XMFLOAT3 myPos = m_Position->GetPosition();
     float localX = worldX - myPos.x;
     float localZ = worldZ - myPos.z;
 
-    // 2. [중요] TerrainLoader의 Z축 역전 보정 (필요한 경우)
-    // Init 시점에 z를 j(0~height)로 넣으셨으므로, 로더와 맞추기 위해 보정합니다.
-    // 만약 로더에서 (Height-1)-j 로 넣었다면 아래 코드가 필요합니다.
-    int terrainH = 512; // 실제 지형 높이값 사용 (정보가 있다면 가져오기)
+    int terrainH = 512;
     float correctedZ = (float)(terrainH - 1) - localZ;
 
-    // 3. 로컬 높이값 추출
     float localHeight = m_modelPtr->GetHeightMap()->GetHeightAtGrid(localX, localZ);
-
-    // 4. 로컬 높이 -> 월드 높이 변환 (지형 자체의 Y축 위치와 Scale 반영)
     return (localHeight * m_Position->GetScale().x) + myPos.y;
 } // GetHeightAtWorld
