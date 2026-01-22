@@ -11,8 +11,10 @@ class Fps;
 class UI;
 class UserInput;
 class CloudShader;
-class GeometryArea;
 class TexturesManager;
+class DefaultModel;
+class SunShader;
+class Light;
 
 class MainEngine {
 public:
@@ -45,5 +47,8 @@ private:
     std::unique_ptr<TexturesManager> m_TexturesManager;
     // TODO: RenderingEngie 으로 옮길 예정
     std::unique_ptr<CloudShader> m_CloudShader;
-    std::unique_ptr<GeometryArea> m_CloudArea;
+    std::unique_ptr<DefaultModel> m_CloudArea; // 레이마칭용 Quad
+    std::unique_ptr<Light> m_Light; // 광원 데이터 (위치, 색상, 강도)
+    std::unique_ptr<DefaultModel> m_SunModel;
+    std::unique_ptr<SunShader> m_SunShader;
 }; // MainEngine

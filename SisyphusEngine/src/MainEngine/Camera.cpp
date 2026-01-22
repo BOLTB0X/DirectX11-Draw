@@ -83,6 +83,12 @@ void Camera::SetRotation(float x, float y, float z)
 } // SetRotation
 
 
+XMFLOAT3 Camera::GetPosition()
+{
+    return m_Position->GetPosition();
+} // GetPosition
+
+
 XMMATRIX Camera::GetWorldMatrix()
 {
     return m_Position->GetWorldMatrix();

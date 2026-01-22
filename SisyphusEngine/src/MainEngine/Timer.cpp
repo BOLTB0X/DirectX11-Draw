@@ -1,14 +1,14 @@
 // System/Timer.cpp
 #include "Timer.h"
 
-/* default */
-/////////////////////////////////////////////////////////////////////
+
 Timer::Timer()
 	: m_frequency(0.0f),
 	m_startTime(0),
 	m_frameTime(0.0f),
 	m_beginTime(0),
-	m_endTime(0)
+	m_endTime(0),
+	m_totalTime(0.0f)
 {
 } // Timer
 
@@ -51,20 +51,14 @@ void Timer::Frame()
 	// 프레임 시간을 계산.
 	m_frameTime = (float)elapsedTicks / m_frequency;
 
+	m_totalTime += m_frameTime;
+
 	// 타이머를 다시 시작
 	m_startTime = currentTime;
 
 	return;
 } // Frame
-/////////////////////////////////////////////////////////////////////
 
-
-/* 인터페이스 */
-/////////////////////////////////////////////////////////////////////
-float Timer::GetTime()
-{
-	return m_frameTime;
-} // GetTime
 
 
 void Timer::StartTimer()
@@ -97,4 +91,4 @@ int Timer::GetTiming()
 
 	return (int)milliseconds;
 } // GetTiming
-/////////////////////////////////////////////////////////////////////
+

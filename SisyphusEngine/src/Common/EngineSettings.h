@@ -19,11 +19,12 @@ namespace EngineSettings {
 
 namespace EngineSettings { // 모델 및 텍스처
     const std::string ASSET_PATH = "assets/";
-    const std::string NOISE_PATH = ASSET_PATH + "Cloud/noise2.png";
+    const std::string NOISE_PATH = ASSET_PATH + "Cloud/noise.png";
 }
 
 
 namespace EngineSettings { // HLSL
-    const std::wstring CLOUD_VS = L"HLSL/CloudVS.hlsl";
+    const std::wstring DEFAULT_VS = L"HLSL/DefaultVS.hlsl";
     const std::wstring CLOUD_PS = L"HLSL/CloudPS.hlsl";
+    const std::wstring SUN_PS = L"HLSL/SunPS.hlsl";
 };

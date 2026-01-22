@@ -1,11 +1,11 @@
 #include "Renderer.h"
-// Framework
 #include "DisplayInfo.h"
 #include "DX11Device.h"
 #include "RenderTarget.h"
 #include "Rasterizer.h"
 #include "DepthStencilState.h"
 #include "BlendState.h"
+#include "SamplerState.h"
 // Common
 #include "EngineSettings.h"
 
@@ -20,6 +20,7 @@ Renderer::Renderer()
     m_Rasterizer = std::make_unique<Rasterizer>();
     m_DepthStencilState = std::make_unique<DepthStencilState>();
     m_BlendState = std::make_unique<BlendState>();
+    m_SamplerState = std::make_unique<SamplerState>();
 } // Renderer
 
 Renderer::~Renderer() {}
@@ -62,6 +63,8 @@ bool Renderer::Init(HWND hwnd, bool vsync)
         return false;
     if (m_BlendState->Init(device) == false)
         return false;
+    if (m_SamplerState->Init(device)
+        == false) return false;
     return true;
 } // Init
 
@@ -134,3 +137,10 @@ void Renderer::SetBackBufferRenderTarget()
     context->OMSetRenderTargets(1, &rtv, dsv);
 
 } // SetBackBufferRenderTarget
+
+
+void Renderer::SetSampler(UINT slot)
+{
+    m_SamplerState->VSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+    m_SamplerState->PSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+} // SetSampler

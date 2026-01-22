@@ -56,46 +56,19 @@ bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
 } // Init
 
 
-void CloudShader::BindShader(ID3D11DeviceContext* context)
+void CloudShader::SetShaders(ID3D11DeviceContext* context)
 {
     context->IASetInputLayout(m_layout.Get());
     context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
     context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-} // BindShader
+} // SetShaders
 
 
-void CloudShader::BindConstantBuffers(ID3D11DeviceContext* context)
+void CloudShader::SetConstantBuffers(ID3D11DeviceContext* context, ID3D11Buffer* lightBuffer)
 {
     context->VSSetConstantBuffers(0, 1, m_matrixBuffer.GetAddressOf()); // 행렬(b0)
     context->PSSetConstantBuffers(1, 1, m_globalBuffer.GetAddressOf()); // 레이마칭(b1)
-} // BindConstantBuffers
+    
+    context->PSSetConstantBuffers(2, 1, &lightBuffer);
+} // SetConstantBuffers
 
-
-bool CloudShader::UpdateMatrixBuffer(ID3D11DeviceContext* context, XMMATRIX model, XMMATRIX view, XMMATRIX proj)
-{
-    D3D11_MAPPED_SUBRESOURCE mapped;
-    if (FAILED(context->Map(m_matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
-
-    MatrixBuffer* data = (MatrixBuffer*)mapped.pData;
-    data->model = XMMatrixTranspose(model);
-    data->view = XMMatrixTranspose(view);
-    data->projection = XMMatrixTranspose(proj);
-
-    context->Unmap(m_matrixBuffer.Get(), 0);
-    return true;
-} // UpdateMatrixBuffer
-
-
-bool CloudShader::UpdateGlobalBuffer(ID3D11DeviceContext* context, float time, float uNoiseRes)
-{
-    D3D11_MAPPED_SUBRESOURCE mapped;
-    if (FAILED(context->Map(m_globalBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
-
-    GlobalBuffer* data = (GlobalBuffer*)mapped.pData;
-    data->uTime = time;
-    data->uResolution = XMFLOAT2(EngineSettings::SCREEN_WIDTH, EngineSettings::SCREEN_HEIGHT);
-    data->uNoiseRes = uNoiseRes;
-
-    context->Unmap(m_globalBuffer.Get(), 0);
-    return true;
-} // UpdateGlobalBuffer

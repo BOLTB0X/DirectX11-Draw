@@ -19,6 +19,7 @@ struct PixelInput
 {
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
+    float3 worldPos : POSITION;
 }; // PixelInput
 
 
@@ -27,9 +28,11 @@ PixelInput main(VertexInput input)
     PixelInput output;
     
     input.position.w = 1.0f;
-    //output.position = input.position;
-    output.position = mul(input.position, modelMatrix);
-    output.position = mul(output.position, viewMatrix);
+    
+    float4 worldPos = mul(input.position, modelMatrix);
+    output.worldPos = worldPos.xyz;
+    
+    output.position = mul(worldPos, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
     
     output.tex = input.tex;

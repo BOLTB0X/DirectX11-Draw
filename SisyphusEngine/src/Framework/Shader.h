@@ -10,9 +10,14 @@ public:
     Shader();
 	Shader(const Shader&) = delete;
 
-public: // virtual
+public:
+    // virtual
     virtual ~Shader() = default;
     virtual bool Init(ID3D11Device*, HWND, const std::wstring&, const std::wstring&) = 0;
+
+    // common
+    bool UpdateMatrixBuffer(ID3D11DeviceContext*, DirectX::XMMATRIX, DirectX::XMMATRIX, DirectX::XMMATRIX);
+    bool UpdateGlobalBuffer(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, float);
 
 protected:
     bool Compile(ID3D11Device*, HWND , const std::wstring&, LPCSTR, LPCSTR, ID3DBlob**);
@@ -21,13 +26,17 @@ protected:
 protected:
     struct GlobalBuffer {
         // 1
-        float uTime;
-        DirectX::XMFLOAT3 padding;
+        float uTime;                    // 4 bytes
+        DirectX::XMFLOAT3 padding;      // 12 bytes
 
         // 2
-        DirectX::XMFLOAT2 uResolution;
-        float uNoiseRes;
-        float padding2;
+        DirectX::XMFLOAT3 uCameraPos;   // 12 bytes
+        float padding1;                 // 4 bytes
+
+        // 3
+        DirectX::XMFLOAT2 uResolution;  // 8 bytes
+        float uNoiseRes;                // 4 bytes
+        float padding2;                 // 4 bytes (합쳐서 16B)
     };
 
     struct MatrixBuffer

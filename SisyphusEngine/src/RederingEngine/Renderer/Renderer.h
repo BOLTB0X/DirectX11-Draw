@@ -10,6 +10,7 @@ class RenderTarget;
 class Rasterizer;
 class DepthStencilState;
 class BlendState;
+class SamplerState;
 
 class Renderer {
 public:
@@ -28,6 +29,7 @@ public:
     void SetAlphaBlending(bool);
     void SetDepthBuffer(bool);
     void SetBackBufferRenderTarget();
+    void SetSampler(UINT slot);
 
     ID3D11Device* GetDevice() const;
     ID3D11DeviceContext* GetDeviceContext() const;
@@ -44,4 +46,5 @@ private:
     std::unique_ptr<Rasterizer> m_Rasterizer;
     std::unique_ptr<DepthStencilState> m_DepthStencilState;
     std::unique_ptr<BlendState> m_BlendState;
+    std::unique_ptr<SamplerState> m_SamplerState;
 }; // Renderer

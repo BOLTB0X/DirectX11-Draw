@@ -1,6 +1,4 @@
-// Base/Position.h
 #pragma once
-
 #include <directxmath.h>
 
 class Position {

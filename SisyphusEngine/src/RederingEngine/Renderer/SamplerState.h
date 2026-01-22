@@ -15,5 +15,5 @@ public:
     void PSSetSamplers(ID3D11DeviceContext* context, UINT slot = 0);
 
 private:
-    Microsoft::WRL::ComPtr<ID3D11SamplerState> m_samplerState;
-};
+    Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState;
+}; // SamplerState

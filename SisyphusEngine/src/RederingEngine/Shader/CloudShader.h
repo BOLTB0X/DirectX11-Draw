@@ -13,10 +13,7 @@ public:
         const std::wstring&, const std::wstring&) override;
 
 public:
-    void BindShader(ID3D11DeviceContext* context);
-    void BindConstantBuffers(ID3D11DeviceContext* context);
-
-    bool UpdateMatrixBuffer(ID3D11DeviceContext*, DirectX::XMMATRIX, DirectX::XMMATRIX, DirectX::XMMATRIX);
-    bool UpdateGlobalBuffer(ID3D11DeviceContext*, float, float);
+    void SetShaders(ID3D11DeviceContext*);
+    void SetConstantBuffers(ID3D11DeviceContext*, ID3D11Buffer*);
 
 }; // CloudShader

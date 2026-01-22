@@ -1,9 +1,12 @@
 #include "Shader.h"
 // Common
 #include "EngineHelper.h"
+#include "EngineSettings.h"
 // etc
 #include <d3dcompiler.h>
 #include <fstream>
+
+using namespace DirectX;
 
 
 Shader::Shader() { } // Shader
@@ -60,3 +63,35 @@ void Shader::OutputError(
 
     MessageBoxW(hwnd, L"compiling shader 에러. shader-error.txt 확인 요망", path.c_str(), MB_OK);
 } // OutputError
+
+
+bool Shader::UpdateMatrixBuffer(ID3D11DeviceContext* context,
+    XMMATRIX model, XMMATRIX view, XMMATRIX proj)
+{
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    if (FAILED(context->Map(m_matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
+
+    MatrixBuffer* data = (MatrixBuffer*)mapped.pData;
+    data->model = XMMatrixTranspose(model);
+    data->view = XMMatrixTranspose(view);
+    data->projection = XMMatrixTranspose(proj);
+
+    context->Unmap(m_matrixBuffer.Get(), 0);
+    return true;
+} // UpdateMatrixBuffer
+
+
+bool Shader::UpdateGlobalBuffer(ID3D11DeviceContext* context, float time, DirectX::XMFLOAT3 cameraPos, float uNoiseRes)
+{
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    if (FAILED(context->Map(m_globalBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
+
+    GlobalBuffer* data = (GlobalBuffer*)mapped.pData;
+    data->uTime = time;
+    data->uCameraPos = cameraPos;
+    data->uResolution = DirectX::XMFLOAT2(EngineSettings::SCREEN_WIDTH, EngineSettings::SCREEN_HEIGHT);
+    data->uNoiseRes = uNoiseRes;
+
+    context->Unmap(m_globalBuffer.Get(), 0);
+    return true;
+} // UpdateGlobalBuffer

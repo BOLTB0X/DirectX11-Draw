@@ -20,7 +20,8 @@ public:
     void SetPosition(float, float, float);
     void SetRotation(float, float, float);
 
-    Position* GetPosition() const { return m_Position.get(); }
+    DirectX::XMFLOAT3 GetPosition();
+    Position* GetPositionPtr() const { return m_Position.get(); }
     Frustum* GetFrustum() const { return m_Frustum.get(); }
 
     DirectX::XMMATRIX GetWorldMatrix();

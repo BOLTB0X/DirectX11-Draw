@@ -1,7 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-// Resources
-#include "VertexTypes.h"
+#include "Model/VertexTypes.h"
 
 
 namespace MathHelper { // 물리 및 이동 관련 상수
