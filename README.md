@@ -104,6 +104,7 @@
 │  │  ├─ World/
 │  │  │  ├─ World.h/cpp
 ```
+<!-- 띄우기 -->
 
 </details>
 
@@ -119,20 +120,10 @@
 
 - [Github - assimp](https://github.com/assimp/assimp)
 
-#### [모델 출처 -> sketchfab](https://sketchfab.com/feed)
-
-- [Stone 이용: sketchfab - Ground//Stone Sphere(Madee)](https://sketchfab.com/3d-models/groundstone-sphere-1c0f2b2e213348e6a760743a546dc7a6)
-
-- Terrain
-
-    - [goto Shader 코드 참고](https://godotshaders.com/shader/cloud-material/)
-
-    - [normalMap 이용: filterforge `Cloud_normal.jpg`](https://www.filterforge.com/filters/6395-normal.html)
-
-- [Mountain 이용: sketchfab - Cloudy Mountain(Pers Scans)](https://sketchfab.com/3d-models/cloudy-mountain-f61d84c6534d4007accdeac35f433119)
-
 
 ## 참고
+
+### Code 및 개념
 
 - [rastertek - DirectX 11 on Windows 10 Tutorials](https://www.rastertek.com/tutdx11win10.html)
 
@@ -171,3 +162,21 @@
 - [네이버 블로그 참고 - DirectX 트리 ( 쿼드트리, 옥트리 ) 기본 설명(로기)](https://m.blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=jsjhahi&logNo=201309282)
 
 - [티스토리 - 쿼드트리(copynull)](https://copynull.tistory.com/308)
+
+
+- [노이즈 텍스처 출처 - realtimevfx](https://realtimevfx.com/t/realistic-cloud-texture/19207)
+
+- [블로그 참고 - 불륨마칭(maximeheckel)](https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/)
+
+- [hree.js forum 참고 - volumetric clouds - game ready](https://discourse.threejs.org/t/volumetric-clouds-game-ready/86598)
+
+- [goto Shader 코드 참고](https://godotshaders.com/shader/cloud-material/)
+
+
+#### [모델 출처 -> sketchfab](https://sketchfab.com/feed)
+
+- [Stone 이용: sketchfab - Ground//Stone Sphere(Madee)](https://sketchfab.com/3d-models/groundstone-sphere-1c0f2b2e213348e6a760743a546dc7a6)
+
+- [normalMap 이용: filterforge `Cloud_normal.jpg`](https://www.filterforge.com/filters/6395-normal.html)
+
+- [Mountain 이용: sketchfab - Cloudy Mountain(Pers Scans)](https://sketchfab.com/3d-models/cloudy-mountain-f61d84c6534d4007accdeac35f433119)
