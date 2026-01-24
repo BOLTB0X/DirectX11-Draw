@@ -172,6 +172,7 @@
 
 - [goto Shader 코드 참고](https://godotshaders.com/shader/cloud-material/)
 
+- [블로그 참고 - 1인칭 카메라 조작(mstone8370)](https://mstone8370.tistory.com/26)
 
 #### [모델 출처 -> sketchfab](https://sketchfab.com/feed)
 
