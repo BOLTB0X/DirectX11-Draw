@@ -2,13 +2,13 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <DirectXMath.h>
 #include "IImGUI.h"
+// Common
+#include "PropertyHelper.h"
+
 
 class IWidget;
-class Fps;
-class Timer;
-class Renderer;
-class Camera;
 
 
 class UI {
@@ -29,7 +29,15 @@ public:
 public:
     void AddWidget(std::unique_ptr<IWidget>);
     void ToggleWidget();
-    void CreateWidget(Timer*, Fps*, Camera*, bool*, bool*, bool*);
+    void CreateWidget(
+        PropertyHelper::Property<float>,
+        PropertyHelper::Property<int>,
+        PropertyHelper::Property<DirectX::XMFLOAT3>,
+        PropertyHelper::Property<DirectX::XMFLOAT3>,
+        PropertyHelper::Property<float>,
+        PropertyHelper::Property<bool>,
+        PropertyHelper::Property<bool>,
+        PropertyHelper::Property<bool>);
     bool IsWorldClicked(bool mousePressed) const;
 
 public:

@@ -1,6 +1,7 @@
+#include "Pch.h"
 #include "Rasterizer.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
 
 Rasterizer::Rasterizer() {}
@@ -25,14 +26,14 @@ bool Rasterizer::Init(ID3D11Device* device)
     rasterDesc.ScissorEnable = false;
     rasterDesc.SlopeScaledDepthBias = 0.0f;
 
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         device->CreateRasterizerState(&rasterDesc, &m_solidState),
         "Solid RasterizerState 생성 실패")
         == false) return false;
 
     // 와이어프레임 상태
     rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         device->CreateRasterizerState(&rasterDesc, &m_wireframeState),
         "Wireframe RasterizerState 생성 실패")
         == false) return false;
@@ -40,7 +41,7 @@ bool Rasterizer::Init(ID3D11Device* device)
     // 컬링 없는 상태
     rasterDesc.FillMode = D3D11_FILL_SOLID;
     rasterDesc.CullMode = D3D11_CULL_NONE;
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         device->CreateRasterizerState(&rasterDesc, &m_noCullingState),
         "NoCulling RasterizerState 생성 실패")
         == false) return false;

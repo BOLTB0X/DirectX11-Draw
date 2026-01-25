@@ -1,10 +1,11 @@
+#include "Pch.h"
 #include "IImGUI.h"
 // imgui
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
 
 IImGUI::IImGUI()
@@ -27,17 +28,17 @@ bool IImGUI::Init(HWND hwnd,
     // ImGui 컨텍스트 생성 확인
     IMGUI_CHECKVERSION();
     if (ImGui::CreateContext() == false) {
-        EngineHelper::ErrorBox(hwnd, L"ImGui Context 생성 실패");
+        DebugHelper::ErrorBox(hwnd, L"ImGui Context 생성 실패");
         return false;
     }
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    if (EngineHelper::SuccessCheck(ImGui_ImplWin32_Init(hwnd),
+    if (DebugHelper::SuccessCheck(ImGui_ImplWin32_Init(hwnd),
         "ImGui Win32 백엔드 초기화 실패") == false) return false;
 
-    if (EngineHelper::SuccessCheck(ImGui_ImplDX11_Init(device, deviceContext),
+    if (DebugHelper::SuccessCheck(ImGui_ImplDX11_Init(device, deviceContext),
         "ImGui DX11 백엔드 초기화 실패") == false) return false;
 
     ImGui::StyleColorsDark();

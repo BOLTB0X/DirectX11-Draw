@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "Renderer.h"
 #include "DisplayInfo.h"
 #include "DX11Device.h"
@@ -7,7 +8,7 @@
 #include "BlendState.h"
 #include "SamplerState.h"
 // Common
-#include "EngineSettings.h"
+#include "ConstantHelper.h"
 
 
 Renderer::Renderer()
@@ -32,14 +33,14 @@ bool Renderer::Init(HWND hwnd, bool vsync)
 
     // 장치 생성
     if (m_DisplayInfo->Init(
-        EngineSettings::SCREEN_WIDTH,
-        EngineSettings::SCREEN_HEIGHT) == false) return false;
+        ConstantHelper::SCREEN_WIDTH,
+        ConstantHelper::SCREEN_HEIGHT) == false) return false;
 
     // DisplayInfo의 정보 주입 및 스왑체인 생성
     if (m_DX11Device->Init(hwnd,
-        EngineSettings::SCREEN_WIDTH,
-        EngineSettings::SCREEN_HEIGHT,
-        EngineSettings::FULL_SCREEN,
+        ConstantHelper::SCREEN_WIDTH,
+        ConstantHelper::SCREEN_HEIGHT,
+        ConstantHelper::FULL_SCREEN,
         vsync,
         m_DisplayInfo->GetNumerator(),
         m_DisplayInfo->GetDenominator())
@@ -50,8 +51,8 @@ bool Renderer::Init(HWND hwnd, bool vsync)
     if (m_RenderTarget->Init(
         m_DX11Device->GetDevice(),
         m_DX11Device->GetSwapChain(),
-        EngineSettings::SCREEN_WIDTH,
-        EngineSettings::SCREEN_HEIGHT)
+        ConstantHelper::SCREEN_WIDTH,
+        ConstantHelper::SCREEN_HEIGHT)
         == false)
         return false;
 
@@ -80,7 +81,7 @@ void Renderer::BeginScene(float r, float g, float b, float a)
 
 void Renderer::EndScene()
 {
-    bool vsync = EngineSettings::VSYNC_ENABLED;
+    bool vsync = ConstantHelper::VSYNC_ENABLED;
     if (vsync)
     {
         m_DX11Device->GetSwapChain()->Present(1, 0);
@@ -131,13 +132,13 @@ void Renderer::SetMode(bool enable, bool back)
 
 void Renderer::SetAlphaBlending(bool enable)
 {
-    m_BlendState->Bind(m_DX11Device->GetDeviceContext(), enable);
+    m_BlendState->OMSetBlendState(m_DX11Device->GetDeviceContext(), enable);
 } // SetAlphaBlending
 
 
 void Renderer::SetDepthBuffer(bool enable)
 {
-    m_DepthStencilState->Bind(m_DX11Device->GetDeviceContext(), enable);
+    m_DepthStencilState->OMSetDepthStencilState(m_DX11Device->GetDeviceContext(), enable);
 } // SetDepthBuffer
 
 

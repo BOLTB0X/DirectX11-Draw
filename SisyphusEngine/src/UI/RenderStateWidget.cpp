@@ -1,17 +1,21 @@
 #include "RenderStateWidget.h"
 #include "imgui.h"
 
+
 using namespace ImGui;
+using namespace PropertyHelper;
 
 
 RenderStateWidget::RenderStateWidget(
-    const std::string& name,
-    bool* wire, bool* back, bool* depth)
-    : IWidget(name)
+    const std::string & name,
+    Property<bool> wireProp,
+    Property<bool> backProp,
+    Property<bool> depthProp)
+    : IWidget(name),
+    m_wireProp(wireProp),
+    m_backProp(backProp),
+    m_depthProp(depthProp)
 {
-    m_isWireframe = wire;
-    m_isBack = back;
-    m_isDepth = depth;
 } // RenderStateWidget
 
 
@@ -19,23 +23,21 @@ void RenderStateWidget::Frame()
 {
     Begin(i_name.c_str());
 
-    if (m_isWireframe == nullptr || m_isBack == nullptr || m_isDepth == nullptr)
-    {
-        End();
-        return;
-    }
+    bool wire = m_wireProp.Get();
+    bool back = m_backProp.Get();
+    bool depth = m_depthProp.Get();
 
-    Checkbox("Wireframe Mode", m_isWireframe);
-    Checkbox("Backface Culling", m_isBack);
-    Checkbox("Depth Test", m_isDepth);
+    if (Checkbox("Wireframe", &wire)) m_wireProp.Set(wire);
+    if (Checkbox("BackCull", &back))  m_backProp.Set(back);
+    if (Checkbox("DepthEnable", &depth)) m_depthProp.Set(depth);
 
     Separator();
     if (ImGui::Button("Reset"))
     {
-        *m_isWireframe = false;
-        *m_isBack = false;
-        *m_isDepth = true;
+        m_wireProp.Set(false);
+        m_backProp.Set(false);
+        m_depthProp.Set(true);
     }
 
     End();
-} // Frame
+} // RenderStateWidget

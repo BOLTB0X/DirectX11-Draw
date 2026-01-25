@@ -1,8 +1,8 @@
-// System/Input.cpp
+#include "Pch.h"
 #include "Input.h"
 // Common
-#include "EngineSettings.h"
-#include "EngineHelper.h"
+#include "ConstantHelper.h"
+#include "DebugHelper.h"
 
 /* default */
 /////////////////////////////////////////////////////////////////////
@@ -36,40 +36,40 @@ bool Input::Init(HINSTANCE hinstance, HWND hwnd)
 
 	// DirectInput8 메인 객체 생성
 	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
-	if (EngineHelper::CheckFailed(result, "DirectInput8Create 생성 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "DirectInput8Create 생성 실패")) return false;
 
 	// 키보드 디바이스 생성
 	result = m_directInput->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL);
-	if (EngineHelper::CheckFailed(result, "m_keyboard CreateDevice 생성 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "m_keyboard CreateDevice 생성 실패")) return false;
 
 	// 키보드 데이터 형식 설정
 	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
-	if (EngineHelper::CheckFailed(result, "키보드 SetDataFormat 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "키보드 SetDataFormat 실패")) return false;
 
 	// 키보드 협업 수준 설정
 	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	if (EngineHelper::CheckFailed(result, "키보드 SetCooperativeLevel 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "키보드 SetCooperativeLevel 실패")) return false;
 
 	//  키보드 권한 획득
 	result = m_keyboard->Acquire();
-	if (EngineHelper::CheckFailed(result, "키보드 Acquire 실패")) {
+	if (DebugHelper::CheckFailed(result, "키보드 Acquire 실패")) {
 	}
 
 	// 마우스 디바이스 생성
 	result = m_directInput->CreateDevice(GUID_SysMouse, &m_mouse, NULL);
-	if (EngineHelper::CheckFailed(result, "마우스 CreateDevice 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "마우스 CreateDevice 실패")) return false;
 
 	// 마우스 데이터 형식 설정
 	result = m_mouse->SetDataFormat(&c_dfDIMouse);
-	if (EngineHelper::CheckFailed(result, "마우스 SetDataFormat 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "마우스 SetDataFormat 실패")) return false;
 
 	// 마우스 협업 수준 설정
 	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	if (EngineHelper::CheckFailed(result, "마우스 SetCooperativeLevel 실패")) return false;
+	if (DebugHelper::CheckFailed(result, "마우스 SetCooperativeLevel 실패")) return false;
 
 	// 마우스 권한 획득
 	result = m_mouse->Acquire();
-	if (EngineHelper::CheckFailed(result, "마우스 Acquire 실패")) {
+	if (DebugHelper::CheckFailed(result, "마우스 Acquire 실패")) {
 	}
 
 	return true;
@@ -372,8 +372,8 @@ void Input::ProcessInput()
 	if (m_mouseX < 0) { m_mouseX = 0; }
 	if (m_mouseY < 0) { m_mouseY = 0; }
 
-	if (m_mouseX > EngineSettings::SCREEN_WIDTH) { m_mouseX = EngineSettings::SCREEN_WIDTH; }
-	if (m_mouseY > EngineSettings::SCREEN_HEIGHT) { m_mouseY = EngineSettings::SCREEN_HEIGHT; }
+	if (m_mouseX > ConstantHelper::SCREEN_WIDTH) { m_mouseX = ConstantHelper::SCREEN_WIDTH; }
+	if (m_mouseY > ConstantHelper::SCREEN_HEIGHT) { m_mouseY = ConstantHelper::SCREEN_HEIGHT; }
 
 	return;
 } // ProcessInput

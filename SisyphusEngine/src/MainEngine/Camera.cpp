@@ -1,9 +1,10 @@
+#include "Pch.h"
 #include "Camera.h"
 #include "Frustum.h"
 // Framework
 #include "Position.h"
 // Common
-#include "EngineSettings.h"
+#include "ConstantHelper.h"
 #include "MathHelper.h"
 
 
@@ -13,12 +14,12 @@ using namespace DirectX;
 Camera::Camera()
     : m_up(XMFLOAT3(0.f, 1.f, 0.f)),
     m_fov(45.0f),
-    m_near(EngineSettings::SCREEN_NEAR),
-    m_far(EngineSettings::SCREEN_DEPTH),
+    m_near(ConstantHelper::SCREEN_NEAR),
+    m_far(ConstantHelper::SCREEN_DEPTH),
     m_maxPitch(179.9f),
     m_minPitch(-179.9f)
 {
-    m_aspect = (float)EngineSettings::SCREEN_WIDTH / (float)EngineSettings::SCREEN_HEIGHT;
+    m_aspect = (float)ConstantHelper::SCREEN_WIDTH / (float)ConstantHelper::SCREEN_HEIGHT;
     m_Position = std::make_unique<Position>();
     m_Frustum = std::make_unique<Frustum>();
     m_Frustum->Init(m_far);
@@ -26,24 +27,6 @@ Camera::Camera()
 
 
 Camera::~Camera() {} // ~Camera
-
-
-//void Camera::InitView()
-//{
-//    XMVECTOR eye = XMLoadFloat3(&GetPosition());
-//    XMVECTOR positionVector = XMLoadFloat3(&GetPosition());
-//    XMVECTOR forward = GetForwardVector();
-//    XMVECTOR up = XMLoadFloat3(&m_up);
-//
-//    m_viewMatrix = XMMatrixLookAtLH(eye, eye + forward, up);
-//} // InitView
-
-
-//void Camera::InitProjection()
-//{
-//    m_projectionMatrix = XMMatrixTranspose(XMMatrixPerspectiveFovLH(m_fov, m_aspect, m_near, m_far));
-//    m_Frustum->Init(m_far);
-//} // InitProjection
 
 
 void Camera::BuildFrustum()
@@ -102,7 +85,7 @@ void Camera::SetLookAt(float x, float y, float z)
 } // SetLookAt
 
 
-void Camera::SetFOV(float fovDegree, int width, int height)
+void Camera::SetFOV(float fovDegree)
 {
     m_fov = XMConvertToRadians(fovDegree);
 } // SetFOV

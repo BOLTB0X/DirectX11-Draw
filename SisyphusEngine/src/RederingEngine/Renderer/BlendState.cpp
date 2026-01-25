@@ -1,6 +1,7 @@
-//  Color = (SrcColor * SrcAlpha) + (DestColor * (1 - SrcAlpha)) 형태
-#include "BlendState.h"
-#include "Common/EngineHelper.h"
+#include "Pch.h"
+#include "BlendState.h"'
+// Common
+#include "DebugHelper.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -25,14 +26,14 @@ bool BlendState::Init(ID3D11Device* device) {
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-    if (EngineHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaEnableState),
+    if (DebugHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaEnableState),
         "AlphaEnable BlendState 생성 실패")
         == false) return false;
 
     // 알파 블렌딩 비활성화 설정
     blendDesc.RenderTarget[0].BlendEnable = FALSE;
 	blendDesc.AlphaToCoverageEnable = FALSE;
-    if (EngineHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaDisableState),
+    if (DebugHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaDisableState),
         "AlphaDisable BlendState 생성 실패")
         == false) return false;
 
@@ -48,7 +49,7 @@ bool BlendState::Init(ID3D11Device* device) {
     blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-    if (EngineHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaToCoverageState),
+    if (DebugHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaToCoverageState),
         "AlphaEnable BlendState 생성 실패")
         == false) return false;
     return true;
@@ -76,12 +77,12 @@ bool BlendState::InitForParticle(ID3D11Device* device) {
 
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-    return EngineHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaEnableState),
+    return DebugHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaEnableState),
         "Particle 전용 BlendState 생성 실패");
 } // InitForParticle
 
 
-void BlendState::Bind(ID3D11DeviceContext* context, bool alphaBlend)
+void BlendState::OMSetBlendState(ID3D11DeviceContext* context, bool alphaBlend)
 {
     float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -92,4 +93,4 @@ void BlendState::Bind(ID3D11DeviceContext* context, bool alphaBlend)
     else {
         context->OMSetBlendState(m_alphaDisableState.Get(), blendFactor, 0xffffffff);
     }
-} // Bind
+} // OMSetBlendState

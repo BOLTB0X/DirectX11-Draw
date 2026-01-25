@@ -1,7 +1,8 @@
+#include "Pch.h"
 #include "Texture.h"
 #include "TextureLoader.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
 
 Texture::Texture() {};
@@ -19,7 +20,7 @@ void Texture::PSSetShaderResources(ID3D11DeviceContext* context, UINT slot)
 {
 	if (m_srv == nullptr)
 	{
-		EngineHelper::SuccessCheck(false, "Texture::Bind 실패: m_srv 가 nullptr 임");
+		DebugHelper::SuccessCheck(false, "Texture::Bind 실패: m_srv 가 nullptr 임");
 		return;
 	}
 

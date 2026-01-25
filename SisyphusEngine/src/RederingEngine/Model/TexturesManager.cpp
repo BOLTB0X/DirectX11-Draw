@@ -1,8 +1,9 @@
+#include "Pch.h"
 #include "TexturesManager.h"
 #include "Texture.h"
 // comonm
-#include "EngineHelper.h"
-#include "EngineSettings.h"
+#include "DebugHelper.h"
+#include "ConstantHelper.h"
 
 TexturesManager::TexturesManager() {}
 
@@ -16,9 +17,9 @@ TexturesManager::~TexturesManager()
 bool TexturesManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
 {
     m_Textures = std::unordered_map<std::string, std::shared_ptr<Texture>>();
-    if (GetTexture(device, context, EngineSettings::NOISE_PATH) == nullptr)
+    if (GetTexture(device, context, ConstantHelper::NOISE_PATH) == nullptr)
     {
-        EngineHelper::DebugPrint("TexturesManager::Init 실패: " + EngineSettings::NOISE_PATH);
+        DebugHelper::DebugPrint("TexturesManager::Init 실패: " + ConstantHelper::NOISE_PATH);
         return false;
     }
     return true;
@@ -57,6 +58,6 @@ void TexturesManager::PSSetShaderResources(ID3D11DeviceContext* context, const s
     if (it != m_Textures.end() && it->second != nullptr)
         it->second->PSSetShaderResources(context, slot);
     else
-        EngineHelper::DebugPrint("TexturesManager::PSSetShaderResources 실패: " + filename + " 이 로드 X");
+        DebugHelper::DebugPrint("TexturesManager::PSSetShaderResources 실패: " + filename + " 이 로드 X");
     
 } // PSSetShaderResources

@@ -1,4 +1,4 @@
-// Common/EngineHelper.h
+// Common/DebugHelper.h
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-namespace EngineHelper {
+namespace DebugHelper {
     inline void ErrorBox(HWND hwnd, const std::wstring& message)
     {
         MessageBoxW(hwnd, message.c_str(), L"Engine Error", MB_OK | MB_ICONERROR);
@@ -47,7 +47,7 @@ namespace EngineHelper {
         return false;
     } // SuccessCheck
 
-} // EngineHelper
+} // DebugHelper
 
 
 

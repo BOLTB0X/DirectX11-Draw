@@ -1,8 +1,11 @@
+#include "Pch.h"
 #include "DX11Device.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
-DX11Device::DX11Device() {} // DX11Device
+
+DX11Device::DX11Device()
+{} // DX11Device
 
 
 DX11Device::~DX11Device()
@@ -70,7 +73,7 @@ bool DX11Device::Init(
         &m_deviceContext
     );
 
-    if (EngineHelper::SuccessCheck(hr, "DX11 장치 및 스왑체인 생성 실패")
+    if (DebugHelper::SuccessCheck(hr, "DX11 장치 및 스왑체인 생성 실패")
         == false)
     {
         return false;

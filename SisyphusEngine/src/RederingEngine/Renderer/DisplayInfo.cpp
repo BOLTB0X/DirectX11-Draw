@@ -1,6 +1,7 @@
+#include "Pch.h"
 #include "DisplayInfo.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 // etc
 #include <vector>
 
@@ -26,12 +27,12 @@ bool DisplayInfo::Init(int screenWidth, int screenHeight)
     DXGI_ADAPTER_DESC adapterDesc;
 
     // DXGI 팩토리 생성
-    if (EngineHelper::SuccessCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory),
+    if (DebugHelper::SuccessCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory),
         "DXGI Factory 생성 실패")
         == false) return false;
 
     // 기본 그래픽 카드(어댑터) 정보 가져오기
-    if (EngineHelper::SuccessCheck(factory->EnumAdapters(0, &adapter),
+    if (DebugHelper::SuccessCheck(factory->EnumAdapters(0, &adapter),
         "기본 그래픽 어댑터 탐색 실패")
         == false) {
         factory->Release();
@@ -39,7 +40,7 @@ bool DisplayInfo::Init(int screenWidth, int screenHeight)
     }
 
     // 기본 출력 장치(모니터) 정보 가져오기
-    if (EngineHelper::SuccessCheck(adapter->EnumOutputs(0, &adapterOutput),
+    if (DebugHelper::SuccessCheck(adapter->EnumOutputs(0, &adapterOutput),
         "기본 출력 장치(모니터) 탐색 실패")
         == false) {
         adapter->Release();
@@ -48,14 +49,14 @@ bool DisplayInfo::Init(int screenWidth, int screenHeight)
     }
 
     // 지원하는 디스플레이 모드 리스트 개수 파악
-    if (EngineHelper::SuccessCheck(adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM,
+    if (DebugHelper::SuccessCheck(adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM,
         DXGI_ENUM_MODES_INTERLACED, &numModes, NULL),
         "디스플레이 모드 개수 파악 실패")
         == false) return false;
 
     // 모드 리스트 채우기
     std::vector<DXGI_MODE_DESC> displayModeList(numModes);
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         adapterOutput->
             GetDisplayModeList(
                 DXGI_FORMAT_R8G8B8A8_UNORM,
@@ -75,7 +76,7 @@ bool DisplayInfo::Init(int screenWidth, int screenHeight)
     }
 
     // 그래픽 카드 설명 및 메모리 저장
-    if (EngineHelper::SuccessCheck(adapter->GetDesc(&adapterDesc),
+    if (DebugHelper::SuccessCheck(adapter->GetDesc(&adapterDesc),
         "그래픽 카드 상세정보 획득 실패")
         == false) return false;
 

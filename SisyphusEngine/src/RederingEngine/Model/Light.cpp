@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "Light.h"
 // Framework
 #include "Position.h"

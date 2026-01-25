@@ -1,10 +1,10 @@
-// System/System.cpp
+#include "Pch.h"
 #include "System.h"
 #include "InputManager.h"
 #include "Window.h"
 // Common
-#include "EngineSettings.h"
-#include "EngineHelper.h"
+#include "ConstantHelper.h"
+#include "DebugHelper.h"
 // MainEngine
 #include "MainEngine.h"
 // imgui
@@ -32,7 +32,7 @@ bool System::Init()
 
 	if (m_Window->Init(WndProc, L"Sisyphus Engine") == false)
 	{
-		EngineHelper::ErrorBox(m_Window->GetHwnd(), L"m_Window->Init 실패");
+		DebugHelper::ErrorBox(m_Window->GetHwnd(), L"m_Window->Init 실패");
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool System::Init()
 		m_Window->GetHwnd())
 		== false)
 	{
-		EngineHelper::ErrorBox(m_Window->GetHwnd(), L"m_InputManager->Init 실패");
+		DebugHelper::ErrorBox(m_Window->GetHwnd(), L"m_InputManager->Init 실패");
 		return false;
 	}
 
@@ -50,7 +50,7 @@ bool System::Init()
 		m_Window->GetHwnd(), 
 		m_InputManager) == false)
 	{
-		EngineHelper::ErrorBox(m_Window->GetHwnd(), L"m_Engine->Init 실패");
+		DebugHelper::ErrorBox(m_Window->GetHwnd(), L"m_Engine->Init 실패");
 		return false;
 	}
 

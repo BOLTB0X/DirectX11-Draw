@@ -1,7 +1,8 @@
+#include "Pch.h"
 #include "Shader.h"
 // Common
-#include "EngineHelper.h"
-#include "EngineSettings.h"
+#include "DebugHelper.h"
+#include "ConstantHelper.h"
 // etc
 #include <d3dcompiler.h>
 #include <fstream>
@@ -92,7 +93,7 @@ bool Shader::UpdateGlobalBuffer(ID3D11DeviceContext* context, float time, Direct
     GlobalBuffer* data = (GlobalBuffer*)mapped.pData;
     data->uTime = time;
     data->uCameraPos = cameraPos;
-    data->uResolution = DirectX::XMFLOAT2(EngineSettings::SCREEN_WIDTH, EngineSettings::SCREEN_HEIGHT);
+    data->uResolution = DirectX::XMFLOAT2(ConstantHelper::SCREEN_WIDTH, ConstantHelper::SCREEN_HEIGHT);
     data->uNoiseRes = uNoiseRes;
 
     context->Unmap(m_globalBuffer.Get(), 0);

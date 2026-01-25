@@ -1,6 +1,7 @@
+#include "Pch.h"
 #include "Window.h"
 // Common
-#include "EngineSettings.h"
+#include "ConstantHelper.h"
 
 Window::Window()
     : m_hwnd(nullptr),
@@ -38,13 +39,13 @@ bool Window::Init(WNDPROC wndProc, LPCWSTR appName)
     if (!RegisterClassExW(&wc)) return false;
 
     int posX, posY;
-    if (EngineSettings::FULL_SCREEN)
+    if (ConstantHelper::FULL_SCREEN)
     {
         posX = posY = 0;
     }
     else
     {
-        RECT windowRect = { 0, 0, (LONG)EngineSettings::SCREEN_WIDTH, (LONG)EngineSettings::SCREEN_HEIGHT };
+        RECT windowRect = { 0, 0, (LONG)ConstantHelper::SCREEN_WIDTH, (LONG)ConstantHelper::SCREEN_HEIGHT };
         AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
         int actualWidth = windowRect.right - windowRect.left;
         int actualHeight = windowRect.bottom - windowRect.top;
@@ -54,7 +55,7 @@ bool Window::Init(WNDPROC wndProc, LPCWSTR appName)
     }
 
     m_hwnd = CreateWindowExW(WS_EX_APPWINDOW, m_engineName, m_engineName,
-        WS_OVERLAPPEDWINDOW, posX, posY, EngineSettings::SCREEN_WIDTH, EngineSettings::SCREEN_HEIGHT,
+        WS_OVERLAPPEDWINDOW, posX, posY, ConstantHelper::SCREEN_WIDTH, ConstantHelper::SCREEN_HEIGHT,
         NULL, NULL, m_hinstance, NULL);
 
     if (!m_hwnd)
@@ -62,8 +63,8 @@ bool Window::Init(WNDPROC wndProc, LPCWSTR appName)
 
     RECT clientRect;
     GetClientRect(m_hwnd, &clientRect);
-    EngineSettings::SCREEN_WIDTH = clientRect.right - clientRect.left;
-    EngineSettings::SCREEN_HEIGHT = clientRect.bottom - clientRect.top;
+    ConstantHelper::SCREEN_WIDTH = clientRect.right - clientRect.left;
+    ConstantHelper::SCREEN_HEIGHT = clientRect.bottom - clientRect.top;
 
     ShowWindow(m_hwnd, SW_SHOW);
     SetForegroundWindow(m_hwnd);
@@ -78,7 +79,7 @@ void Window::Shutdown()
 {
     ShowCursor(true);
 
-    if (EngineSettings::FULL_SCREEN)
+    if (ConstantHelper::FULL_SCREEN)
     {
         ChangeDisplaySettings(NULL, 0);
     }

@@ -1,3 +1,4 @@
+#include "Pch.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "TextureLoader.h"
 // 외부
@@ -5,7 +6,7 @@
 #include <DDSTextureLoader.h>
 #include <algorithm>
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
 
 bool TextureLoader::CreateTextureFromFile(
@@ -37,7 +38,7 @@ bool TextureLoader::LoadUsingDDSTex(
 
     if (FAILED(hr))
     {
-        EngineHelper::DebugPrint("TextureLoader:: DDS 로드 실패: " + filename);
+        DebugHelper::DebugPrint("TextureLoader:: DDS 로드 실패: " + filename);
         return false;
     }
 
@@ -57,7 +58,7 @@ bool TextureLoader::LoadUsingStb(
 
     if (imageData == nullptr)
     {
-        EngineHelper::DebugPrint("텍스처 파일 로드 실패: " + filename);
+        DebugHelper::DebugPrint("텍스처 파일 로드 실패: " + filename);
         return false;
     }
 

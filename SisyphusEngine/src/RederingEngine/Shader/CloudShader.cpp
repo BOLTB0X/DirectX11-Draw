@@ -1,7 +1,8 @@
+#include "Pch.h"
 #include "CloudShader.h"
 // Common
-#include "EngineSettings.h"
-#include "EngineHelper.h"
+#include "ConstantHelper.h"
+#include "DebugHelper.h"
 
 
 using namespace DirectX;
@@ -19,9 +20,9 @@ bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
     ID3DBlob* psBlob = nullptr;
 
     // 셰이더 컴파일
-    if (EngineHelper::SuccessCheck(Compile(device, hwnd, vsPath, "main", "vs_5_0", &vsBlob), 
+    if (DebugHelper::SuccessCheck(Compile(device, hwnd, vsPath, "main", "vs_5_0", &vsBlob), 
         "CloudShader::Init, vs 컴파일 에러") == false) return false;
-    if (EngineHelper::SuccessCheck(Compile(device, hwnd, psPath, "main", "ps_5_0", &psBlob),
+    if (DebugHelper::SuccessCheck(Compile(device, hwnd, psPath, "main", "ps_5_0", &psBlob),
         "CloudShader::Init, ps 컴파일 에러") == false) return false;
 
     // 셰이더 생성

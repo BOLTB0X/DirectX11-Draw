@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "ShaderManager.h"
 // Framework
 #include "Shader.h"
@@ -5,7 +6,7 @@
 #include "Shader/CloudShader.h"
 #include "Shader/SunShader.h"
 // Common
-#include "EngineSettings.h"
+#include "ConstantHelper.h"
 
 using namespace DirectX;
 
@@ -25,8 +26,8 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
     if (cloudShader->Init(
         device,
         hwnd,
-        EngineSettings::DEFAULT_VS,
-        EngineSettings::CLOUD_PS)
+        ConstantHelper::DEFAULT_VS,
+        ConstantHelper::CLOUD_PS)
         == false) return false;
     m_shaders["Cloud"] = std::move(cloudShader);
 
@@ -34,8 +35,8 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
     if (sunShader->Init(
         device,
         hwnd,
-        EngineSettings::DEFAULT_VS,
-        EngineSettings::SUN_PS)
+        ConstantHelper::DEFAULT_VS,
+        ConstantHelper::SUN_PS)
         == false) return false;
 
     m_shaders["Sun"] = std::move(sunShader);

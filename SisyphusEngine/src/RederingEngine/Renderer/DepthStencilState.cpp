@@ -1,10 +1,8 @@
-// Graphics/Renderer/DepthStencilState.cpp
+#include "Pch.h"
 #include "DepthStencilState.h"
-#include "Common/EngineHelper.h"
+// Common
+#include "DebugHelper.h"
 
-
-/* defualt */
-/////////////////////////////////////////////////////////////////////
 
 DepthStencilState::DepthStencilState() {}
 
@@ -39,7 +37,7 @@ bool DepthStencilState::Init(ID3D11Device* device)
     depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
     depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-    if (EngineHelper::SuccessCheck(device->CreateDepthStencilState(&depthStencilDesc, &m_depthEnabledState),
+    if (DebugHelper::SuccessCheck(device->CreateDepthStencilState(&depthStencilDesc, &m_depthEnabledState),
         "DepthEnabled State 생성 실패")
         == false) return false;
 
@@ -49,7 +47,7 @@ bool DepthStencilState::Init(ID3D11Device* device)
     depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
     depthDisabledStencilDesc.StencilEnable = false;
 
-    if (EngineHelper::SuccessCheck(device->CreateDepthStencilState(&depthDisabledStencilDesc, &m_depthDisabledState),
+    if (DebugHelper::SuccessCheck(device->CreateDepthStencilState(&depthDisabledStencilDesc, &m_depthDisabledState),
         "DepthDisabled State 생성 실패")
         == false) return false;
 
@@ -67,15 +65,15 @@ bool DepthStencilState::InitForParticle(ID3D11Device* device)
     particleDepthDesc.DepthFunc = D3D11_COMPARISON_LESS;
     particleDepthDesc.StencilEnable = false;
 
-    return EngineHelper::SuccessCheck(device->CreateDepthStencilState(&particleDepthDesc, &m_depthDisabledState),
+    return DebugHelper::SuccessCheck(device->CreateDepthStencilState(&particleDepthDesc, &m_depthDisabledState),
         "Particle용 DepthStencilState 생성 실패");
 } // InitForParticle
 
 
-void DepthStencilState::Bind(ID3D11DeviceContext* context, bool depthEnable)
+void DepthStencilState::OMSetDepthStencilState(ID3D11DeviceContext* context, bool depthEnable)
 {
     if (depthEnable)
         context->OMSetDepthStencilState(m_depthEnabledState.Get(), 1);
     else 
         context->OMSetDepthStencilState(m_depthDisabledState.Get(), 1);
-} // Bind
+} // OMSetDepthStencilState

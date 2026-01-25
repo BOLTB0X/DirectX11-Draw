@@ -1,4 +1,4 @@
-//#include "pch.h"
+#include "Pch.h"
 #include "SamplerState.h"
 
 
@@ -19,7 +19,6 @@ bool SamplerState::Init(ID3D11Device* device)
     //sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
     sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 
-    // 어드레스 모드: WRAP으로 설정하여 노이즈가 무한히 반복되게 함
     sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -38,7 +37,7 @@ bool SamplerState::Init(ID3D11Device* device)
     HRESULT hr = device->CreateSamplerState(&sampDesc, m_SamplerState.GetAddressOf());
     if (FAILED(hr))
     {
-        // EngineHelper 혹은 기존 에러 출력 방식 사용
+        // DebugHelper 혹은 기존 에러 출력 방식 사용
         return false;
     }
 

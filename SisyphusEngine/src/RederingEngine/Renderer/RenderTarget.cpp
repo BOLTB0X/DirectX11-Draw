@@ -1,6 +1,7 @@
+#include "Pch.h"
 #include "RenderTarget.h"
 // Common
-#include "EngineHelper.h"
+#include "DebugHelper.h"
 
 
 using Microsoft::WRL::ComPtr;
@@ -14,12 +15,12 @@ RenderTarget::~RenderTarget() {} // ~RenderTarget
 bool RenderTarget::Init(ID3D11Device* device, IDXGISwapChain* swapChain, int width, int height) {
     // RenderTargetView 생성
     ComPtr<ID3D11Texture2D> backBufferPtr;
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBufferPtr),
         "스왑 체인에서 백 버퍼 획득 실패")
         == false) return false;
 
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         device->CreateRenderTargetView(backBufferPtr.Get(), nullptr, &m_renderTargetView),
         "RenderTargetView 생성 실패") == false) return false;
 
@@ -40,7 +41,7 @@ bool RenderTarget::Init(ID3D11Device* device, IDXGISwapChain* swapChain, int wid
     depthBufferDesc.MiscFlags = 0;
 
     // 깊이 버퍼용 텍스처를 생성
-    if (EngineHelper::SuccessCheck(
+    if (DebugHelper::SuccessCheck(
         device->CreateTexture2D(&depthBufferDesc, nullptr, &m_depthStencilBuffer),
         "깊이 버퍼 텍스처 생성 실패")
         == false) return false;
@@ -53,7 +54,7 @@ bool RenderTarget::Init(ID3D11Device* device, IDXGISwapChain* swapChain, int wid
     depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-    if (!EngineHelper::SuccessCheck(device->CreateDepthStencilView(m_depthStencilBuffer.Get(), &depthStencilViewDesc, &m_depthStencilView),
+    if (!DebugHelper::SuccessCheck(device->CreateDepthStencilView(m_depthStencilBuffer.Get(), &depthStencilViewDesc, &m_depthStencilView),
         "DepthStencilView 생성 실패")) return false;
 
     // Viewport 설정 정보 저장

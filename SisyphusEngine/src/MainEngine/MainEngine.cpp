@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "MainEngine.h"
 #include "Timer.h"
 #include "Fps.h"
@@ -8,14 +9,20 @@
 // UI
 #include "UI.h"
 // Common
-#include "EngineSettings.h"
-#include "EngineHelper.h"
+#include "ConstantHelper.h"
+#include "DebugHelper.h"
+#include "PropertyHelper.h"
 // Rendering
 #include "Renderer/Renderer.h"
 #include "Model/DefaultModel.h"
 #include "Model/Light.h"
 #include "Model/TexturesManager.h"
 #include "Shader/ShaderManager.h"
+
+
+using namespace PropertyHelper;
+using namespace DirectX;
+
 
 MainEngine::MainEngine()
     : m_isWireframe(false),
@@ -44,7 +51,6 @@ MainEngine::~MainEngine()
 bool MainEngine::Init(HWND hwnd, std::shared_ptr<InputManager> inputManager)
 {
     m_InputManager = inputManager;
-
 
     if (m_Timer->Init() == false) return false;
     m_Fps->Init();
@@ -76,14 +82,8 @@ bool MainEngine::Init(HWND hwnd, std::shared_ptr<InputManager> inputManager)
         m_Renderer->GetDevice(),
         m_Renderer->GetDeviceContext())
         == false) return false;
-    
-    m_UI->CreateWidget(
-        m_Timer.get(),
-        m_Fps.get(),
-        m_Camera.get(),
-        &m_isWireframe,
-        &m_backCullEnable,
-        &m_depthEnable);
+
+    CreateWidget();
     return true;
 } // Init
 
@@ -154,7 +154,7 @@ void MainEngine::Render()
     m_SunModel->Render(context);
 
     m_Renderer->SetSampler(0);
-    m_TexturesManager->PSSetShaderResources(context, EngineSettings::NOISE_PATH, 0);
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::NOISE_PATH, 0);
 
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Cloud,
         context, m_Timer->GetTotalTime(),
@@ -201,3 +201,48 @@ void MainEngine::UpdateRenderStates()
     m_Renderer->SetMode(m_isWireframe, m_backCullEnable);
     m_Renderer->SetDepthBuffer(m_depthEnable);
 } // UpdateRenderStates
+
+
+void MainEngine::CreateWidget()
+{
+    Property<float> timeProp([this]() { return m_Timer->GetTotalTime(); }, nullptr);
+    Property<int> fpsProp([this]() { return m_Fps->GetFps(); }, nullptr);
+
+    Property<XMFLOAT3> camPosProp(
+        [this]() { return m_Camera->GetPosition(); },
+        [this](const XMFLOAT3& p) { m_Camera->SetPosition(p); }
+    );
+    Property<XMFLOAT3> camRotProp(
+        [this]() { return m_Camera->GetRotation(); },
+        [this](const XMFLOAT3& r) { m_Camera->SetRotation(r); }
+    );
+
+    auto camFovProp = Property<float>(
+        [this]() { return m_Camera->GetFov(); },
+        [this](const float& f) { m_Camera->SetFOV(f); }
+    );
+
+    auto wireProp = Property<bool>(
+        [this]() { return m_isWireframe; },
+        [this](const bool& v) { m_isWireframe = v; }
+    );
+    auto backProp = Property<bool>(
+        [this]() { return m_backCullEnable; },
+        [this](const bool& v) { m_backCullEnable = v; }
+    );
+    auto depthProp = Property<bool>(
+        [this]() { return m_depthEnable; },
+        [this](const bool& v) { m_depthEnable = v; }
+    );
+
+    m_UI->CreateWidget(
+        timeProp,
+        fpsProp,
+        camPosProp,
+        camRotProp,
+        camFovProp,
+        wireProp,
+        backProp,
+        depthProp
+    );
+} // CreateWidget

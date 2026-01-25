@@ -21,7 +21,7 @@ public:
     void SetRotation(float, float, float);
     void SetLookAt(DirectX::XMFLOAT3);
     void SetLookAt(float, float, float);
-    void SetFOV(float, int, int);
+    void SetFOV(float);
 
     DirectX::XMFLOAT3 GetPosition() const;
     DirectX::XMFLOAT3 GetRotation() const;
@@ -32,6 +32,7 @@ public:
     DirectX::XMMATRIX GetProjectionMatrix() const;
     Position* GetPositionPtr() const { return m_Position.get(); }
     Frustum* GetFrustum() const { return m_Frustum.get(); }
+    float GetFov() const { return m_fov; }
 
     void AddRotation(float, float);
     void AddPitch(float);

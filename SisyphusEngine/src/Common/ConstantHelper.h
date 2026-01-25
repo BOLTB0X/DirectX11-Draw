@@ -3,7 +3,7 @@
 #include <string>
 
 
-namespace EngineSettings {
+namespace ConstantHelper {
     // 화면 설정
     const bool FULL_SCREEN = false;
     const bool VSYNC_ENABLED = true;
@@ -17,13 +17,13 @@ namespace EngineSettings {
 }
 
 
-namespace EngineSettings { // 모델 및 텍스처
+namespace ConstantHelper { // 모델 및 텍스처
     const std::string ASSET_PATH = "assets/";
     const std::string NOISE_PATH = ASSET_PATH + "Cloud/noise.png";
 }
 
 
-namespace EngineSettings { // HLSL
+namespace ConstantHelper { // HLSL
     const std::wstring DEFAULT_VS = L"HLSL/DefaultVS.hlsl";
     const std::wstring CLOUD_PS = L"HLSL/CloudPS.hlsl";
     const std::wstring SUN_PS = L"HLSL/SunPS.hlsl";

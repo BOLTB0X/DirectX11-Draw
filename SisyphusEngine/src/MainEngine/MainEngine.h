@@ -28,6 +28,7 @@ private:
     void Render();
     void UpdateUI();
     void UpdateRenderStates();
+    void CreateWidget();
 
 private:
     // 공유
@@ -36,7 +37,6 @@ private:
     std::unique_ptr<Timer> m_Timer;
     std::unique_ptr<Fps> m_Fps;
     // 인터페이스
-    //std::unique_ptr<InputManager> m_InputManager;
     std::unique_ptr<UI> m_UI;
     // 그래픽
     std::unique_ptr<Renderer> m_Renderer;

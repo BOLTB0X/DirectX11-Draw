@@ -12,7 +12,7 @@ public:
 
     bool Init(ID3D11Device*);
     bool InitForParticle(ID3D11Device* device);
-    void Bind(ID3D11DeviceContext* context, bool alphaBlend = false);
+    void OMSetBlendState(ID3D11DeviceContext* context, bool alphaBlend = false);
 
 private:
     Microsoft::WRL::ComPtr<ID3D11BlendState> m_alphaEnableState;

@@ -1,20 +1,17 @@
-// UI/UI.cpp
+#include "Pch.h"
 #include "UI.h"
 #include "StatsWidget.h"
 #include "CameraWidget.h"
 #include "RenderStateWidget.h"
-// System
-#include "Input.h"
-// MainEngine
-#include "Timer.h"
-#include "Fps.h"
-#include "Camera.h"
 // Framework
 #include "IWidget.h"
 // imgui
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+
+
+using namespace PropertyHelper;
 
 
 UI::UI()
@@ -87,14 +84,21 @@ void UI::AddWidget(std::unique_ptr<IWidget> widget)
     return;
 } // AddWidget
 
-
-void UI::CreateWidget(Timer* timer, Fps* fps, Camera* camera, bool* wire, bool* back, bool* depth)
+void UI::CreateWidget(
+    Property<float> timeProp, Property<int> fpsProp,
+    PropertyHelper::Property<DirectX::XMFLOAT3> posProp,
+    PropertyHelper::Property<DirectX::XMFLOAT3> rotProp,
+    PropertyHelper::Property<float> fovProp,
+    PropertyHelper::Property<bool> wire,
+    PropertyHelper::Property<bool> back,
+    PropertyHelper::Property<bool> depth)
 {
-    AddWidget(std::make_unique<StatsWidget>("Engine Stats", timer, fps));
-    AddWidget(std::make_unique<CameraWidget>("Camera Controller", camera));
+    AddWidget(std::make_unique<StatsWidget>("Engine Stats", timeProp, fpsProp));
+    AddWidget(std::make_unique<CameraWidget>("Camera Controller", posProp, rotProp, fovProp));
+
     AddWidget(std::make_unique<RenderStateWidget>("Render Settings", wire, back, depth));
 }
- // CreateWidget
+
 
 void UI::ToggleWidget()
 {
