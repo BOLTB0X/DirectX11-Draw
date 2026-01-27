@@ -72,6 +72,25 @@ ex. *삼각형 리스트(Triangle List)로 그리기로 변경하면서 한 사�
 
 [tistory 참조 - devshovelinglife](https://devshovelinglife.tistory.com/110#:~:text=%EC%BF%BC%EB%93%9C%20%ED%8A%B8%EB%A6%AC%20%EC%BB%AC%EB%A7%81%EC%9D%80%20%EC%A3%BC%EB%A1%9C%20%EC%A7%80%ED%98%95%EC%97%90%20%EB%8C%80%ED%95%B4%20%EB%A7%8E%EC%9D%B4%20%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94%20%EC%BB%AC%EB%A7%81%20%EB%B0%A9%EC%8B%9D%EC%9D%B4%EB%8B%A4.%20%EC%A7%80%ED%98%95&text=%EB%B6%80%EB%AA%A8%EA%B0%80%20%EC%A0%88%EB%91%90%EC%B2%B4%20%EB%B0%96%EC%97%90%20%EC%9E%88%EB%8B%A4%EB%A9%B4%2C%20%EC%A0%88%EB%91%90%EC%B2%B4%EA%B0%80%20%EB%AC%B4%ED%95%9C%20%ED%8F%89%EB%A9%B4%EC%9C%BC%EB%A1%9C%20%EC%9D%B4%EB%A3%A8%EC%96%B4%EC%A7%84%20%EB%A7%8C%ED%81%BC)
 
+### E6. Imgui 화면에 마우스가 잘 적용이 안되는 경우
+
+실제 내 마우스 커서 위치와 Imgui가 인식하는 지점이 달라 상당히 애를 먹었음
+
+구글링을 통해서 어떤 [블로그 포스팅 - Imgui 사용도중 마우스 위치가 안맞는 버그](https://develop-dream.tistory.com/113)을 발견
+
+화면 비율을 내가 설정한 가로, 세로로 변경했는데 Imgui는 이를 반영하지 못해서 일어나는 거였음
+
+```cpp
+    RECT clientRect;
+    GetClientRect(m_hwnd, &clientRect);
+    ConstantHelper::SCREEN_WIDTH = clientRect.right - clientRect.left;
+    ConstantHelper::SCREEN_HEIGHT = clientRect.bottom - clientRect.top;
+```
+
+위 코드를 `Window` 생성 에 추가하니 해결
+
+----
+
 ## 궁금했던 것들
 
 ### Q1. 그래픽스 분야에선 상속/추상화보다 의존성(Composition) 관리를 선호하나?

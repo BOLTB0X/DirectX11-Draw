@@ -174,6 +174,10 @@
 
 - [블로그 참고 - 1인칭 카메라 조작(mstone8370)](https://mstone8370.tistory.com/26)
 
+- [github 참고 - Volumetric-Rendering(Chris' Graphics Blog)](https://wallisc.github.io/rendering/2020/05/02/Volumetric-Rendering-Part-1.html)
+
+- [티스토리 참고 - DirectX 11 Tone Mapping(kyuhwang)](https://kyuhwang.tistory.com/36)
+
 #### [모델 출처 -> sketchfab](https://sketchfab.com/feed)
 
 - [Stone 이용: sketchfab - Ground//Stone Sphere(Madee)](https://sketchfab.com/3d-models/groundstone-sphere-1c0f2b2e213348e6a760743a546dc7a6)
