@@ -55,8 +55,9 @@ float fbm(float3 p, float time)
 // 밀도 정의
 float scene(float3 p)
 {
-    float distance = sdSphere(p, 2.5f);
-    float f = fbm(p, iTime); // 노이즈 추가
+    float3 localP = p - iCameraPos;
+    float distance = sdSphere(p, 2.0f);
+    float f = fbm(p, iTime);
     
     return -distance + f;
 } // scene
@@ -104,11 +105,11 @@ float randomScene(float3 p)
     // fbm 합성
     float f = fbm(p, iTime);
 
-    return -d + f;
+    return -(d - f);
 } // randomScene
 
 
-float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv)
+float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDepth)
 {
     float4 res = float4(0, 0, 0, 0);
     
@@ -116,7 +117,7 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv)
     float blueNoise = iBlueNoise.Sample(iSampler, uv * (iResolution / 1024.0f)).r;
     float offset = frac(blueNoise + float(iFrame % 32) / sqrt(0.5));
     
-    float depth = MARCH_SIZE * offset;
+    float depth = startDepth + (MARCH_SIZE * offset);
     float3 sunPos = iLightPos;
     float3 sunDirection = normalize(sunPos);
 
@@ -199,8 +200,11 @@ float4 main(PixelInput input) : SV_TARGET
 {
     // Ray Origin 및 Ray Direction
     float3 ro = iCameraPos;
-    float3 rd = normalize(input.worldPos - iCameraPos);
-    float4 res = rayMarch(ro, rd, input.tex);
+    float3 rd = normalize(input.worldPos - ro);
+    
+    float distToSurface = length(input.worldPos - ro);
+    
+    float4 res = rayMarch(ro, rd, input.tex, distToSurface);
     
     return res;
 } // main

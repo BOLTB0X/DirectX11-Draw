@@ -1,6 +1,8 @@
 #include "Pch.h"
 #include "CameraWidget.h"
 #include <DirectXMath.h>
+// Common
+#include "ConstantHelper.h"
 // Imgui
 #include "imgui.h"
 
@@ -50,8 +52,9 @@ void CameraWidget::Frame()
 
     if (Button("Reset Camera"))
     {
-        m_posProp.Set(XMFLOAT3(0.0f, 0.0f, -6.0f));
-        m_rotProp.Set(XMFLOAT3(0.0f, 0.0f, 0.0f));
+        auto setup = ConstantHelper::GetCloudCameraSetup();
+        m_posProp.Set(setup.position);
+        m_rotProp.Set(setup.rotation);
     }
 
     End();

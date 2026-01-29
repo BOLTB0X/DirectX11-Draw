@@ -6,7 +6,6 @@
 // Common
 #include "PropertyHelper.h"
 
-
 class Renderer;
 class TexturesManager;
 class ShaderManager;
@@ -45,11 +44,15 @@ public:
 	bool GetDepthEnable() const { return m_depthEnable; }
 
 private:
+	void DrawSky(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
+	void DrawCloud(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
+	void ApplyBicubicUpscale(ID3D11DeviceContext*);
+
+private:
 	std::unique_ptr<Renderer> m_Renderer;
 	std::unique_ptr<TexturesManager> m_TexturesManager;
 	std::unique_ptr<ShaderManager> m_ShaderManager;
-	std::unique_ptr<DefaultModel> m_SunModel;
-	std::unique_ptr<DefaultModel> m_CloudArea;
+	std::unique_ptr<DefaultModel> m_Cloud;
 	std::unique_ptr<DefaultModel> m_BicubicMesh;
 	std::unique_ptr<DefaultModel> m_Sky;
 	std::unique_ptr<Light> m_Light;

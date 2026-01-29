@@ -27,10 +27,49 @@ namespace ConstantHelper { // 모델 및 텍스처
 namespace ConstantHelper { // HLSL
     const std::wstring DEFAULT_VS = L"HLSL/DefaultVS.hlsl";
     const std::wstring QUAD_VS = L"HLSL/QuadVS.hlsl";
-    const std::wstring CUBE_VS = L"HLSL/CubeVS.hlsl";
+    const std::wstring SKY_VS = L"HLSL/SkyVS.hlsl";
 
     const std::wstring CLOUD_PS = L"HLSL/CloudPS.hlsl";
-    const std::wstring SUN_PS = L"HLSL/SunPS.hlsl";
     const std::wstring BICUBIC_PS = L"HLSL/BicubicPS.hlsl";
     const std::wstring SKY_PS = L"HLSL/SkyPS.hlsl";
 };
+
+
+namespace ConstantHelper { // 렌더링 관련
+
+    using namespace DirectX;
+
+    enum class CloudType : uint32_t {
+        Default = 0,
+        Plane = 1,
+        Random = 2
+    }; // CloudType
+
+
+    struct CameraSetup {
+        XMFLOAT3 position;
+        XMFLOAT3 rotation; // Pitch, Yaw, Roll
+    }; // CameraSetup
+
+    inline CloudType cloudType = CloudType::Default;
+    const DirectX::XMFLOAT3 LightPosition = { -10.0f, 2.0f, 15.0f };
+    const DirectX::XMFLOAT4 LightColor = { 1.0f, 0.6f, 0.3f, 1.0f };
+
+    // 타입에 따른 카메라 초기 설정 반환
+    inline CameraSetup GetCloudCameraSetup()
+    {
+        CameraSetup setup;
+
+        switch (cloudType) {
+        case CloudType::Plane:
+            setup.position = { 0.0f, 3.169f, -6.0f };
+            setup.rotation = { -0.25f, 322.25f, 3.076f };
+            break;
+        default:
+            setup.position = { 0.0f, 0.0f, -6.0f }; 
+            setup.rotation = { 0.0f, 0.0f, 0.0f };
+            break;
+        }
+        return setup;
+    } // GetCloudCameraSetup
+}

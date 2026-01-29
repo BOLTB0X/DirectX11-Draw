@@ -43,7 +43,7 @@ bool MainEngine::Init(HWND hwnd, std::shared_ptr<InputManager> inputManager)
     if (m_Timer->Init() == false) return false;
     m_Fps->Init();
 
-    ConstantHelper::cloudType = ConstantHelper::CloudType::Default;
+    ConstantHelper::cloudType = ConstantHelper::CloudType::Plane;
     auto setup = ConstantHelper::GetCloudCameraSetup();
      m_Camera->SetPosition(setup.position);
      m_Camera->SetRotation(setup.rotation);

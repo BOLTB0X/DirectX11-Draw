@@ -11,8 +11,8 @@ class Light;
 
 
 namespace ShaderKeys {
-    const std::string Sun = "Sun";
     const std::string Cloud = "Cloud";
+    const std::string CloudArea = "CloudArea";
     const std::string Bicubic = "Bicubic";
     const std::string Sky = "Sky";
 } // ShaderKeys

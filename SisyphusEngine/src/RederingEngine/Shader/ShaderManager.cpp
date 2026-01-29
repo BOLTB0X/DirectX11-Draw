@@ -4,7 +4,6 @@
 #include "Shader.h"
 // Rendering
 #include "Shader/CloudShader.h"
-#include "Shader/SunShader.h"
 #include "Shader/BicubicShader.h"
 #include "Shader/SkyShader.h"
 // Common
@@ -31,14 +30,6 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
         == false) return false;
     m_shaders[ShaderKeys::Cloud] = std::move(cloudShader);
 
-    auto sunShader = std::make_unique<SunShader>();
-    if (sunShader->Init(device, hwnd,
-        ConstantHelper::DEFAULT_VS,
-        ConstantHelper::SUN_PS)
-        == false) return false;
-
-    m_shaders[ShaderKeys::Sun] = std::move(sunShader);
-
     auto biShader = std::make_unique<BicubicShader>();
     if (biShader->Init(device, hwnd,
         ConstantHelper::QUAD_VS,
@@ -49,7 +40,7 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
 
     auto skyShader = std::make_unique<SkyShader>();
     if (skyShader->Init(device, hwnd,
-        ConstantHelper::CUBE_VS,
+        ConstantHelper::SKY_VS,
         ConstantHelper::SKY_PS)
         == false) return false;
 
@@ -93,10 +84,8 @@ void ShaderManager::UpdateLightBuffer(const std::string key,
     if (it == m_shaders.end()) return;
 
     Shader* shader = it->second.get();
-    if (shader->GetShaderType() == ShaderType::Sun)
-    {
-        static_cast<SunShader*>(shader)->UpdateLightBuffer(context, light);
-    }
+    if (shader->GetShaderType() == ShaderType::Sky)
+        static_cast<SkyShader*>(shader)->UpdateLightBuffer(context, light);
 } // UpdateLightBuffer
 
 
@@ -119,17 +108,14 @@ void ShaderManager::SetConstantBuffers(const std::string key,
     Shader* shader = it->second.get();
     ShaderType type = shader->GetShaderType();
 
-    if (type == ShaderType::Cloud || type == ShaderType::Sky)
+    if (type == ShaderType::Cloud)
     {
-        ID3D11Buffer* buffer = GetShader<SunShader>(ShaderKeys::Sun)->GetLightBuffer();
+        ID3D11Buffer* buffer = GetShader<SkyShader>(ShaderKeys::Sky)->GetLightBuffer();
         if (buffer == nullptr) return;
-        if (type == ShaderType::Cloud)
-            static_cast<CloudShader*>(shader)->SetConstantBuffers(context, buffer);
-        else
-            static_cast<SkyShader*>(shader)->SetConstantBuffers(context, buffer);
+        static_cast<CloudShader*>(shader)->SetConstantBuffers(context, buffer);
     }
-    else if (type == ShaderType::Sun)
+    else if (type == ShaderType::Sky)
     {
-        static_cast<SunShader*>(shader)->SetConstantBuffers(context);
+        static_cast<SkyShader*>(shader)->SetConstantBuffers(context);
     }
 } // SetConstantBuffers
