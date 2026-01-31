@@ -30,7 +30,7 @@
         <p align="center">
         <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%912.gif?raw=true" 
              alt="image 2" 
-             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+             style="; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
     </tr>
@@ -56,14 +56,14 @@
         <p align="center">
         <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD05_%EA%B5%AC%EB%A6%84%EA%B3%BC%ED%83%9C%EC%96%91.gif?raw=true" 
              alt="image 2" 
-             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
       <td style="text-align:center; vertical-align:middle;">
         <p align="center">
         <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD05_%EA%B5%AC%EB%A6%84%EA%B3%BC%ED%83%9C%EC%96%912.gif?raw=true" 
              alt="image 2" 
-             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
     </tr>
@@ -89,14 +89,14 @@
         <p align="center">
         <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%913.gif?raw=true" 
              alt="image 2" 
-             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
       <td style="text-align:center; vertical-align:middle;">
         <p align="center">
         <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%914%EC%9D%B4%EB%8F%99.gif?raw=true" 
              alt="image 2" 
-             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
     </tr>
