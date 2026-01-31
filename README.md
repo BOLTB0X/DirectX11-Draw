@@ -13,7 +13,7 @@
 - **Lang** : C++, HLSL
 - **Graphics API** : [DirectX 11](https://www.microsoft.com/en-us/download/details.aspx?id=17431)
 - **Build & Package Manager** : [vcpkg](https://github.com/microsoft/vcpkg?tab=readme-ov-file)
-- External Libraries
+- **External Libraries**
     - [stb_image](https://github.com/nothings/stb/tree/master) : `jpg`, `png` 파일 로딩
     - [DirectXTK](https://github.com/microsoft/DirectXTK) : `dds` 파일 로딩
     - [assimp](https://github.com/assimp/assimp) : `.obj`, `.fbx` 모델 로딩
@@ -21,15 +21,33 @@
 
 ---
 
-## Sisyphus Engine : 구름과 태양
+## Sisyphus Engine : [구름과 태양](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine/src)
 
-![구름과 태양](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%912.gif?raw=true)
+<p align="center">
+  <table style="width:100%; text-align:center; border-spacing:20px;">
+    <tr>
+        <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%912.gif?raw=true" 
+             alt="image 2" 
+             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>노이즈 텍스처 기반 SDF 레이마칭을 이용한 절차적 Volumetric Cloud 렌더링</a>
+      </p>
+      </td>
+    </tr>
+  </table>
+</p>
 
-노이즈 텍스처 기반 SDF 레이마칭을 이용한 절차적 **Volumetric Cloud** 렌더링
-
+순수 코드로 무엇을 렌더링해볼까 고민하다, 이 [보랏빛 하늘](https://www.shutterstock.com/ko/image-photo/purple-sky-clouds-backdrop-orange-pink-2678999665?trackingId=19e277b6-eb35-471f-b876-09a679b367e4&listId=searchResults) 사진과 구름과 태양을 렌더링을 도전
 
 <details>
-<summary> more 시연영상 </summary>
+<summary> more </summary>
 
 <p align="center">
   <table style="width:100%; text-align:center; border-spacing:20px;">
@@ -97,10 +115,34 @@
   </table>
 </p>
 
+- [시행착오 및 기록물들](https://github.com/BOLTB0X/DirectX11-Draw/tree/main/DemoGIF/volumetric-raymarching)
 
+- [파이프라인 - 그래픽](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/RenderingEngine.cpp)
+
+- [파이프라인 - etc](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/MainEngine/MainEngine.cpp)
+
+- [구름 HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/CloudPS.hlsl)
+
+- [하늘 HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/SkyPS.hlsl)
 
 </details>
 
+<details>
+<summary> Ref </summary>
+
+- [maximeheckel - Three.js : Real-time dreamy Cloudscapes with Volumetric Raymarching](https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/)
+
+- [42yeah - Raymarching Clouds](https://blog.42yeah.is/rendering/2023/02/11/clouds.html)
+
+- [Chris' Graphics Blog - Volumetric Rendering](https://wallisc.github.io/rendering/2020/05/02/Volumetric-Rendering-Part-1.html)
+
+- [h3r3 - shadertoy : Sunset on the sea](https://www.shadertoy.com/view/4dl3zr)
+
+- [Mythical - godotshaders : Cloud material](https://godotshaders.com/shader/cloud-material/)
+
+- [shff - github : OpenGL Sky](https://github.com/shff/opengl_sky)
+
+</details>
 
 ## 참고
 
