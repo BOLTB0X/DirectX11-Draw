@@ -2,128 +2,108 @@
 
 ![어어어어엇!!](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/%EB%98%A5%EA%BC%AC%EC%87%BC.gif?raw=true)
 
-그려그려
 
-## - ing
+~~저가 노후된 노트북으로~~ 그려그려
+
+
+### Development Environment
+
+- **OS** : Windows 10
+- **IDE** : [VisualStudio 2022 community](https://www.microsoft.com/en-us/download/details.aspx?id=17431)
+- **Lang** : C++, HLSL
+- **Graphics API** : [DirectX 11](https://www.microsoft.com/en-us/download/details.aspx?id=17431)
+- **Build & Package Manager** : [vcpkg](https://github.com/microsoft/vcpkg?tab=readme-ov-file)
+- External Libraries
+    - [stb_image](https://github.com/nothings/stb/tree/master) : `jpg`, `png` 파일 로딩
+    - [DirectXTK](https://github.com/microsoft/DirectXTK) : `dds` 파일 로딩
+    - [assimp](https://github.com/assimp/assimp) : `.obj`, `.fbx` 모델 로딩
+    - [Imgui](https://github.com/ocornut/imgui) : 디버깅 및 개발용 UI
+
+---
+
+## Sisyphus Engine : 구름과 태양
+
+![구름과 태양](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%912.gif?raw=true)
+
+노이즈 텍스처 기반 SDF 레이마칭을 이용한 절차적 **Volumetric Cloud** 렌더링
+
 
 <details>
-<summary>추구하는 구조 ex</summary>
+<summary> more 시연영상 </summary>
 
-<!-- 띄우기 -->
+<p align="center">
+  <table style="width:100%; text-align:center; border-spacing:20px;">
+    <tr>
+        <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD05_%EA%B5%AC%EB%A6%84%EA%B3%BC%ED%83%9C%EC%96%91.gif?raw=true" 
+             alt="image 2" 
+             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD05_%EA%B5%AC%EB%A6%84%EA%B3%BC%ED%83%9C%EC%96%912.gif?raw=true" 
+             alt="image 2" 
+             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>구름 하나</a>
+      </p>
+      </td>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>구름 정면</a>
+      </p>
+      </td>
+    </tr>
+  </table>
+</p>
 
-| 시지프스 엔진 (Sisyphus) | 유니티 (Unity) | 언리얼 (Unreal Engine) | 역할 |
-|------------------------|---------------|-------------------------|------|
-| Model                  | Mesh + Material | Static Mesh + Material | 변하지 않는 원본 데이터 (원본 그릇) |
-| ModelManager           | Asset Bundle / Project Window | Content Browser / Manager | 리소스를 로드하고 메모리에 유지함 |
-| ActorObject            | GameObject    | Actor                   | 게임 월드에 존재하는 개별 객체 |
-| Position (Component)   | Transform     | Scene Component          | 객체의 위치, 회전, 크기를 담당 |
+<p align="center">
+  <table style="width:100%; text-align:center; border-spacing:20px;">
+    <tr>
+        <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%913.gif?raw=true" 
+             alt="image 2" 
+             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%914%EC%9D%B4%EB%8F%99.gif?raw=true" 
+             alt="image 2" 
+             style="width:300px; height:200px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>구름 지대 1</a>
+      </p>
+      </td>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>구름 지대 2</a>
+      </p>
+      </td>
+    </tr>
+  </table>
+</p>
 
-<!-- 띄우기 -->
 
-
-```
-├─ CMakeLists.txt
-├─ assets/
-├─ hlsl/
-├─ src/
-│  └─ main.cpp
-│  ├─ Common
-│  │  ├─ EngineHelper.h
-│  │  ├─ EngineSetting.h
-│  │  ├─ MathHelper.h
-│  ├─ Framework
-│  │  ├─ Actor/
-│  │  │  ├─ ActorObject.h/cpp
-│  │  │  ├─ActorRenderParams // 이거 삭제하고 수정예정
-│  │  ├─ Position/
-│  │  │  ├─ Position.h/cpp
-│  │  ├─ Shader/
-│  │  │  ├─ Shader.h/cpp
-│  │  ├─ Widget/
-│  │  │  ├─ iWidget.h/cpp
-│  ├─ Graphics
-│  │  ├─ Renderer/
-│  │  │  ├─ Renderer.h/cpp
-│  │  │  ├─ DX11Device.h/cpp
-│  │  │  ├─ DisplayInfo.h/cpp
-│  │  │  ├─ Rasterizer.h/cpp
-│  │  │  ├─ RenderTarget.h/cpp
-│  │  │  ├─ DepthStencilState.h/cpp
-│  │  │  ├─ BlendState.h/cpp
-│  │  ├─ Model/
-│  │  │  ├─ MeshModel.h/cpp
-│  │  │  ├─ TerrainModel.h/cpp
-│  │  │  ├─ TerrainModelCell.h/cpp
-│  │  │  ├─ Mesh/
-│  │  │  │  ├─ VertexBuffer.h/cpp
-│  │  │  │  ├─ IndexBuffer.h/cpp
-│  │  │  │  ├─ Mesh.h/cpp
-│  │  │  │  ├─ VertexTypes.h
-│  │  │  ├─ Texture/
-│  │  │  │  ├─ Texture.h/cpp
-│  │  │  │  ├─ TextureLoader.h/cpp
-│  │  │  │  ├─ Material.h
-│  │  ├─ Shaders/
-│  │  │  ├─ ActorsShader.h/cpp
-│  │  │  ├─ ColorShader.h/cpp
-│  │  │  ├─ ConstantBuffer.h/cpp
-│  │  ├─ Camera/
-│  │  │  ├─ Camera.h/cpp
-│  │  │  ├─ Frustum.h/cpp
-│  ├─ System
-│  │  ├─ Input/
-│  │  │  ├─Input.h/cpp
-│  │  ├─ Gui/
-│  │  │  ├─Gui.h/cpp
-│  │  ├─ System.h/cpp
-│  ├─  UserInterface // 추가할 부분
-│  │  ├─ UserInterface.h/cpp // 어플리케이션에서 하던 걸 여기로 옮기고 Widget과 UserInput을 Application, World로 연결해주는 역할
-│  │  ├─ Widget/
-│  │  │  │  ├─ControlWidget.h/cpp
-│  │  │  │  ├─InspectorWidget.h/cpp
-│  │  │  │  ├─MainSideBarWidget.h/cpp // 현재 크기를 할당해서 했는데 그건 내가 Imgui 클릭이 안되고 잘 몰라서 했는데 창 접근이 되니 그냥 나중 모든 Widget을 여기서 할당할 목적 (기존 Vstack 처럼 크기 할당 취소 예정)
-│  │  │  │  ├─StatsWidget.h/cpp
-│  │  ├─ UserInput/
-│  │  │  │  ├─ UserInput.h/cpp // System으로 내린 Input을 포인터로 받아서 유저 조작 관련 메서드들을 관리
-│  ├─ Application/
-│  │  ├─ Application.h/cpp
-│  │  │  ├─ Fps/
-│  │  │  │  ├─ Fps.h/cpp
-│  │  │  ├─ Timer/
-│  │  │  │  ├─Timer.h/cpp
-│  │  │  ├─ ModelManager/
-│  │  │  │  ├─ModelManager.h/cpp
-│  │  │  ├─ ShaderManager/
-│  │  │  │  ├─ShaderManager.h/cpp
-│  │  │  ├─ TetureManager/
-│  │  │  │  ├─TetureManager.h/cpp
-│  ├─ World
-│  │  ├─ Actors/ 
-│  │  │  ├─ Stone/ Stone.h/cpp 
-│  │  │  ├─ Mountain / Mountain .h/cpp
-│  │  ├─ World/
-│  │  │  ├─ World.h/cpp
-```
-<!-- 띄우기 -->
 
 </details>
 
 
-
-#### used 라이브러리 및 툴
-
-- [Github - vcpkg](https://github.com/microsoft/vcpkg?tab=readme-ov-file)
-
-- [Github - stb_image](https://github.com/nothings/stb/tree/master)
-
-- [Github - Imgui](https://github.com/ocornut/imgui)
-
-- [Github - assimp](https://github.com/assimp/assimp)
-
-
 ## 참고
 
-### Code 및 개념
 
 - [rastertek - DirectX 11 on Windows 10 Tutorials](https://www.rastertek.com/tutdx11win10.html)
 
