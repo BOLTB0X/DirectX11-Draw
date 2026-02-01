@@ -3,7 +3,7 @@
 ![어어어어엇!!](https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/%EB%98%A5%EA%BC%AC%EC%87%BC.gif?raw=true)
 
 
-~~저가 노후된 노트북으로~~ 그려그려
+~~가성비 노후된 노트북으로~~ 그려그려
 
 
 ### Development Environment
@@ -21,7 +21,7 @@
 
 ---
 
-## Sisyphus Engine : [구름과 태양](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine/src)
+## Sisyphus Engine : [구름과 태양](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine)
 
 <p align="center">
   <table style="width:100%; text-align:center; border-spacing:20px;">
@@ -46,8 +46,12 @@
 
 순수 코드로 무엇을 렌더링해볼까 고민하다, 이 [보랏빛 하늘](https://www.shutterstock.com/ko/image-photo/purple-sky-clouds-backdrop-orange-pink-2678999665?trackingId=19e277b6-eb35-471f-b876-09a679b367e4&listId=searchResults) 사진과 구름과 태양을 렌더링을 도전
 
+- [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine#feature): **Volumetric Cloud System** , **Atmospheric Lighting**
+
+-  [자세한 README는 여기 클릭](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine#feature) 
+
 <details>
-<summary> more </summary>
+<summary> more 영상 </summary>
 
 <p align="center">
   <table style="width:100%; text-align:center; border-spacing:20px;">
@@ -117,13 +121,15 @@
 
 - [시행착오 및 기록물들](https://github.com/BOLTB0X/DirectX11-Draw/tree/main/DemoGIF/volumetric-raymarching)
 
-- [파이프라인 - 그래픽](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/RenderingEngine.cpp)
+- [자세한 `src` 폴더 구조 및 코드 설명](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine#src)
 
-- [파이프라인 - etc](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/MainEngine/MainEngine.cpp)
+    - [파이프라인 - 그래픽](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/RenderingEngine.cpp)
 
-- [구름 HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/CloudPS.hlsl)
+    - [파이프라인 - etc](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/MainEngine/MainEngine.cpp)
 
-- [하늘 HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/SkyPS.hlsl)
+    - [Cloud HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/CloudPS.hlsl)
+
+    - [Sky HLSL 코드](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/HLSL/SkyPS.hlsl)
 
 </details>
 
