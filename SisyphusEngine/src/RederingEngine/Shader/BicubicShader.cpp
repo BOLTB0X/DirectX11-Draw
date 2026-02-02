@@ -1,5 +1,6 @@
 #include "Pch.h"
 #include "BicubicShader.h"
+#include "ShaderBuffers.h"
 // Common
 #include "ConstantHelper.h"
 #include "DebugHelper.h"

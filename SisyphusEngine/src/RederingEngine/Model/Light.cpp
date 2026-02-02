@@ -3,7 +3,6 @@
 // Framework
 #include "Position.h"
 
-
 Light::Light()
     : m_color(1.0f, 1.0f, 1.0f, 1.0f),
     m_intensity(1.0f)

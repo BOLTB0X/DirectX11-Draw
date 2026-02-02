@@ -5,13 +5,6 @@
 class Position;
 
 
-struct LightBuffer {
-    DirectX::XMFLOAT3 position;
-    float intensity;
-    DirectX::XMFLOAT4 color;
-}; // LightBuffer
-
-
 class Light {
 public:
     Light();

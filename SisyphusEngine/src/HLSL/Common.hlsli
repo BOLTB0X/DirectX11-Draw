@@ -4,14 +4,11 @@ cbuffer GlobalBuffer : register(b1)
     float iTime;
     float iFrame;
     float2 iResolution;
-
     // Row 2
     float3 iCameraPos;
-    float iNoiseRes;
-
+    float padding1;
     // Row 3
-    float iCloudType;
-    float3 padding; 
+    float4 padding2;
 };
 
 

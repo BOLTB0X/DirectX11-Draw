@@ -4,7 +4,6 @@
 #include "ConstantHelper.h"
 #include "DebugHelper.h"
 
-
 using namespace DirectX;
 
 
@@ -53,6 +52,16 @@ bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
     matrixBufferDesc.ByteWidth = sizeof(GlobalBuffer);
     device->CreateBuffer(&matrixBufferDesc, nullptr, &m_globalBuffer);
 
+    // 상수 버퍼 생성 (클라우드 버퍼 - b3)
+    D3D11_BUFFER_DESC cloudBufferDesc = {};
+    cloudBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    cloudBufferDesc.ByteWidth = sizeof(CloudBuffer); // 현재 80 bytes (16의 배수)
+    cloudBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cloudBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    if (FAILED(device->CreateBuffer(&cloudBufferDesc, nullptr, &m_cloudBuffer)))
+        return false;
+
     m_type = ShaderType::Cloud;
 
     return true;
@@ -72,7 +81,25 @@ void CloudShader::SetConstantBuffers(ID3D11DeviceContext* context, ID3D11Buffer*
     context->VSSetConstantBuffers(0, 1, m_matrixBuffer.GetAddressOf()); // 행렬(b0)
     context->PSSetConstantBuffers(1, 1, m_globalBuffer.GetAddressOf()); // 레이마칭(b1)
     
+	// 조명 버퍼(b2)
     ID3D11Buffer* buffers[] = { lightBuffer };
     context->PSSetConstantBuffers(2, 1, buffers);
+
+	// 구름 버퍼(b3)
+    context->PSSetConstantBuffers(3, 1, m_cloudBuffer.GetAddressOf());
 } // SetConstantBuffers
 
+
+bool CloudShader::UpdateCloudBuffer(ID3D11DeviceContext* context, const CloudBuffer& data)
+{
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    if (FAILED(context->Map(m_cloudBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+        return false;
+
+    // 데이터 복사
+    CloudBuffer* pData = (CloudBuffer*)mapped.pData;
+    *pData = data;
+
+    context->Unmap(m_cloudBuffer.Get(), 0);
+    return true;
+} // UpdateCloudBuffer
