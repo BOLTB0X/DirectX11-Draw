@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include <directxmath.h>
-
+#include "ShaderBuffers.h"
 
 class Shader;
 class Light;
@@ -57,9 +57,10 @@ public:
     void UpdateMatrixBuffer(const std::string, ID3D11DeviceContext*,
         DirectX::XMMATRIX, DirectX::XMMATRIX, DirectX::XMMATRIX);
     void UpdateGlobalBuffer(const std::string, ID3D11DeviceContext*,
-        float, float, DirectX::XMFLOAT3, float);
+        float, float, DirectX::XMFLOAT3);
     void UpdateLightBuffer(const std::string, ID3D11DeviceContext*,
         Light*);
+    void UpdateCloudBuffer(ID3D11DeviceContext*, const CloudBuffer&);
 
     void SetShaders(const std::string, ID3D11DeviceContext*);
     void SetConstantBuffers(const std::string, ID3D11DeviceContext*);

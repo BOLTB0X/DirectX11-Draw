@@ -9,6 +9,32 @@ Texture2D iBlueNoise : register(t1); // 블루 노이즈
 SamplerState iSampler : register(s0); // 샘플러 상태
 
 
+cbuffer CloudBuffer : register(b3)
+{
+    // Row 1
+    float3 iCloudBaseColor;
+    float iCloudType;
+
+    // Row 2
+    float3 iCloudAmbient;
+    float iMaxSteps;
+
+    // Row 3
+    float3 iCloudShadowColor;
+    float iMarchSize;
+
+    // Row 4
+    float radius;
+    float height;
+    float tickness;
+    float iNoiseRes;
+    
+    // Row 5
+    float densityScale;
+    float3 padding;
+};
+
+
 // Texture 기반
 float GetNoise(float3 x, Texture2D tex, SamplerState samp, float resolution)
 {
@@ -56,7 +82,7 @@ float fbm(float3 p, float time)
 float scene(float3 p)
 {
     float3 localP = p - iCameraPos;
-    float distance = sdSphere(p, 2.0f);
+    float distance = sdSphere(p, radius);
     float f = fbm(p, iTime);
     
     return -distance + f;
@@ -65,11 +91,8 @@ float scene(float3 p)
 
 float planeScene(float3 p)
 {
-    float groundHeight = 1.0f;
-    float cloudThickness = 2.0f;
-    
     // 두께가 있는 층(Slab) 느낌으로 변경
-    float distance = abs(p.y - groundHeight) - cloudThickness;
+    float distance = abs(p.y - height) - tickness;
     
     // 노이즈 샘플링 시 카메라 위치를 오프셋
     float f = fbm(p, iTime);
@@ -117,11 +140,11 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
     float blueNoise = iBlueNoise.Sample(iSampler, uv * (iResolution / 1024.0f)).r;
     float offset = frac(blueNoise + float(iFrame % 32) / sqrt(0.5));
     
-    float depth = startDepth + (MARCH_SIZE * offset);
+    float depth = startDepth + (iMarchSize * offset);
     float3 sunPos = iLightPos;
     float3 sunDirection = normalize(sunPos);
 
-    for (int i = 0; i < MAX_STEPS; i++)
+    for (int i = 0; i < (int)iMaxSteps; i++)
     {
         float3 p = rayOrigin + depth * rayDirection;
         float density = 0.0f;
@@ -172,14 +195,14 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
             float mie = 0.5f + 0.5f * pow(saturate(cosTheta), 8.0f);
 
             // 최종 조명 색상 조합
-            float3 cloudAmbient = float3(0.2f, 0.15f, 0.3f);
+            //float3 cloudAmbient = float3(0.2f, 0.15f, 0.3f);
             float3 lightEffect = iLightColor.rgb * iIntensity * diffuse * falloff * mie * 3.0f;
             
-            float3 baseColor = lerp(float3(1.0f, 1.0f, 1.0f), float3(0.4f, 0.4f, 0.5f), density);
-            float3 finalColor = baseColor * (cloudAmbient + lightEffect);
+            float3 baseColor = lerp(iCloudBaseColor, iCloudShadowColor, density);
+            float3 finalColor = baseColor * (iCloudAmbient + lightEffect);
 
             // 알파 블렌딩
-            float alpha = density * 0.4f; // 부드러운 중첩을 위해 밀도 조절
+            float alpha = density * densityScale; // 부드러운 중첩을 위해 밀도 조절
             res.rgb += (1.0f - res.a) * finalColor * alpha;
             res.a += (1.0f - res.a) * alpha;
             
@@ -187,7 +210,7 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
                 break;
         }
 
-        depth += MARCH_SIZE;
+        depth += iMarchSize;
         if (depth > 50.0f)
             break;
     }
@@ -204,7 +227,5 @@ float4 main(PixelInput input) : SV_TARGET
     
     float distToSurface = length(input.worldPos - ro);
     
-    float4 res = rayMarch(ro, rd, input.tex, distToSurface);
-    
-    return res;
+    return rayMarch(ro, rd, input.tex, distToSurface);
 } // main

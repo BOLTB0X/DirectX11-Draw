@@ -1,7 +1,7 @@
 #pragma once
+#include "ShaderBuffers.h"
 // Framework
 #include "Shader.h"
-
 
 class CloudShader : public Shader {
 public:
@@ -15,5 +15,8 @@ public:
 
 public:
     void SetConstantBuffers(ID3D11DeviceContext*, ID3D11Buffer*);
+    bool UpdateCloudBuffer(ID3D11DeviceContext* context, const CloudBuffer& data);
 
+private:
+    Microsoft::WRL::ComPtr<ID3D11Buffer> m_cloudBuffer;
 }; // CloudShader
