@@ -170,7 +170,7 @@ void RenderingEngine::DrawSky(ID3D11DeviceContext* context,
 {
     XMMATRIX skyModel = XMMatrixTranslation(camPos.x, camPos.y, camPos.z);
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Sky,
-        context, totalTime, (float)m_frameCount, camPos, 256.0f);
+        context, totalTime, (float)m_frameCount, camPos);
     m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::Sky, context, skyModel, view, proj);
     m_ShaderManager->UpdateLightBuffer(ShaderKeys::Sky, context, m_Light.get());
     m_ShaderManager->SetShaders(ShaderKeys::Sky, context);
@@ -189,7 +189,28 @@ void RenderingEngine::DrawCloud(ID3D11DeviceContext* context,
         ConstantHelper::BLUE_NOISE_PATH, 1);
 
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Cloud,
-        context, totalTime, (float)m_frameCount, camPos, 256.0f);
+        context, totalTime, (float)m_frameCount, camPos);
+
+    CloudBuffer cloudData;
+    cloudData.iCloudType = (float)ConstantHelper::cloudType;
+
+    // 색상 설정
+    cloudData.baseColor = { 1.0f, 1.0f, 1.0f };
+    cloudData.ambient = { 0.2f, 0.15f, 0.3f };
+    cloudData.shadowColor = { 0.4f, 0.4f, 0.5f };
+
+    // 레이마칭 파라미터
+    cloudData.maxSteps = 100.0f;
+    cloudData.marchSize = 0.08f;
+    cloudData.densityScale = 0.4f;
+
+    // SDF 파라미터
+    cloudData.radius = 2.0f;
+    cloudData.height = 1.0f;
+    cloudData.thickness = 2.0f;
+    cloudData.iNoiseRes = 256.0f;
+
+    m_ShaderManager->UpdateCloudBuffer(context, cloudData);
 
     if (ConstantHelper::cloudType == ConstantHelper::CloudType::Default)
     {

@@ -1,11 +1,10 @@
 #include "Pch.h"
 #include "ShaderManager.h"
+#include "CloudShader.h"
+#include "BicubicShader.h"
+#include "SkyShader.h"
 // Framework
 #include "Shader.h"
-// Rendering
-#include "Shader/CloudShader.h"
-#include "Shader/BicubicShader.h"
-#include "Shader/SkyShader.h"
 // Common
 #include "ConstantHelper.h"
 
@@ -68,12 +67,12 @@ void ShaderManager::UpdateMatrixBuffer(const std::string key, ID3D11DeviceContex
 void ShaderManager::UpdateGlobalBuffer(
     const std::string key,
     ID3D11DeviceContext* context,
-    float time, float frame, XMFLOAT3 cameraPos, float iNoiseRes)
+    float time, float frame, XMFLOAT3 cameraPos)
 {
     auto it = m_shaders.find(key);
     if (it == m_shaders.end())
         return;
-    it->second->UpdateGlobalBuffer(context, time, frame, cameraPos, iNoiseRes);
+    it->second->UpdateGlobalBuffer(context, time, frame, cameraPos);
 } // UpdateGlobalBuffer
 
 
@@ -87,6 +86,16 @@ void ShaderManager::UpdateLightBuffer(const std::string key,
     if (shader->GetShaderType() == ShaderType::Sky)
         static_cast<SkyShader*>(shader)->UpdateLightBuffer(context, light);
 } // UpdateLightBuffer
+
+
+void ShaderManager::UpdateCloudBuffer(ID3D11DeviceContext* context, const CloudBuffer& data)
+{
+    auto it = m_shaders.find(ShaderKeys::Cloud);
+    if (it != m_shaders.end())
+    {
+        static_cast<CloudShader*>(it->second.get())->UpdateCloudBuffer(context, data);
+    }
+} // UpdateCloudBuffer
 
 
 void ShaderManager::SetShaders(const std::string key, ID3D11DeviceContext* context)
