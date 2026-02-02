@@ -213,6 +213,7 @@ GPU를 직접 제어하고, 화면에 픽셀을 그려내기 위한 모든 리�
     ---
 
 - [`Shader`](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader) : 셰이더 관리 구역
+    - [`ShaderBuffers.h`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/ShaderBuffers.h) : HLSL과 연동될 셰이더 버퍼
     - [`ShaderManager.h`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/ShaderManager.h)/[`.cpp`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/ShaderManager.cpp): 다양한 셰이더 객체를 통합 관리하고 적재적소에 바인딩
     - [`CloudShader.h`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/CloudShader.h)/[`.cpp`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/CloudShader.cpp) : 구름 표현을 위해 계산하는 전용 셰이더
     - [`SkyShader.h`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/SkyShader.h)/[`.cpp`](https://github.com/BOLTB0X/DirectX11-Draw/blob/Sun-and-Cloud/SisyphusEngine/src/RederingEngine/Shader/SkyShader.cpp): 하늘 표현을 위해 계산하는 전용 셰이더
