@@ -98,6 +98,16 @@ void ShaderManager::UpdateCloudBuffer(ID3D11DeviceContext* context, const CloudB
 } // UpdateCloudBuffer
 
 
+void ShaderManager::UpdateSkyBuffer(ID3D11DeviceContext* context, const SkyBuffer& data)
+{
+    auto it = m_shaders.find(ShaderKeys::Sky);
+    if (it != m_shaders.end())
+    {
+        static_cast<SkyShader*>(it->second.get())->UpdateSkyBuffer(context, data);
+    }
+} // UpdateSkyBuffer
+
+
 void ShaderManager::SetShaders(const std::string key, ID3D11DeviceContext* context)
 {
     auto it = m_shaders.find(key);

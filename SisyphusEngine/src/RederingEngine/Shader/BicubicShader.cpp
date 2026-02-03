@@ -8,7 +8,8 @@
 
 BicubicShader::BicubicShader() : Shader()
 {
-}
+    m_type = ShaderType::Bicubic;
+} // BicubicShader
 
 
 bool BicubicShader::Init(ID3D11Device* device, HWND hwnd,
@@ -38,18 +39,23 @@ bool BicubicShader::Init(ID3D11Device* device, HWND hwnd,
     vsBlob->Release();
     psBlob->Release();
 
+    return InitBuffers(device);
+} // Init
+
+
+bool BicubicShader::InitBuffers(ID3D11Device* device)
+{
     // 매트릭스 버퍼 - b0
     D3D11_BUFFER_DESC matrixBufferDesc = {};
     matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
     matrixBufferDesc.ByteWidth = sizeof(MatrixBuffer);
     matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    device->CreateBuffer(&matrixBufferDesc, nullptr, &m_matrixBuffer);
 
-    m_type = ShaderType::Bicubic;
-
-    return true;
-} // Init
+    if (FAILED(device->CreateBuffer(&matrixBufferDesc, nullptr, &m_matrixBuffer)))
+        return false;
+	return true;
+} // InitBuffers
 
 
 void BicubicShader::SetShaders(ID3D11DeviceContext* context)

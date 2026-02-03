@@ -1,7 +1,6 @@
 #pragma once
 #include<directxmath.h>
 
-
 struct GlobalBuffer {
     // Row 1
     float iTime;
@@ -13,9 +12,6 @@ struct GlobalBuffer {
     float padding1;
     //float iNoiseRes;
 
-    //// Row 3: iCloudType(4) + Padding(12) = 16 bytes
-    //float iCloudType;
-    //DirectX::XMFLOAT3 padding;
     DirectX::XMFLOAT4 padding2;
 }; // GlobalBuffer
 
@@ -38,14 +34,14 @@ struct LightBuffer {
 
 struct CloudBuffer {
     // Row 1
-    DirectX::XMFLOAT3 baseColor = { 1.0f, 1.0f, 1.0f };
+    DirectX::XMFLOAT3 baseColor;
     float iCloudType;
     // Row 2
-    DirectX::XMFLOAT3 ambient = { 0.2f, 0.15f, 0.3f };
-    float maxSteps = 100.0f;
+    DirectX::XMFLOAT3 ambient;
+    float maxSteps;
     // Row 3
-    DirectX::XMFLOAT3 shadowColor = { 0.4f, 0.4f, 0.5f };
-    float marchSize = 0.08f;
+    DirectX::XMFLOAT3 shadowColor;
+    float marchSize;
     // Row 4
     float radius;
     float height;
@@ -54,4 +50,55 @@ struct CloudBuffer {
     // Row 5
     float densityScale;
     DirectX::XMFLOAT3 padding;
+
+    CloudBuffer(float cloudType)
+		: iCloudType(cloudType)
+    {
+		baseColor = { 1.0f, 1.0f, 1.0f };
+		ambient = { 0.2f, 0.15f, 0.3f };
+		shadowColor = { 0.4f, 0.4f, 0.5f };
+		maxSteps = 100.0f;
+		marchSize = 0.08f;
+		radius = 2.0f;
+		height = 1.0f;
+		thickness = 2.0f;
+		iNoiseRes = 256.0f;
+		densityScale = 0.4f;
+		padding = { 0.0f, 0.0f, 0.0f };
+    }
 }; // CloudBuffer
+
+
+struct SkyBuffer {
+    // Row 1
+    DirectX::XMFLOAT3 topColor;
+    float padding1;
+
+    // Row 2 하늘
+    DirectX::XMFLOAT3 horizonColor;
+    float skyExponent;
+
+    // Row 3 태양
+    float sunSize;
+    float sunBloom; // 태양 주변 광량 확산 속도
+    float sunIntensity;
+    float rayStrength;
+
+    // Row 4
+    float rayAnimSpeed;
+    DirectX::XMFLOAT3 padding2;
+
+    SkyBuffer()
+     {
+        topColor = { 0.05f, 0.1f, 0.3f };
+		padding1 = 0.0f;
+        horizonColor = { 0.5f, 0.2f, 0.4f };
+        skyExponent = 0.3f;
+        sunSize = 0.005f;
+        sunBloom = 80.0f;
+        sunIntensity = 1.0f;
+        rayStrength = 0.4f;
+        rayAnimSpeed = 0.15f;
+		padding2 = { 0.0f, 0.0f, 0.0f };
+	}
+}; // SkyBuffer

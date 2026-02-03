@@ -15,14 +15,6 @@ using namespace PropertyHelper;
 using namespace DirectX;
 
 
-enum class CloudType : uint32_t {
-    None = 0,
-    Sphere = 1,
-    Plane = 2,
-    Morphing = 3
-};
-
-
 RenderingEngine::RenderingEngine()
     : m_isWireframe(false),
     m_backCullEnable(false),
@@ -71,7 +63,7 @@ bool RenderingEngine::Init(HWND hwnd)
         m_Renderer->GetDevice(), DefaultModelType::Sphere) == false)
         return false;
 
-    m_Light->Init(ConstantHelper::LightPosition, ConstantHelper::LightColor, 1.5f);
+    m_Light->Init(ConstantHelper::LightPosition, ConstantHelper::LightColor, ConstantHelper::LightIntensity);
 
     return true;
 } // Init
@@ -168,13 +160,19 @@ ID3D11DeviceContext* RenderingEngine::GetDeviceContext()
 void RenderingEngine::DrawSky(ID3D11DeviceContext* context,
     float totalTime, XMFLOAT3 camPos, XMMATRIX view, XMMATRIX proj)
 {
+    using namespace ConstantHelper;
+
     XMMATRIX skyModel = XMMatrixTranslation(camPos.x, camPos.y, camPos.z);
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Sky,
         context, totalTime, (float)m_frameCount, camPos);
     m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::Sky, context, skyModel, view, proj);
     m_ShaderManager->UpdateLightBuffer(ShaderKeys::Sky, context, m_Light.get());
+
+    SkyBuffer skyData;
+    m_ShaderManager->UpdateSkyBuffer(context, skyData);
     m_ShaderManager->SetShaders(ShaderKeys::Sky, context);
     m_ShaderManager->SetConstantBuffers(ShaderKeys::Sky, context);
+
     m_Sky->Render(context);
 } // DrawSky
 
@@ -191,25 +189,7 @@ void RenderingEngine::DrawCloud(ID3D11DeviceContext* context,
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Cloud,
         context, totalTime, (float)m_frameCount, camPos);
 
-    CloudBuffer cloudData;
-    cloudData.iCloudType = (float)ConstantHelper::cloudType;
-
-    // 색상 설정
-    cloudData.baseColor = { 1.0f, 1.0f, 1.0f };
-    cloudData.ambient = { 0.2f, 0.15f, 0.3f };
-    cloudData.shadowColor = { 0.4f, 0.4f, 0.5f };
-
-    // 레이마칭 파라미터
-    cloudData.maxSteps = 100.0f;
-    cloudData.marchSize = 0.08f;
-    cloudData.densityScale = 0.4f;
-
-    // SDF 파라미터
-    cloudData.radius = 2.0f;
-    cloudData.height = 1.0f;
-    cloudData.thickness = 2.0f;
-    cloudData.iNoiseRes = 256.0f;
-
+    CloudBuffer cloudData((float)ConstantHelper::cloudType);
     m_ShaderManager->UpdateCloudBuffer(context, cloudData);
 
     if (ConstantHelper::cloudType == ConstantHelper::CloudType::Default)
@@ -226,6 +206,7 @@ void RenderingEngine::DrawCloud(ID3D11DeviceContext* context,
     }
     m_ShaderManager->SetShaders(ShaderKeys::Cloud, context);
     m_ShaderManager->SetConstantBuffers(ShaderKeys::Cloud, context);
+
     m_Cloud->Render(context);
 } // DrawCloud
 

@@ -61,6 +61,7 @@ public:
     void UpdateLightBuffer(const std::string, ID3D11DeviceContext*,
         Light*);
     void UpdateCloudBuffer(ID3D11DeviceContext*, const CloudBuffer&);
+    void UpdateSkyBuffer(ID3D11DeviceContext*, const SkyBuffer&);
 
     void SetShaders(const std::string, ID3D11DeviceContext*);
     void SetConstantBuffers(const std::string, ID3D11DeviceContext*);

@@ -73,6 +73,14 @@ bool SkyShader::InitBuffers(ID3D11Device* device)
     lightDesc.StructureByteStride = 0;
     if (FAILED(device->CreateBuffer(&lightDesc, nullptr, &m_lightBuffer))) return false;
 
+    D3D11_BUFFER_DESC skyDesc = {};
+    skyDesc.Usage = D3D11_USAGE_DYNAMIC;
+    skyDesc.ByteWidth = sizeof(SkyBuffer);
+    skyDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    skyDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    if (FAILED(device->CreateBuffer(&skyDesc, nullptr, &m_skyBuffer))) return false;
+
     return true;
 } // InitBuffers
 
@@ -88,8 +96,9 @@ void SkyShader::SetShaders(ID3D11DeviceContext* context)
 void SkyShader::SetConstantBuffers(ID3D11DeviceContext* context)
 {
     context->VSSetConstantBuffers(0, 1, m_matrixBuffer.GetAddressOf()); // 행렬(b0)
-    context->PSSetConstantBuffers(1, 1, m_globalBuffer.GetAddressOf()); // 레이마칭(b1)
+    context->PSSetConstantBuffers(1, 1, m_globalBuffer.GetAddressOf());
     context->PSSetConstantBuffers(2, 1, m_lightBuffer.GetAddressOf());
+    context->PSSetConstantBuffers(3, 1, m_skyBuffer.GetAddressOf());
 } // SetConstantBuffers
 
 
@@ -106,3 +115,16 @@ bool SkyShader::UpdateLightBuffer(ID3D11DeviceContext* context, Light* light)
     context->Unmap(m_lightBuffer.Get(), 0);
     return true;
 } // UpdateLightBuffer
+
+
+bool SkyShader::UpdateSkyBuffer(ID3D11DeviceContext* context, const SkyBuffer& data)
+{
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    if (FAILED(context->Map(m_skyBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
+
+    SkyBuffer* pData = (SkyBuffer*)mapped.pData;
+    *pData = data;
+
+    context->Unmap(m_skyBuffer.Get(), 0);
+    return true;
+} // UpdateSkyBuffer

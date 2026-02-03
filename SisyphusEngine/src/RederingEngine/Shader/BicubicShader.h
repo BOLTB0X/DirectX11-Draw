@@ -12,4 +12,7 @@ public:
     virtual bool Init(ID3D11Device*, HWND,
         const std::wstring&, const std::wstring&) override;
     virtual void SetShaders(ID3D11DeviceContext*) override;
+
+private:
+    bool InitBuffers(ID3D11Device*);
 }; // BicubicShader
