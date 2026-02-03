@@ -9,7 +9,9 @@ using namespace DirectX;
 
 CloudShader::CloudShader()
 	: Shader()
-{}
+{
+    m_type = ShaderType::Cloud;
+} // CloudShader
 
 
 bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
@@ -40,6 +42,12 @@ bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
     vsBlob->Release();
     psBlob->Release();
 
+    return InitBuffers(device);
+} // Init
+
+
+bool CloudShader::InitBuffers(ID3D11Device* device)
+{
     // 상수 버퍼 생성 (매트릭스 버퍼 - b0)
     D3D11_BUFFER_DESC matrixBufferDesc = {};
     matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -62,10 +70,8 @@ bool CloudShader::Init(ID3D11Device* device, HWND hwnd,
     if (FAILED(device->CreateBuffer(&cloudBufferDesc, nullptr, &m_cloudBuffer)))
         return false;
 
-    m_type = ShaderType::Cloud;
-
     return true;
-} // Init
+} // InitBuffers
 
 
 void CloudShader::SetShaders(ID3D11DeviceContext* context)

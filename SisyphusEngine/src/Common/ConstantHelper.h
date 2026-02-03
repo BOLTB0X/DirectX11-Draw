@@ -35,6 +35,13 @@ namespace ConstantHelper { // HLSL
 };
 
 
+namespace ConstantHelper { // 셰이더 키
+    const DirectX::XMFLOAT3 LightPosition = { -10.0f, 2.0f, 15.0f };
+    const DirectX::XMFLOAT4 LightColor = { 1.0f, 0.6f, 0.3f, 1.0f };
+    const float LightIntensity = 1.5f;
+}
+
+
 namespace ConstantHelper { // 렌더링 관련
 
     using namespace DirectX;
@@ -52,8 +59,6 @@ namespace ConstantHelper { // 렌더링 관련
     }; // CameraSetup
 
     inline CloudType cloudType = CloudType::Default;
-    const DirectX::XMFLOAT3 LightPosition = { -10.0f, 2.0f, 15.0f };
-    const DirectX::XMFLOAT4 LightColor = { 1.0f, 0.6f, 0.3f, 1.0f };
 
     // 타입에 따른 카메라 초기 설정 반환
     inline CameraSetup GetCloudCameraSetup()

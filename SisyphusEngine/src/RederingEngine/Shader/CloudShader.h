@@ -18,5 +18,8 @@ public:
     bool UpdateCloudBuffer(ID3D11DeviceContext* context, const CloudBuffer& data);
 
 private:
+	bool InitBuffers(ID3D11Device*);
+
+private:
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_cloudBuffer;
 }; // CloudShader

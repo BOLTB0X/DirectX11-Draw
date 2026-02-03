@@ -2,11 +2,34 @@
 #include "Common.hlsli"
 #include "Maths.hlsli"
 
+
 struct PixelSkyInput
 {
     float4 position : SV_POSITION;
     float3 localPos : TEXCOORD0;
 }; // PixelSkyInput
+
+
+cbuffer SkyBuffer : register(b3)
+{
+    // Row 1
+    float3 iSkyTopColor;
+    float sPadding1;
+
+    // Row 2
+    float3 iSkyHorizonColor;
+    float iSkyExponent;
+
+    // Row 3
+    float iSunSize;
+    float iSunBloom;
+    float iSunIntensity;
+    float iRayStrength;
+
+    // Row 4
+    float iRayAnimSpeed;
+    float3 sPadding2;
+}; // SkyBuffer
 
 
 // 2D Simplex Noise 구현
@@ -60,29 +83,30 @@ float4 main(PixelSkyInput input) : SV_TARGET
     float3 sd = normalize(iLightPos);
     
     float3 skyColor;
+    float horizonFactor = pow(abs(rd.y), iSkyExponent);
     
     if (rd.y > 0)
-        skyColor = lerp(float3(0.5f, 0.2f, 0.4f), float3(0.05f, 0.1f, 0.3f), pow(rd.y, 0.3f));
+        skyColor = lerp(iSkyHorizonColor, iSkyTopColor, horizonFactor);
     else
-        skyColor = lerp(float3(0.5f, 0.2f, 0.4f), float3(0.05f, 0.02f, 0.1f), pow(abs(rd.y), 0.3f));
+        skyColor = lerp(iSkyHorizonColor, float3(0.05f, 0.02f, 0.1f), horizonFactor);
 
     // sunDot이 1에 가까울수록 태양 중심
     float sunDot = dot(rd, sd);
     float sunDist = saturate(1.0f - sunDot);
 
     // 태양 핵
-    float core = smoothstep(0.005f, 0.002f, sunDist);
+    float core = smoothstep(iSunSize, iSunSize * 0.4f, sunDist);
     
     // 가우시안 블룸
-    float bloom = exp(-sunDist * 80.0f) * 2.5f;
-    float wideGlow = exp(-sunDist * 10.0f) * 0.6f;
+    float bloom = exp(-sunDist * iSunBloom) * 2.5f;
+    float wideGlow = exp(-sunDist * (iSunBloom * 0.125f)) * 0.6f;
 
     // RayGlow
     float angle = atan2(rd.z, rd.x);
     float rays = snoise(float2(angle * 3.0f, iTime * 0.15f)) * 0.5f + 0.5f;
-    float3 rayEffect = float3(1.0f, 0.8f, 0.5f) * pow(rays, 5.0f) * exp(-sunDist * 15.0f) * 0.4f;
+    float3 rayEffect = float3(1.0f, 0.8f, 0.5f) * pow(rays, 5.0f) * exp(-sunDist * 15.0f) * iRayStrength;
 
     // 최종
-    float3 sunColor = iLightColor.rgb * (core * 6.0f + bloom + wideGlow);    
+    float3 sunColor = iLightColor.rgb * (core * iSunIntensity + bloom + wideGlow);
     return float4(skyColor + sunColor + rayEffect * iIntensity, 0.8f);
 } // main
