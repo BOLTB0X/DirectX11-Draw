@@ -21,6 +21,20 @@
 
 ---
 
+### Study
+
+- [과정에 생겼던 에러 및 궁금증](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Error-history.md)
+
+- [Noise](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Noise.md)
+
+- [FBM](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/FBM.md)
+
+- [RayMarch]()
+
+- [Lighting](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Light.md)
+
+$$FinalColor = (SourceColor \times 1) + (DestColor \times 1)$$
+
 ## Sisyphus Engine : [구름과 태양](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine)
 
 <p align="center">
