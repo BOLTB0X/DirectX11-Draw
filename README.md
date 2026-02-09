@@ -145,11 +145,23 @@
              style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD07_%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B4%EA%B3%A0%EC%8A%A4%ED%8A%B8.gif?raw=true" 
+             alt="image 2" 
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
     </tr>
     <tr>
       <td style="text-align:center; font-size:14px; font-weight:bold;">
       <p align="center">
       <a></a>대기 중 햇 빛산란</a>
+      </p>
+      </td>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>렌즈플레어(고스트)</a>
       </p>
       </td>
     </tr>
