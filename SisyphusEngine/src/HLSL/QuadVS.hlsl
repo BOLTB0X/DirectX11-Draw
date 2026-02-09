@@ -24,11 +24,7 @@ PixelInput main(QuadInput input)
 {
     PixelInput output;
     
-    input.position.w = 1.0f;
-    
-    float4 worldPos = mul(input.position, modelMatrix);
-    output.position = mul(worldPos, viewMatrix);
-    output.position = mul(output.position, projectionMatrix);
+    output.position = float4(input.position.xy, 0.0f, 1.0f);
     output.tex = input.tex;
     
     return output;

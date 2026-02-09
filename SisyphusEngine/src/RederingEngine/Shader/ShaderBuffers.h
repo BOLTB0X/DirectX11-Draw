@@ -1,5 +1,8 @@
 #pragma once
 #include<directxmath.h>
+// Common
+#include "MathHelper.h"
+#include "ConstantHelper.h"
 
 struct GlobalBuffer {
     // Row 1
@@ -102,3 +105,84 @@ struct SkyBuffer {
 		padding2 = { 0.0f, 0.0f, 0.0f };
 	}
 }; // SkyBuffer
+
+
+struct LensFlareBuffer {
+    // Row 1
+    DirectX::XMFLOAT2 sunPos;
+    float threshold;
+    float scale;
+
+    // Row 2
+    float bias;
+    float ghostCount;
+    float ghostSpacing;
+    float distortion;
+
+    // Row 3
+    DirectX::XMFLOAT3 tintColor;
+    float padding1;
+
+    // Row 4
+    float visibility;
+    DirectX::XMFLOAT3 padding2;
+
+    LensFlareBuffer() {
+        sunPos = { 0.0f, 0.0f };
+        threshold = 0.85f;
+        scale = 0.0f; // 기본값은 0
+        bias = -0.5f;
+        ghostCount = 4.0f;
+        ghostSpacing = 0.4f;
+        distortion = 2.5f;
+        tintColor = { 1.0f, 0.9f, 0.7f };
+        padding1 = 0.0f;
+        visibility = 0.0f;
+        padding2 = { 0.0f, 0.0f, 0.0f };
+    } // LensFlareBuffer
+
+
+    void Init(const DirectX::XMVECTOR& sunWorldPos,
+        const DirectX::XMFLOAT3& camPos,
+        const DirectX::XMMATRIX& view,
+        const DirectX::XMMATRIX& proj)
+    {
+        using namespace DirectX;
+
+        XMMATRIX invView = XMMatrixInverse(nullptr, view);
+        XMVECTOR camForward = invView.r[2]; // 카메라가 바라보는 방향
+        XMVECTOR camPosVec = XMLoadFloat3(&camPos);
+
+        // 태양 방향 벡터 (World Space)
+        XMVECTOR sunDir = XMVector3Normalize(sunWorldPos);
+
+        // 카메라 전방과 태양 방향의 내적
+        // 카메라가 태양을 정면으로 볼 때 1.0, 등지면 -1.0
+        float dot = XMVectorGetX(XMVector3Dot(camForward, sunDir));
+
+        //  가시성 결정 (Threshold)
+        if (dot < 0.1f)
+        {
+            this->scale = 0.0f;
+            this->visibility = 0.0f;
+            return;
+        }
+
+        // 정면에 가까울수록 강해지게 설정
+        this->visibility = MathHelper::clamp((dot - 0.1f) / 0.9f, 0.0f, 255.0f);
+        // 더 극적인 효과를 위해 제곱
+        this->visibility *= this->visibility;
+
+        // 투영 계산
+        XMVECTOR farSunPos = camPosVec + (sunDir * 10000.0f);
+        XMMATRIX world = XMMatrixIdentity();
+        XMVECTOR sunScreenPos = XMVector3Project(farSunPos,
+            0, 0, (float)ConstantHelper::SCREEN_WIDTH, (float)ConstantHelper::SCREEN_HEIGHT, 0.0f, 1.0f,
+            proj, view, world);
+
+        this->sunPos.x = (XMVectorGetX(sunScreenPos) / (float)ConstantHelper::SCREEN_WIDTH) - 0.5f;
+        this->sunPos.y = (1.0f - (XMVectorGetY(sunScreenPos) / (float)ConstantHelper::SCREEN_HEIGHT)) - 0.5f;
+
+        this->scale = ConstantHelper::LightIntensity * this->visibility;
+    } // Init
+}; // LensFlareBuffer

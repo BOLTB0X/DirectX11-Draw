@@ -5,6 +5,7 @@
 
 using Microsoft::WRL::ComPtr;
 
+
 BlendState::BlendState() {}
 
 BlendState::~BlendState() {}
@@ -52,6 +53,30 @@ bool BlendState::Init(ID3D11Device* device) {
     if (DebugHelper::SuccessCheck(device->CreateBlendState(&blendDesc, &m_alphaToCoverageState),
         "AlphaEnable BlendState 생성 실패")
         == false) return false;
+
+    // 가산 혼합
+    D3D11_BLEND_DESC additiveDesc = {};
+    ZeroMemory(&additiveDesc, sizeof(additiveDesc));
+
+    additiveDesc.AlphaToCoverageEnable = FALSE;
+    additiveDesc.IndependentBlendEnable = FALSE;
+
+    additiveDesc.RenderTarget[0].BlendEnable = TRUE;
+    // 최종 색상 = (Source * 1) + (Dest * 1)
+    additiveDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+    additiveDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+    additiveDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+
+    // 알파는 보통 결과값에 큰 영향을 주지 않도록 설정
+    additiveDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    additiveDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    additiveDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+    additiveDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    if (DebugHelper::SuccessCheck(device->CreateBlendState(&additiveDesc, &m_additiveBlendState),
+        "Additive BlendState 생성 실패") == false) return false;
+
     return true;
 } // Init
 
@@ -94,3 +119,10 @@ void BlendState::OMSetBlendState(ID3D11DeviceContext* context, bool alphaBlend)
         context->OMSetBlendState(m_alphaDisableState.Get(), blendFactor, 0xffffffff);
     }
 } // OMSetBlendState
+
+
+void BlendState::SetAdditiveBlendState(ID3D11DeviceContext* context)
+{
+    float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    context->OMSetBlendState(m_additiveBlendState.Get(), blendFactor, 0xffffffff);
+} // SetAdditiveBlendState

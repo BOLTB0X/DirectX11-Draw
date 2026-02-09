@@ -57,7 +57,6 @@ bool Renderer::Init(HWND hwnd, bool vsync)
 
     if (m_LowResRenderTarget->Init(
         m_DX11Device->GetDevice(),
-        m_DX11Device->GetSwapChain(),
         SCREEN_WIDTH, SCREEN_HEIGHT)
         == false)
         return false;
@@ -97,6 +96,13 @@ void Renderer::EndScene()
         m_DX11Device->GetSwapChain()->Present(0, 0);
     }
 } // EndScene
+
+
+void Renderer::ClearShaderResources(UINT slot)
+{
+    ID3D11ShaderResourceView* nullSRV = nullptr;
+    m_DX11Device->GetDeviceContext()->PSSetShaderResources(slot, 1, &nullSRV);
+} // ClearShaderResources
 
 
 void Renderer::Shutdown()
@@ -157,7 +163,10 @@ void Renderer::SetSampler(UINT slot)
 
 void Renderer::SetLowResolutionRenderTarget()
 {
-    m_LowResRenderTarget->Clear(m_DX11Device->GetDeviceContext(), 0, 0, 0, 1);
+    ID3D11DeviceContext* context = m_DX11Device->GetDeviceContext();
+    ClearShaderResources(0);
+
+    m_LowResRenderTarget->Clear(context, 0, 0, 0, 1);
 } // SetLowResolutionRenderTarget
 
 
@@ -167,6 +176,12 @@ void Renderer::SetLowResolutionShaderResources(UINT slot)
     auto lowResSRV  = m_LowResRenderTarget->GetSRV();
     context->PSSetShaderResources(slot, 1, &lowResSRV);
 } // SetLowResolutionShaderResources
+
+
+void Renderer::SetAdditiveAlphaBlending()
+{
+    m_BlendState->SetAdditiveBlendState(m_DX11Device->GetDeviceContext());
+} // SetAdditiveAlphaBlending
 
 
 ID3D11Device* Renderer::GetDevice() const

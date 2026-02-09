@@ -13,9 +13,12 @@ public:
     bool Init(ID3D11Device*);
     bool InitForParticle(ID3D11Device* device);
     void OMSetBlendState(ID3D11DeviceContext* context, bool alphaBlend = false);
+    void SetAdditiveBlendState(ID3D11DeviceContext* context);
+
 
 private:
     Microsoft::WRL::ComPtr<ID3D11BlendState> m_alphaEnableState;
     Microsoft::WRL::ComPtr<ID3D11BlendState> m_alphaDisableState;
     Microsoft::WRL::ComPtr<ID3D11BlendState> m_alphaToCoverageState;
+    Microsoft::WRL::ComPtr<ID3D11BlendState> m_additiveBlendState;
 }; // BlendState
