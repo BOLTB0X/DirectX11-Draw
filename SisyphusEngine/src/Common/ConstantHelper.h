@@ -32,6 +32,7 @@ namespace ConstantHelper { // HLSL
     const std::wstring CLOUD_PS = L"HLSL/CloudPS.hlsl";
     const std::wstring BICUBIC_PS = L"HLSL/BicubicPS.hlsl";
     const std::wstring SKY_PS = L"HLSL/SkyPS.hlsl";
+	const std::wstring LENSFLARE_PS = L"HLSL/LensFlarePS.hlsl";
 };
 
 

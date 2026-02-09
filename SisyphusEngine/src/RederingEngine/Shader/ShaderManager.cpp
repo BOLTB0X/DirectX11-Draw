@@ -3,6 +3,7 @@
 #include "CloudShader.h"
 #include "BicubicShader.h"
 #include "SkyShader.h"
+#include "LensFlareShader.h"
 // Framework
 #include "Shader.h"
 // Common
@@ -44,6 +45,14 @@ bool ShaderManager::Init(ID3D11Device* device, HWND hwnd)
         == false) return false;
 
     m_shaders[ShaderKeys::Sky] = std::move(skyShader);
+
+    auto lfShader = std::make_unique<LensFlareShader>();
+    if (lfShader->Init(device, hwnd,
+        ConstantHelper::QUAD_VS,
+        ConstantHelper::LENSFLARE_PS) == false) return false;
+
+    m_shaders[ShaderKeys::LensFlare] = std::move(lfShader);
+
     return true;
 } // Init
 
@@ -108,6 +117,16 @@ void ShaderManager::UpdateSkyBuffer(ID3D11DeviceContext* context, const SkyBuffe
 } // UpdateSkyBuffer
 
 
+void ShaderManager::UpdateLensFlareBuffer(ID3D11DeviceContext* context, const LensFlareBuffer& data)
+{
+    auto it = m_shaders.find(ShaderKeys::LensFlare);
+    if (it != m_shaders.end())
+    {
+        static_cast<LensFlareShader*>(it->second.get())->UpdateLensFlareBuffer(context, data);
+    }
+} // UpdateLensFlareBuffer
+
+
 void ShaderManager::SetShaders(const std::string key, ID3D11DeviceContext* context)
 {
     auto it = m_shaders.find(key);
@@ -136,5 +155,11 @@ void ShaderManager::SetConstantBuffers(const std::string key,
     else if (type == ShaderType::Sky)
     {
         static_cast<SkyShader*>(shader)->SetConstantBuffers(context);
+    }
+    else if (type == ShaderType::LensFlare) // 추가!
+    {
+        ID3D11Buffer* buffer = GetShader<SkyShader>(ShaderKeys::Sky)->GetLightBuffer();
+        if (buffer == nullptr) return;
+        static_cast<LensFlareShader*>(shader)->SetConstantBuffers(context, buffer);
     }
 } // SetConstantBuffers

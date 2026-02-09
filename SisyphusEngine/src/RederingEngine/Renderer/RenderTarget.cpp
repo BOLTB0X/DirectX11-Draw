@@ -34,7 +34,7 @@ bool RenderTarget::Init(ID3D11Device* device, int width, int height)
     if (InitLowResolution(device, width / 2, height / 2) == false)
         return false;
 
-    InitViewport(width, height);
+    InitViewport(width / 2, height / 2);
     return true;
 } // Init
 
@@ -121,6 +121,15 @@ bool RenderTarget::InitLowResolution(ID3D11Device* device, int width, int height
         return false;
     if (SuccessCheck(device->CreateShaderResourceView(renderTexture.Get(), nullptr, &m_shaderResourceView),
         "InitLowResolution: CreateShaderResourceView") == false)
+        return false;
+
+    D3D11_TEXTURE2D_DESC depthDesc = texDesc;
+    depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+    if (FAILED(device->CreateTexture2D(&depthDesc, nullptr, &m_depthStencilBuffer)))
+        return false;
+    if (FAILED(device->CreateDepthStencilView(m_depthStencilBuffer.Get(), nullptr, &m_depthStencilView)))
         return false;
 
     return true;

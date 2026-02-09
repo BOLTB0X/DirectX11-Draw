@@ -1,5 +1,3 @@
-#define MAX_STEPS 100
-#define MARCH_SIZE 0.08
 #include "Common.hlsli"
 #include "Maths.hlsli"
 

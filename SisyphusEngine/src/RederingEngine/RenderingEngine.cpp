@@ -25,7 +25,7 @@ RenderingEngine::RenderingEngine()
     m_TexturesManager = std::make_unique<TexturesManager>();
     m_ShaderManager = std::make_unique<ShaderManager>();
     m_Cloud = std::make_unique<DefaultModel>();
-    m_BicubicMesh = std::make_unique<DefaultModel>();
+    m_Quad = std::make_unique<DefaultModel>();
     m_Sky = std::make_unique<DefaultModel>();
     m_Light = std::make_unique<Light>();
 } // RenderingEngine
@@ -55,7 +55,7 @@ bool RenderingEngine::Init(HWND hwnd)
         m_Renderer->GetDevice(), DefaultModelType::Cube) == false)
         return false;
 
-    if (m_BicubicMesh->Init(
+    if (m_Quad->Init(
         m_Renderer->GetDevice(), DefaultModelType::Quad) == false)
         return false;
 
@@ -109,16 +109,19 @@ void RenderingEngine::Draw(
 
     // 구름
     DrawCloud(context, totalTime, camPos, view, proj);
-   
-    m_Renderer->SetBackBufferRenderTarget();
 
-    // 메인 백버퍼 -> 바이큐빅 합성
+	// 포스트 프로세싱
+    m_Renderer->SetBackBufferRenderTarget();
+    m_Renderer->SetAlphaBlending(false);
+
+    ApplyLensFlare(context, view, proj, camPos);
     ApplyBicubicUpscale(context);
 
+    m_Renderer->ClearShaderResources(0);
     m_Renderer->SetDepthBuffer(true);
-    m_Renderer->SetAlphaBlending(false);
+  
     m_frameCount++;
-} // Render
+} // Draw
 
 
 void RenderingEngine::BeginScene(float r, float g, float b, float a)
@@ -216,10 +219,34 @@ void RenderingEngine::ApplyBicubicUpscale(ID3D11DeviceContext* context)
     m_ShaderManager->SetShaders(ShaderKeys::Bicubic, context);
     m_Renderer->SetLowResolutionShaderResources(0);
 
-    // 바이큐빅 보간을 위한 선형 샘플러
+    m_Renderer->SetSampler(0);
+
     m_ShaderManager->UpdateMatrixBuffer(
         ShaderKeys::Bicubic, context,
-        m_BicubicMesh->GetModelMatrix(), XMMatrixIdentity(), XMMatrixIdentity());
+        XMMatrixIdentity(), XMMatrixIdentity(), XMMatrixIdentity());
 
-    m_BicubicMesh->Render(context);
+    m_Quad->Render(context);
 } // ApplyBicubicUpscale
+
+
+void RenderingEngine::ApplyLensFlare(ID3D11DeviceContext* context,
+    const XMMATRIX& view, const XMMATRIX& proj, const XMFLOAT3& camPos)
+{
+    m_Renderer->SetAdditiveAlphaBlending();
+    m_ShaderManager->SetShaders(ShaderKeys::LensFlare, context);
+
+    LensFlareBuffer bufferData;
+    bufferData.Init(XMLoadFloat3(&ConstantHelper::LightPosition),
+        camPos, view, proj);
+
+    m_ShaderManager->UpdateLensFlareBuffer(context, bufferData);
+
+    m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::LensFlare, context,
+        XMMatrixIdentity(), XMMatrixIdentity(), XMMatrixIdentity());
+
+    m_Renderer->SetLowResolutionShaderResources(0); // t0: Scene
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::NOISE_PATH, 1); // t1: Noise
+
+    m_Quad->Render(context);
+    m_Renderer->SetAlphaBlending(true);
+} // ApplyLensFlare

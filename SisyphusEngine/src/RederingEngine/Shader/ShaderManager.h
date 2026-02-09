@@ -15,6 +15,7 @@ namespace ShaderKeys {
     const std::string CloudArea = "CloudArea";
     const std::string Bicubic = "Bicubic";
     const std::string Sky = "Sky";
+	const std::string LensFlare = "LensFlare";
 } // ShaderKeys
 
 
@@ -62,6 +63,7 @@ public:
         Light*);
     void UpdateCloudBuffer(ID3D11DeviceContext*, const CloudBuffer&);
     void UpdateSkyBuffer(ID3D11DeviceContext*, const SkyBuffer&);
+    void UpdateLensFlareBuffer(ID3D11DeviceContext*, const LensFlareBuffer&);
 
     void SetShaders(const std::string, ID3D11DeviceContext*);
     void SetConstantBuffers(const std::string, ID3D11DeviceContext*);

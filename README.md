@@ -21,6 +21,19 @@
 
 ---
 
+### Study
+
+- [과정에 생겼던 에러 및 궁금증](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Error-history.md)
+
+- [Noise](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Noise.md)
+
+- [FBM](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/FBM.md)
+
+- [RayMarch](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Raymarch.md)
+
+- [Lighting](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Light.md)
+
+
 ## Sisyphus Engine : [구름과 태양](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine)
 
 <p align="center">
@@ -44,7 +57,10 @@
   </table>
 </p>
 
-순수 코드로 무엇을 렌더링해볼까 고민하다, 이 [보랏빛 하늘](https://www.shutterstock.com/ko/image-photo/purple-sky-clouds-backdrop-orange-pink-2678999665?trackingId=19e277b6-eb35-471f-b876-09a679b367e4&listId=searchResults) 사진과 구름과 태양을 렌더링을 도전
+순수 코드로 무엇을 렌더링해볼까 고민하다, 구름의 질감을 표현하는게 상당히 어렵다는 것을 알게 되었
+음
+
+이 [보랏빛 하늘](https://www.shutterstock.com/ko/image-photo/purple-sky-clouds-backdrop-orange-pink-2678999665?trackingId=19e277b6-eb35-471f-b876-09a679b367e4&listId=searchResults) 사진과 구름과 태양을 렌더링을 도전
 
 - [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/Sun-and-Cloud/SisyphusEngine#feature): **Volumetric Cloud System** , **Atmospheric Lighting**
 
@@ -86,6 +102,7 @@
   </table>
 </p>
 
+
 <p align="center">
   <table style="width:100%; text-align:center; border-spacing:20px;">
     <tr>
@@ -113,6 +130,38 @@
       <td style="text-align:center; font-size:14px; font-weight:bold;">
       <p align="center">
       <a></a>구름 지대 2</a>
+      </p>
+      </td>
+    </tr>
+  </table>
+</p>
+
+<p align="center">
+  <table style="width:100%; text-align:center; border-spacing:20px;">
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%915%20%EB%8C%80%EA%B8%B0%EC%A4%91%20%EC%82%B0%EB%9E%80%20%EB%B0%8F%20%EA%B8%80%EB%A1%9C%EC%9A%B0%20%ED%9A%A8%EA%B3%BC.gif?raw=true" 
+             alt="image 2" 
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD07_%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B4%EA%B3%A0%EC%8A%A4%ED%8A%B8.gif?raw=true" 
+             alt="image 2" 
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>대기 중 햇 빛산란</a>
+      </p>
+      </td>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>렌즈플레어(고스트)</a>
       </p>
       </td>
     </tr>

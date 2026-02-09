@@ -23,6 +23,7 @@ public:
 
     void BeginScene(float r, float g, float b, float a);
     void EndScene();
+    void ClearShaderResources(UINT);
 
 public:
     void SetMode(bool, bool);
@@ -32,6 +33,7 @@ public:
     void SetSampler(UINT slot);
     void SetLowResolutionRenderTarget();
     void SetLowResolutionShaderResources(UINT);
+	void SetAdditiveAlphaBlending();
 
     ID3D11Device* GetDevice() const;
     ID3D11DeviceContext* GetDeviceContext() const;

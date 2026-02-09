@@ -34,6 +34,7 @@ bool TexturesManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         DebugPrint("TexturesManager::Init 실패: " + BLUE_NOISE_PATH);
         return false;
     }
+
     return true;
 } // Init
 
