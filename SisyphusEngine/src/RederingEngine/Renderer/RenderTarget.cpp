@@ -72,11 +72,11 @@ bool RenderTarget::InitDethStencil(ID3D11Device* device, IDXGISwapChain* swapCha
     depthBufferDesc.Height = height;
     depthBufferDesc.MipLevels = 1;
     depthBufferDesc.ArraySize = 1;
-    depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
     depthBufferDesc.SampleDesc.Count = 1;
     depthBufferDesc.SampleDesc.Quality = 0;
     depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;;
     depthBufferDesc.CPUAccessFlags = 0;
     depthBufferDesc.MiscFlags = 0;
 
@@ -92,10 +92,19 @@ bool RenderTarget::InitDethStencil(ID3D11Device* device, IDXGISwapChain* swapCha
 
     depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-    depthStencilViewDesc.Texture2D.MipSlice = 0;
+    //depthStencilViewDesc.Texture2D.MipSlice = 0;
 
     if (SuccessCheck(device->CreateDepthStencilView(m_depthStencilBuffer.Get(), &depthStencilViewDesc, &m_depthStencilView),
         "DepthStencilView 생성 실패") == false) return false;
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MipLevels = 1;
+
+    if (SuccessCheck(device->CreateShaderResourceView(m_depthStencilBuffer.Get(), &srvDesc, &m_depthShaderResourceView),
+        "CreateShaderResourceView 생성 실패") == false) return false;
+
     return true;
 } // InitDethStencil
 

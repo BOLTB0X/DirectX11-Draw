@@ -62,23 +62,61 @@ bool LensFlareShader::InitBuffers(ID3D11Device* device)
     if (FAILED(device->CreateBuffer(&bd, nullptr, &m_globalBuffer)))
         return false;
 
-    // 상수 버퍼 생성 (클라우드 버퍼 - b3)
-    bd.ByteWidth = sizeof(LensFlareBuffer);
-    if (FAILED(device->CreateBuffer(&bd, nullptr, &m_lensFlareBuffer)))
+    // 상수 버퍼 생성 (버퍼 - b3)
+    //bd.ByteWidth = sizeof(ThresholdBuffer);
+    //if (FAILED(device->CreateBuffer(&bd, nullptr, &m_thresholdBuffer)))
+    //    return false;
+
+    bd.ByteWidth = sizeof(GhostBuffer);
+    if (FAILED(device->CreateBuffer(&bd, nullptr, &m_ghostBuffer)))
         return false;
+
+	//bd.ByteWidth = sizeof(GlowBuffer);
+ //   if (FAILED(device->CreateBuffer(&bd, nullptr, &m_glowBuffer)))
+	//	return false;
+
 
     return true;
 } // InitBuffers
 
 
-bool LensFlareShader::UpdateLensFlareBuffer(ID3D11DeviceContext* context, const LensFlareBuffer& data)
+bool LensFlareShader::UpdateThresholdBuffer(ID3D11DeviceContext* context, const ThresholdBuffer& data)
 {
     D3D11_MAPPED_SUBRESOURCE mapped;
-    if (FAILED(context->Map(m_lensFlareBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
-    memcpy(mapped.pData, &data, sizeof(LensFlareBuffer));
-    context->Unmap(m_lensFlareBuffer.Get(), 0);
+    if (FAILED(context->Map(m_thresholdBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+        return false;
+    
+    memcpy(mapped.pData, &data, sizeof(ThresholdBuffer));
+    context->Unmap(m_thresholdBuffer.Get(), 0);
+
     return true;
-} // UpdateLensFlareBuffer
+} // UpdateThresholdBuffer
+
+
+bool LensFlareShader::UpdateGhostBuffer(ID3D11DeviceContext* context, const GhostBuffer& data)
+{
+    D3D11_MAPPED_SUBRESOURCE mapped;
+    if (FAILED(context->Map(m_ghostBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+        return false;
+
+    memcpy(mapped.pData, &data, sizeof(GhostBuffer));
+    context->Unmap(m_ghostBuffer.Get(), 0);
+
+    return true;
+} // UpdateGhostBuffer
+
+
+//bool LensFlareShader::UpdateGlowBuffer(ID3D11DeviceContext* context, const GlowBuffer& data)
+//{
+//    D3D11_MAPPED_SUBRESOURCE mapped;
+//
+//    if (FAILED(context->Map(m_glowBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+//        return false;
+//
+//    memcpy(mapped.pData, &data, sizeof(GlowBuffer));
+//    context->Unmap(m_glowBuffer.Get(), 0);
+//    return true;
+//} // UpdateGlowBuffer
 
 
 void LensFlareShader::SetShaders(ID3D11DeviceContext* context)
@@ -99,5 +137,8 @@ void LensFlareShader::SetConstantBuffers(ID3D11DeviceContext* context, ID3D11Buf
     context->PSSetConstantBuffers(2, 1, buffers);
 
     // b3
-    context->PSSetConstantBuffers(3, 1, m_lensFlareBuffer.GetAddressOf());
+    //context->PSSetConstantBuffers(3, 1, m_thresholdBuffer.GetAddressOf());
+    context->PSSetConstantBuffers(3, 1, m_ghostBuffer.GetAddressOf());
+	// b4
+	context->PSSetConstantBuffers(4, 1, m_glowBuffer.GetAddressOf());
 } // SetConstantBuffers

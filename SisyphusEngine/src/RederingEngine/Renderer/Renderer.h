@@ -2,7 +2,7 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <memory>
-#include <wrl/client.h> // Microsoft::WRL::ComPtr 사용을 위해
+#include <wrl/client.h>
 
 class DisplayInfo;
 class DX11Device;
@@ -30,10 +30,12 @@ public:
     void SetAlphaBlending(bool);
     void SetDepthBuffer(bool);
     void SetBackBufferRenderTarget();
-    void SetSampler(UINT slot);
+    void SetWrapSampler(UINT slot);
+    void SetBorderSampler(UINT slot);
     void SetLowResolutionRenderTarget();
     void SetLowResolutionShaderResources(UINT);
 	void SetAdditiveAlphaBlending();
+	void SetMainDepthShaderResource(UINT slot);
 
     ID3D11Device* GetDevice() const;
     ID3D11DeviceContext* GetDeviceContext() const;
@@ -51,5 +53,6 @@ private:
     std::unique_ptr<Rasterizer> m_Rasterizer;
     std::unique_ptr<DepthStencilState> m_DepthStencilState;
     std::unique_ptr<BlendState> m_BlendState;
-    std::unique_ptr<SamplerState> m_SamplerState;
+    std::unique_ptr<SamplerState> m_WrapSampler;
+    std::unique_ptr<SamplerState> m_BorderSampler;
 }; // Renderer

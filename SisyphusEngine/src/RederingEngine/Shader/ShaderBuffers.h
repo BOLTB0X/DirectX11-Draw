@@ -99,7 +99,7 @@ struct SkyBuffer {
         skyExponent = 0.3f;
         sunSize = 0.005f;
         sunBloom = 80.0f;
-        sunIntensity = 1.0f;
+        sunIntensity = 0.8f;
         rayStrength = 0.4f;
         rayAnimSpeed = 0.15f;
 		padding2 = { 0.0f, 0.0f, 0.0f };
@@ -107,82 +107,39 @@ struct SkyBuffer {
 }; // SkyBuffer
 
 
-struct LensFlareBuffer {
-    // Row 1
-    DirectX::XMFLOAT2 sunPos;
-    float threshold;
-    float scale;
+struct ThresholdBuffer {
+    DirectX::XMFLOAT4 scale;
+    DirectX::XMFLOAT4 bias;
 
-    // Row 2
-    float bias;
-    float ghostCount;
-    float ghostSpacing;
-    float distortion;
-
-    // Row 3
-    DirectX::XMFLOAT3 tintColor;
-    float padding1;
-
-    // Row 4
-    float visibility;
-    DirectX::XMFLOAT3 padding2;
-
-    LensFlareBuffer() {
-        sunPos = { 0.0f, 0.0f };
-        threshold = 0.85f;
-        scale = 0.0f; // 기본값은 0
-        bias = -0.5f;
-        ghostCount = 4.0f;
-        ghostSpacing = 0.4f;
-        distortion = 2.5f;
-        tintColor = { 1.0f, 0.9f, 0.7f };
-        padding1 = 0.0f;
-        visibility = 0.0f;
-        padding2 = { 0.0f, 0.0f, 0.0f };
-    } // LensFlareBuffer
-
-
-    void Init(const DirectX::XMVECTOR& sunWorldPos,
-        const DirectX::XMFLOAT3& camPos,
-        const DirectX::XMMATRIX& view,
-        const DirectX::XMMATRIX& proj)
+    ThresholdBuffer()
     {
-        using namespace DirectX;
+        scale = { 1.0f, 1.0f, 1.0f, 1.0f };
+        bias = { -10.0f, -10.0f, -10.0f, 0.0f };
+    }
+}; // ThresholdBuffer
 
-        XMMATRIX invView = XMMatrixInverse(nullptr, view);
-        XMVECTOR camForward = invView.r[2]; // 카메라가 바라보는 방향
-        XMVECTOR camPosVec = XMLoadFloat3(&camPos);
 
-        // 태양 방향 벡터 (World Space)
-        XMVECTOR sunDir = XMVector3Normalize(sunWorldPos);
+struct GhostBuffer {
+	// Row 1
+    int count;
+    float spacing;
+    float threshold;
+    float alpha;
+	// Row 2
+    float glowSize;
+    float aspectRatio;
+	DirectX::XMFLOAT2 sunUV;
 
-        // 카메라 전방과 태양 방향의 내적
-        // 카메라가 태양을 정면으로 볼 때 1.0, 등지면 -1.0
-        float dot = XMVectorGetX(XMVector3Dot(camForward, sunDir));
+    GhostBuffer()
+    {
+        count = 10;
+        spacing = 0.5f;
+        threshold = 0.3f;
+        alpha = 1.0f;
 
-        //  가시성 결정 (Threshold)
-        if (dot < 0.1f)
-        {
-            this->scale = 0.0f;
-            this->visibility = 0.0f;
-            return;
-        }
+		glowSize = 0.2f;
+		aspectRatio = (float)ConstantHelper::SCREEN_WIDTH / (float)ConstantHelper::SCREEN_HEIGHT;
+        sunUV = { 0.5f, 0.5f };
+    }
+}; // GhostBuffer
 
-        // 정면에 가까울수록 강해지게 설정
-        this->visibility = MathHelper::clamp((dot - 0.1f) / 0.9f, 0.0f, 255.0f);
-        // 더 극적인 효과를 위해 제곱
-        this->visibility *= this->visibility;
-
-        // 투영 계산
-        XMVECTOR farSunPos = camPosVec + (sunDir * 10000.0f);
-        XMMATRIX world = XMMatrixIdentity();
-        XMVECTOR sunScreenPos = XMVector3Project(farSunPos,
-            0, 0, (float)ConstantHelper::SCREEN_WIDTH, (float)ConstantHelper::SCREEN_HEIGHT, 0.0f, 1.0f,
-            proj, view, world);
-
-        this->sunPos.x = (XMVectorGetX(sunScreenPos) / (float)ConstantHelper::SCREEN_WIDTH) - 0.5f;
-        this->sunPos.y = (1.0f - (XMVectorGetY(sunScreenPos) / (float)ConstantHelper::SCREEN_HEIGHT)) - 0.5f;
-
-        this->scale = ConstantHelper::LightIntensity * this->visibility;
-    } // Init
-}; // LensFlareBuffer

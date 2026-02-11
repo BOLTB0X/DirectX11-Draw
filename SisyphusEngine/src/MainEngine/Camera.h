@@ -27,6 +27,7 @@ public:
     DirectX::XMFLOAT3 GetRotation() const;
     DirectX::XMVECTOR GetForwardVector() const;
     DirectX::XMVECTOR GetRightVector() const;
+    DirectX::XMVECTOR GetUpVector() const;
     DirectX::XMMATRIX GetWorldMatrix() const;
     DirectX::XMMATRIX GetViewMatrix() const;
     DirectX::XMMATRIX GetProjectionMatrix() const;

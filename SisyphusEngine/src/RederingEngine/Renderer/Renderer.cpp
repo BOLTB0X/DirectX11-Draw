@@ -24,7 +24,8 @@ Renderer::Renderer()
     m_Rasterizer = std::make_unique<Rasterizer>();
     m_DepthStencilState = std::make_unique<DepthStencilState>();
     m_BlendState = std::make_unique<BlendState>();
-    m_SamplerState = std::make_unique<SamplerState>();
+    m_WrapSampler = std::make_unique<SamplerState>();
+	m_BorderSampler = std::make_unique<SamplerState>();
 } // Renderer
 
 
@@ -69,7 +70,9 @@ bool Renderer::Init(HWND hwnd, bool vsync)
         return false;
     if (m_BlendState->Init(device) == false)
         return false;
-    if (m_SamplerState->Init(device)
+    if (m_WrapSampler->Init(device, D3D11_TEXTURE_ADDRESS_WRAP)
+        == false) return false;
+    if (m_BorderSampler->Init(device, D3D11_TEXTURE_ADDRESS_BORDER)
         == false) return false;
     return true;
 } // Init
@@ -80,7 +83,6 @@ void Renderer::BeginScene(float r, float g, float b, float a)
     ID3D11DeviceContext* context = m_DX11Device->GetDeviceContext();
 
     m_MainRenderTarget->Clear(context, r, g, b, a);
-
 } // BeginScene
 
 
@@ -107,7 +109,7 @@ void Renderer::ClearShaderResources(UINT slot)
 
 void Renderer::Shutdown()
 {
-    if (m_SamplerState) m_SamplerState.reset();
+    if (m_WrapSampler) m_WrapSampler.reset();
     if (m_BlendState) m_BlendState.reset();
     if (m_DepthStencilState) m_DepthStencilState.reset();
     if (m_Rasterizer) m_Rasterizer.reset();
@@ -154,11 +156,18 @@ void Renderer::SetBackBufferRenderTarget()
 } // SetBackBufferRenderTarget
 
 
-void Renderer::SetSampler(UINT slot)
+void Renderer::SetWrapSampler(UINT slot)
 {
-    m_SamplerState->VSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
-    m_SamplerState->PSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
-} // SetSampler
+    m_WrapSampler->VSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+    m_WrapSampler->PSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+} // SetWrapSampler
+
+
+void Renderer::SetBorderSampler(UINT slot)
+{
+    m_BorderSampler->VSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+    m_BorderSampler->PSSetSamplers(m_DX11Device->GetDeviceContext(), slot);
+} // SetBorderSampler
 
 
 void Renderer::SetLowResolutionRenderTarget()
@@ -182,6 +191,15 @@ void Renderer::SetAdditiveAlphaBlending()
 {
     m_BlendState->SetAdditiveBlendState(m_DX11Device->GetDeviceContext());
 } // SetAdditiveAlphaBlending
+
+
+void Renderer::SetMainDepthShaderResource(UINT slot)
+{
+    ID3D11DeviceContext* context = m_DX11Device->GetDeviceContext();
+
+    auto depthSRV = m_MainRenderTarget->GetDepthSRV();
+    context->PSSetShaderResources(slot, 1, &depthSRV);
+} // SetMainDepthShaderResource
 
 
 ID3D11Device* Renderer::GetDevice() const

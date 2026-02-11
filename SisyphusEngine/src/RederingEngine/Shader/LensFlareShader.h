@@ -15,12 +15,17 @@ public:
     virtual void SetShaders(ID3D11DeviceContext*) override;
 
 public:
-    bool UpdateLensFlareBuffer(ID3D11DeviceContext*, const LensFlareBuffer&);
+    bool UpdateThresholdBuffer(ID3D11DeviceContext*, const ThresholdBuffer&);
+	bool UpdateGhostBuffer(ID3D11DeviceContext*, const GhostBuffer&);
+    //bool UpdateGlowBuffer(ID3D11DeviceContext*, const GlowBuffer&);
     void SetConstantBuffers(ID3D11DeviceContext*, ID3D11Buffer*);
 
 private:
     bool InitBuffers(ID3D11Device*);
 
 private:
-    Microsoft::WRL::ComPtr<ID3D11Buffer> m_lensFlareBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> m_thresholdBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> m_ghostBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> m_glowBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> m_haloBuffer;
 }; // LensFlareShader

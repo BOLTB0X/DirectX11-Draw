@@ -117,12 +117,12 @@ void ShaderManager::UpdateSkyBuffer(ID3D11DeviceContext* context, const SkyBuffe
 } // UpdateSkyBuffer
 
 
-void ShaderManager::UpdateLensFlareBuffer(ID3D11DeviceContext* context, const LensFlareBuffer& data)
+void ShaderManager::UpdateLensFlareBuffer(ID3D11DeviceContext* context, const GhostBuffer& ghost)
 {
-    auto it = m_shaders.find(ShaderKeys::LensFlare);
-    if (it != m_shaders.end())
+    auto* shader = GetShader<LensFlareShader>(ShaderKeys::LensFlare);
+    if (shader)
     {
-        static_cast<LensFlareShader*>(it->second.get())->UpdateLensFlareBuffer(context, data);
+		shader->UpdateGhostBuffer(context, ghost);
     }
 } // UpdateLensFlareBuffer
 
@@ -156,7 +156,7 @@ void ShaderManager::SetConstantBuffers(const std::string key,
     {
         static_cast<SkyShader*>(shader)->SetConstantBuffers(context);
     }
-    else if (type == ShaderType::LensFlare) // 추가!
+    else if (type == ShaderType::LensFlare)
     {
         ID3D11Buffer* buffer = GetShader<SkyShader>(ShaderKeys::Sky)->GetLightBuffer();
         if (buffer == nullptr) return;

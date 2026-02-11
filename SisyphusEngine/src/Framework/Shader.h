@@ -34,6 +34,6 @@ protected:
     // 상수버퍼
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_matrixBuffer;
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_globalBuffer;
-    
+
     ShaderType m_type;
 }; // Shader

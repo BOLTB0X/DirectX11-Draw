@@ -47,7 +47,8 @@ private:
 	void DrawSky(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
 	void DrawCloud(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
 	void ApplyBicubicUpscale(ID3D11DeviceContext*);
-	void ApplyLensFlare(ID3D11DeviceContext*, const DirectX::XMMATRIX&, const DirectX::XMMATRIX&, const DirectX::XMFLOAT3&);
+	void ApplyLensFlare(ID3D11DeviceContext*,
+		const DirectX::XMMATRIX&, const DirectX::XMMATRIX&, const DirectX::XMFLOAT3&);
 
 private:
 	std::unique_ptr<Renderer> m_Renderer;

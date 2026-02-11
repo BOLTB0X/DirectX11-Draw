@@ -12,6 +12,7 @@ public:
 
     bool Init(ID3D11Device*, ID3D11DeviceContext*, const std::string&);
     void PSSetShaderResources(ID3D11DeviceContext*, UINT slot = 0);
+    void PSSetShaderResources(ID3D11DeviceContext*, UINT, UINT);
 
 public:
     ID3D11ShaderResourceView* GetSRV() const { return m_srv.Get(); }

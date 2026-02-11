@@ -183,7 +183,7 @@ void RenderingEngine::DrawSky(ID3D11DeviceContext* context,
 void RenderingEngine::DrawCloud(ID3D11DeviceContext* context,
     float totalTime, XMFLOAT3 camPos, XMMATRIX view, XMMATRIX proj)
 {
-    m_Renderer->SetSampler(0);
+    m_Renderer->SetWrapSampler(0);
     m_TexturesManager->PSSetShaderResources(context,
         ConstantHelper::NOISE_PATH, 0);
     m_TexturesManager->PSSetShaderResources(context,
@@ -219,7 +219,7 @@ void RenderingEngine::ApplyBicubicUpscale(ID3D11DeviceContext* context)
     m_ShaderManager->SetShaders(ShaderKeys::Bicubic, context);
     m_Renderer->SetLowResolutionShaderResources(0);
 
-    m_Renderer->SetSampler(0);
+    m_Renderer->SetWrapSampler(0);
 
     m_ShaderManager->UpdateMatrixBuffer(
         ShaderKeys::Bicubic, context,
@@ -233,20 +233,41 @@ void RenderingEngine::ApplyLensFlare(ID3D11DeviceContext* context,
     const XMMATRIX& view, const XMMATRIX& proj, const XMFLOAT3& camPos)
 {
     m_Renderer->SetAdditiveAlphaBlending();
+    m_Renderer->SetDepthBuffer(false);
+
     m_ShaderManager->SetShaders(ShaderKeys::LensFlare, context);
+    m_Renderer->SetBorderSampler(0);
 
-    LensFlareBuffer bufferData;
-    bufferData.Init(XMLoadFloat3(&ConstantHelper::LightPosition),
-        camPos, view, proj);
+    // 버퍼
+    GhostBuffer ghostBuffer;
+    XMVECTOR sunWorldPos = XMLoadFloat3(&ConstantHelper::LightPosition);
+    XMVECTOR sunScreenPos = XMVector3Project(sunWorldPos, 0, 0,
+                            ConstantHelper::SCREEN_WIDTH, ConstantHelper::SCREEN_HEIGHT, 0, 1,
+                            proj, view, XMMatrixIdentity());
 
-    m_ShaderManager->UpdateLensFlareBuffer(context, bufferData);
+    ghostBuffer.sunUV.x = XMVectorGetX(sunScreenPos) / (float)ConstantHelper::SCREEN_WIDTH;
+    ghostBuffer.sunUV.y = XMVectorGetY(sunScreenPos) / (float)ConstantHelper::SCREEN_HEIGHT;
 
+    m_ShaderManager->UpdateLensFlareBuffer(context, ghostBuffer);
     m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::LensFlare, context,
         XMMatrixIdentity(), XMMatrixIdentity(), XMMatrixIdentity());
+    m_ShaderManager->SetConstantBuffers(ShaderKeys::LensFlare, context);
 
+    // 리소스
     m_Renderer->SetLowResolutionShaderResources(0); // t0: Scene
-    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::NOISE_PATH, 1); // t1: Noise
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::GHOST, 1);
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::GLOW, 2);
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::HALO1, 3);
+	m_TexturesManager->PSSetShaderResources(context, ConstantHelper::HALO2, 4);
+	m_TexturesManager->PSSetShaderResources(context, ConstantHelper::HALO3, 5);
+    m_TexturesManager->PSSetShaderResources(context, ConstantHelper::STAR, 6);
+    m_Renderer->SetMainDepthShaderResource(7);
 
     m_Quad->Render(context);
+
+    m_Renderer->ClearShaderResources(0);
+    m_Renderer->ClearShaderResources(1);
+    m_Renderer->ClearShaderResources(4);
+
     m_Renderer->SetAlphaBlending(true);
 } // ApplyLensFlare

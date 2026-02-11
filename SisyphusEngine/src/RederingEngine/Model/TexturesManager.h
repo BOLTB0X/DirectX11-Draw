@@ -17,6 +17,7 @@ public:
 public:
     std::shared_ptr<Texture> GetTexture(ID3D11Device*, ID3D11DeviceContext*, const std::string&);
     void PSSetShaderResources(ID3D11DeviceContext*, const std::string&, UINT slot = 0);
+    void PSSetShaderResources(ID3D11DeviceContext*, const std::string&, UINT, UINT);
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Texture>> m_Textures;

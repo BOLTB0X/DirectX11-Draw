@@ -26,3 +26,15 @@ void Texture::PSSetShaderResources(ID3D11DeviceContext* context, UINT slot)
 
 	context->PSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 } // PSSetShaderResources
+
+
+void Texture::PSSetShaderResources(ID3D11DeviceContext* context, UINT slot, UINT size)
+{
+	if (m_srv == nullptr)
+	{
+		DebugHelper::SuccessCheck(false, "Texture::Bind 실패: m_srv 가 nullptr 임");
+		return;
+	}
+
+	context->PSSetShaderResources(slot, size, m_srv.GetAddressOf());
+} // PSSetShaderResources

@@ -120,6 +120,20 @@ XMVECTOR Camera::GetRightVector() const
     return XMVector3TransformNormal(right, rotationMat);
 } // GetRightVector
 
+XMVECTOR Camera::GetUpVector() const
+{
+
+    XMVECTOR forward = GetForwardVector();
+
+    XMVECTOR worldUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    XMVECTOR right = XMVector3Normalize(XMVector3Cross(worldUp, forward));
+
+    // DirectX(왼손 좌표계) 기준: Up = Forward x Right
+    XMVECTOR up = XMVector3Normalize(XMVector3Cross(forward, right));
+
+    return up;
+} // GetUpVector
+
 
 XMMATRIX Camera::GetWorldMatrix() const
 {

@@ -29,9 +29,47 @@ bool TexturesManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         DebugPrint("TexturesManager::Init 실패: " + NOISE_PATH);
         return false;
     }
+
     if (GetTexture(device, context, BLUE_NOISE_PATH) == nullptr)
     {
         DebugPrint("TexturesManager::Init 실패: " + BLUE_NOISE_PATH);
+        return false;
+    }
+
+    if (GetTexture(device, context, GHOST) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + GHOST);
+        return false;
+    }
+
+    if (GetTexture(device, context, GLOW) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + GLOW);
+        return false;
+    }
+
+    if (GetTexture(device, context, HALO1) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + HALO1);
+        return false;
+    }
+
+    if (GetTexture(device, context, HALO2) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + HALO2);
+        return false;
+    }
+
+
+    if (GetTexture(device, context, HALO3) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + HALO3);
+        return false;
+    }
+
+    if (GetTexture(device, context, STAR) == nullptr)
+    {
+        DebugPrint("TexturesManager::Init 실패: " + STAR);
         return false;
     }
 
@@ -73,4 +111,14 @@ void TexturesManager::PSSetShaderResources(ID3D11DeviceContext* context, const s
     else
         DebugPrint("TexturesManager::PSSetShaderResources 실패: " + filename + " 이 로드 X");
     
+} // PSSetShaderResources
+
+
+void TexturesManager::PSSetShaderResources(ID3D11DeviceContext* context, const std::string& filename, UINT slot, UINT size)
+{
+    auto it = m_Textures.find(filename);
+    if (it != m_Textures.end() && it->second != nullptr)
+        it->second->PSSetShaderResources(context, slot, size);
+    else
+		DebugPrint("TexturesManager::PSSetShaderResources 실패: " + filename + " 이 로드 X");
 } // PSSetShaderResources
