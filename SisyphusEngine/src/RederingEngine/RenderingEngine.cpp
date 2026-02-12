@@ -27,7 +27,7 @@ RenderingEngine::RenderingEngine()
     m_Cloud = std::make_unique<DefaultModel>();
     m_Quad = std::make_unique<DefaultModel>();
     m_Sky = std::make_unique<DefaultModel>();
-    m_Light = std::make_unique<Light>();
+    m_Sun = std::make_unique<Light>();
 } // RenderingEngine
 
 
@@ -63,7 +63,7 @@ bool RenderingEngine::Init(HWND hwnd)
         m_Renderer->GetDevice(), DefaultModelType::Sphere) == false)
         return false;
 
-    m_Light->Init(ConstantHelper::LightPosition, ConstantHelper::LightColor, ConstantHelper::LightIntensity);
+    m_Sun->Init(ConstantHelper::LightPosition, ConstantHelper::LightColor, ConstantHelper::LightIntensity);
 
     return true;
 } // Init
@@ -169,7 +169,7 @@ void RenderingEngine::DrawSky(ID3D11DeviceContext* context,
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Sky,
         context, totalTime, (float)m_frameCount, camPos);
     m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::Sky, context, skyModel, view, proj);
-    m_ShaderManager->UpdateLightBuffer(ShaderKeys::Sky, context, m_Light.get());
+    m_ShaderManager->UpdateLightBuffer(ShaderKeys::Sky, context, m_Sun.get());
 
     SkyBuffer skyData;
     m_ShaderManager->UpdateSkyBuffer(context, skyData);
@@ -211,6 +211,9 @@ void RenderingEngine::DrawCloud(ID3D11DeviceContext* context,
     m_ShaderManager->SetConstantBuffers(ShaderKeys::Cloud, context);
 
     m_Cloud->Render(context);
+
+    m_Renderer->ClearShaderResources(0);
+    m_Renderer->ClearShaderResources(1);
 } // DrawCloud
 
 
@@ -226,6 +229,8 @@ void RenderingEngine::ApplyBicubicUpscale(ID3D11DeviceContext* context)
         XMMatrixIdentity(), XMMatrixIdentity(), XMMatrixIdentity());
 
     m_Quad->Render(context);
+
+    m_Renderer->ClearShaderResources(0);
 } // ApplyBicubicUpscale
 
 
@@ -239,18 +244,11 @@ void RenderingEngine::ApplyLensFlare(ID3D11DeviceContext* context,
     m_Renderer->SetBorderSampler(0);
 
     // 버퍼
-    GhostBuffer ghostBuffer;
-    XMVECTOR sunWorldPos = XMLoadFloat3(&ConstantHelper::LightPosition);
-    XMVECTOR sunScreenPos = XMVector3Project(sunWorldPos, 0, 0,
-                            ConstantHelper::SCREEN_WIDTH, ConstantHelper::SCREEN_HEIGHT, 0, 1,
-                            proj, view, XMMatrixIdentity());
+    LenFlareBuffer lensFlareBuffer;
+    lensFlareBuffer.sunUV = CalculateSunUV(view, proj);
+    lensFlareBuffer.lensMatrix = CalculateLensMatrix(view);
 
-    ghostBuffer.sunUV.x = XMVectorGetX(sunScreenPos) / (float)ConstantHelper::SCREEN_WIDTH;
-    ghostBuffer.sunUV.y = XMVectorGetY(sunScreenPos) / (float)ConstantHelper::SCREEN_HEIGHT;
-
-    m_ShaderManager->UpdateLensFlareBuffer(context, ghostBuffer);
-    m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::LensFlare, context,
-        XMMatrixIdentity(), XMMatrixIdentity(), XMMatrixIdentity());
+    m_ShaderManager->UpdateLensFlareBuffer(context, lensFlareBuffer);
     m_ShaderManager->SetConstantBuffers(ShaderKeys::LensFlare, context);
 
     // 리소스
@@ -267,7 +265,46 @@ void RenderingEngine::ApplyLensFlare(ID3D11DeviceContext* context,
 
     m_Renderer->ClearShaderResources(0);
     m_Renderer->ClearShaderResources(1);
+    m_Renderer->ClearShaderResources(2);
+    m_Renderer->ClearShaderResources(3);
     m_Renderer->ClearShaderResources(4);
+    m_Renderer->ClearShaderResources(5);
+    m_Renderer->ClearShaderResources(6);
+    m_Renderer->ClearShaderResources(7);
 
     m_Renderer->SetAlphaBlending(true);
 } // ApplyLensFlare
+
+
+XMFLOAT2 RenderingEngine::CalculateSunUV(const XMMATRIX& view, const XMMATRIX& proj)
+{
+    using namespace ConstantHelper;
+
+    XMVECTOR sunWorldPos = XMLoadFloat3(&m_Sun->GetPosition());
+
+    XMVECTOR localSunPos = XMVector3TransformCoord(sunWorldPos, view);
+    if (XMVectorGetZ(localSunPos) < 0.0f)
+    {
+        return XMFLOAT2(-1.0f, -1.0f);
+    }
+
+    XMVECTOR sunScreenPos = XMVector3Project(sunWorldPos, 0, 0,
+        SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1,
+        proj, view, XMMatrixIdentity());
+
+    return XMFLOAT2(
+        XMVectorGetX(sunScreenPos) / (float)SCREEN_WIDTH,
+        XMVectorGetY(sunScreenPos) / (float)SCREEN_HEIGHT
+    );
+} // CalculateSunUV
+
+
+XMMATRIX RenderingEngine::CalculateLensMatrix(const XMMATRIX& view)
+{
+    float m00 = XMVectorGetX(view.r[0]);
+    float m01 = XMVectorGetY(view.r[0]);
+    float camRot = atan2(m01, m00);
+
+    // UV 회전 행렬 생성 및 전치(Transpose)하여 셰이더용으로 반환
+    return XMMatrixTranspose(MathHelper::TransformUVRotationMatrix(camRot));
+}

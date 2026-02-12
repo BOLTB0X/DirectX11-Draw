@@ -99,8 +99,6 @@ bool Shader::UpdateGlobalBuffer(ID3D11DeviceContext* context,
     data->iFrame = frame;
     data->iCameraPos = cameraPos;
     data->iResolution = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
-    //data->iNoiseRes = iNoiseRes;
-    //data->iCloudType = (float)ConstantHelper::cloudType;
 
     context->Unmap(m_globalBuffer.Get(), 0);
     return true;

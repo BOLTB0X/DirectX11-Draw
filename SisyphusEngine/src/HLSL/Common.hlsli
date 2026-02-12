@@ -14,7 +14,7 @@ cbuffer GlobalBuffer : register(b1)
 
 cbuffer LightBuffer : register(b2)
 {
-    float3 iLightPos;
+    float3 iLightDirection;
     float iIntensity;
     float4 iLightColor;
 }; // LightBuffer

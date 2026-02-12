@@ -139,7 +139,7 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
     float offset = frac(blueNoise + float(iFrame % 32) / sqrt(0.5));
     
     float depth = startDepth + (iMarchSize * offset);
-    float3 sunPos = iLightPos;
+    float3 sunPos = iLightDirection;
     float3 sunDirection = normalize(sunPos);
 
     for (int i = 0; i < (int)iMaxSteps; i++)

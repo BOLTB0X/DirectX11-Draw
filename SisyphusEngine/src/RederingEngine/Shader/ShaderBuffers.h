@@ -13,7 +13,6 @@ struct GlobalBuffer {
     // Row 2
     DirectX::XMFLOAT3 iCameraPos;
     float padding1;
-    //float iNoiseRes;
 
     DirectX::XMFLOAT4 padding2;
 }; // GlobalBuffer
@@ -28,7 +27,7 @@ struct MatrixBuffer {
 
 struct LightBuffer {
     // Row 1
-    DirectX::XMFLOAT3 position;
+    DirectX::XMFLOAT3 direction;
     float intensity;
     // Row 2
     DirectX::XMFLOAT4 color;
@@ -91,6 +90,7 @@ struct SkyBuffer {
     float rayAnimSpeed;
     DirectX::XMFLOAT3 padding2;
 
+
     SkyBuffer()
      {
         topColor = { 0.05f, 0.1f, 0.3f };
@@ -119,7 +119,7 @@ struct ThresholdBuffer {
 }; // ThresholdBuffer
 
 
-struct GhostBuffer {
+struct LenFlareBuffer {
 	// Row 1
     int count;
     float spacing;
@@ -129,17 +129,22 @@ struct GhostBuffer {
     float glowSize;
     float aspectRatio;
 	DirectX::XMFLOAT2 sunUV;
+	// Row 3
+    DirectX::XMMATRIX lensMatrix;
 
-    GhostBuffer()
+    LenFlareBuffer()
     {
         count = 10;
         spacing = 0.5f;
-        threshold = 0.3f;
+        threshold = 0.8f;
         alpha = 1.0f;
 
 		glowSize = 0.2f;
 		aspectRatio = (float)ConstantHelper::SCREEN_WIDTH / (float)ConstantHelper::SCREEN_HEIGHT;
         sunUV = { 0.5f, 0.5f };
+
+        lensMatrix = DirectX::XMMatrixIdentity();
     }
-}; // GhostBuffer
+}; // LenFlareBuffer
+
 

@@ -63,7 +63,7 @@ public:
         Light*);
     void UpdateCloudBuffer(ID3D11DeviceContext*, const CloudBuffer&);
     void UpdateSkyBuffer(ID3D11DeviceContext*, const SkyBuffer&);
-    void UpdateLensFlareBuffer(ID3D11DeviceContext*, const GhostBuffer&);
+    void UpdateLensFlareBuffer(ID3D11DeviceContext*, const LenFlareBuffer&);
 
     void SetShaders(const std::string, ID3D11DeviceContext*);
     void SetConstantBuffers(const std::string, ID3D11DeviceContext*);

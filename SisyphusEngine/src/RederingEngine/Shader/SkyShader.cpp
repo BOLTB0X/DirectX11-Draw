@@ -108,7 +108,7 @@ bool SkyShader::UpdateLightBuffer(ID3D11DeviceContext* context, Light* light)
     if (FAILED(context->Map(m_lightBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) return false;
 
     LightBuffer* data = (LightBuffer*)mapped.pData;
-    data->position = light->GetPosition();
+    data->direction = light->GetPosition();
     data->color = light->GetColor();
     data->intensity = light->GetIntensity();
 

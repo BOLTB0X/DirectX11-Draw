@@ -227,6 +227,13 @@ namespace MathHelper { // 벡터 연산
         return XMFLOAT3(XMConvertToDegrees(pitch), XMConvertToDegrees(yaw), 0.0f);
     } // VectorToRotation
 
+
+    inline DirectX::XMMATRIX TransformUVRotationMatrix(float radians)
+    {
+        using namespace DirectX;
+        return XMMatrixTranslation(-0.5f, -0.5f, 0.0f) * XMMatrixRotationZ(radians) * XMMatrixTranslation(0.5f, 0.5f, 0.0f);
+        // TransfromUVRotationMatrix
+    }
     
 } // 벡터 연산
 

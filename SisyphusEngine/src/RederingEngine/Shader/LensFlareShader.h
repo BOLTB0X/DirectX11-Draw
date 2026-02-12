@@ -16,7 +16,7 @@ public:
 
 public:
     bool UpdateThresholdBuffer(ID3D11DeviceContext*, const ThresholdBuffer&);
-	bool UpdateGhostBuffer(ID3D11DeviceContext*, const GhostBuffer&);
+	bool UpdateLensFlareBuffer(ID3D11DeviceContext*, const LenFlareBuffer&);
     //bool UpdateGlowBuffer(ID3D11DeviceContext*, const GlowBuffer&);
     void SetConstantBuffers(ID3D11DeviceContext*, ID3D11Buffer*);
 

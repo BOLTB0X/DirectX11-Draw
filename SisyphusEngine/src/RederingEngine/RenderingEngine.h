@@ -6,6 +6,7 @@
 // Common
 #include "PropertyHelper.h"
 
+
 class Renderer;
 class TexturesManager;
 class ShaderManager;
@@ -47,8 +48,10 @@ private:
 	void DrawSky(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
 	void DrawCloud(ID3D11DeviceContext*, float, DirectX::XMFLOAT3, DirectX::XMMATRIX, DirectX::XMMATRIX);
 	void ApplyBicubicUpscale(ID3D11DeviceContext*);
-	void ApplyLensFlare(ID3D11DeviceContext*,
-		const DirectX::XMMATRIX&, const DirectX::XMMATRIX&, const DirectX::XMFLOAT3&);
+	void ApplyLensFlare(ID3D11DeviceContext*, const DirectX::XMMATRIX&, const DirectX::XMMATRIX&, const DirectX::XMFLOAT3&);
+
+	DirectX::XMFLOAT2 CalculateSunUV(const DirectX::XMMATRIX&, const DirectX::XMMATRIX&);
+	DirectX::XMMATRIX CalculateLensMatrix(const DirectX::XMMATRIX&);
 
 private:
 	std::unique_ptr<Renderer> m_Renderer;
@@ -57,7 +60,7 @@ private:
 	std::unique_ptr<DefaultModel> m_Cloud;
 	std::unique_ptr<DefaultModel> m_Quad;
 	std::unique_ptr<DefaultModel> m_Sky;
-	std::unique_ptr<Light> m_Light;
+	std::unique_ptr<Light> m_Sun;
 
 	bool m_isWireframe;
 	bool m_backCullEnable;
