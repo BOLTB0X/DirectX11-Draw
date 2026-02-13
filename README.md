@@ -33,7 +33,7 @@
     <tr>
         <td style="text-align:center; vertical-align:middle;">
         <p align="center">
-        <img src="https://github.com/BOLTB0X/Graphics-Draw/blob/main/DemoGIF/volumetric-raymarching/%EB%B3%BC%EB%A5%A8%EB%A7%88%EC%B9%AD06_%EA%B5%AC%EB%A6%84%EC%A7%80%EB%8C%80%EC%99%80%ED%83%9C%EC%96%912.gif?raw=true" 
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/volumetric-raymarching/%EA%B5%AC%EB%A6%84%EA%B3%BC%ED%83%9C%EC%96%91.png?raw=true" 
              alt="image 2" 
              style="; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
@@ -216,6 +216,12 @@
 </p>
 
 렌즈 플레어 고정된 현상을 해결을 위해, [John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 을 기반으로 시지프스 엔진 환경에 맞춰 적용
+
+렌즈 플레어 고정된 현상을 해결을 위해, [John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 을 기반으로 시지프스 엔진 환경에 맞춰 적용
+
+- [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature): **Ghost-Halo-Glow Generation** , **Falloff** , **Visibility Check**
+
+-  [자세한 README는 여기 클릭](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature) 
 
 <details>
 <summary> more 영상 </summary>
