@@ -217,6 +217,10 @@
 
 렌즈 플레어 고정된 현상을 해결을 위해, [John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 을 기반으로 시지프스 엔진 환경에 맞춰 적용
 
+- [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature): **Ghost-Halo-Glow Generation** , **Falloff** , **Visibility Check**
+
+-  [자세한 README는 여기 클릭](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature) 
+
 <details>
 <summary> more 영상 </summary>
 
