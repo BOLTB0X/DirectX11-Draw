@@ -1,6 +1,8 @@
 # Lab
 
-DriectX 11 개발 연습 및 학습물들 정리
+![헤헤](https://dcimg1.dcinside.com/viewimage.php?id=2eb2de27ebc22bf7&no=24b0d769e1d32ca73fea8efa11d028317044ef0bb41aaa70c68a363cd4e78bbbe285323cf2e7b6544bea4233189fca5efab655ab98ca2f9d29f8ec5deb547edbebfe2da0164b05332e79b75de8186b0f57)
+
+DriectX 11 개발 연습 및 학습물들 정리(아무 기능 구현이나 삽질 [과정에 생겼던 에러 및 궁금증](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Error-history.md) 들을 기록)
 
 ## 알면 좋은 것
 
@@ -445,6 +447,14 @@ DirectX 11에서  `ID3D11Buffer`  **인터페이스로 캡슐화되며, CPU에�
 
 </details>
 
+## Issue in 시지프스
+
+- [포스트 프로세싱 SRV 에러](https://github.com/BOLTB0X/DirectX11-Draw/issues/4) -> [포스트 프로세싱이 잘못된걸 고치는 이야기](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/BicubicModifyingPlaneScene.md)
+
+- [렌즈플레어 적용시 화면 고스트 고정 현상](https://github.com/BOLTB0X/DirectX11-Draw/issues/5) -> [Ghost가 고정되었던 이유에서 존 챔피언 방식으로 고치는 이야기](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/FixedGhost.md)
+
+---
+
 ## Study
 
 - [Noise](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Noise.md)
@@ -456,17 +466,11 @@ DirectX 11에서  `ID3D11Buffer`  **인터페이스로 캡슐화되며, CPU에�
 - [Lighting](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/Lab/Studies/Light.md)
 
 
+---
+
 ## 참고
 
-- [reddit - DX11으로 바꾸면 실제로 뭐가 달라지는 거야?](https://www.reddit.com/r/Guildwars2/comments/psd9a0/what_does_change_to_dx11_actually_do/?tl=ko)
-
-- [티스토리 참고 - [알콜코더의 미리 배워보는DX11 입문편] DirectX 11의 특징들(Visual Studio 2010 공식 팀 블로그 @vsts2010:티스토리)](https://vsts2010.tistory.com/510#:~:text=Direct3D%2011%EC%9D%80%20%EC%9C%88%EB%8F%84%EC%9A%B0%20%EB%B9%84%EC%8A%A4%ED%83%80%2C%20%EC%9C%88%EB%8F%84%EC%9A%B0%207%EC%97%90%EC%84%9C%20%EC%A7%80%EC%9B%90%EB%90%98%EB%8A%94,%EB%B3%B4%EB%8B%A4%20%EC%9C%A0%EC%97%B0%ED%95%98%EA%B3%A0%20%EB%9B%B0%EC%96%B4%EB%82%9C%20%EA%B8%B0%EB%8A%A5%EB%93%A4%EC%9D%B4%20%EC%8B%AC%ED%94%8C%ED%95%9C%20API%EC%85%8B%ED%8A%B8%EB%A1%9C%20%EC%A0%9C%EA%B3%B5%EB%90%A9%EB%8B%88%EB%8B%A4.)
-
-- [공식문서 - Introduction to Buffers in Direct3D 11](https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-resources-buffers-intro)
-
-- [네이버 블로그(박경준) - DirectX11  파이프라인으로 보는  구조](https://m.blog.naver.com/danhana123/221962753174)
-
-- [Directx Tutorial - Lesson 3: Preparing the Swap Chain](http://www.directxtutorial.com/lesson.aspx?lessonid=111-4-3)
+### [**공식문서**](https://learn.microsoft.com/ko-kr/windows/win32/direct3d11/dx-graphics-overviews)
 
 - [공식문서 - 스왑 체인이란?](https://learn.microsoft.com/ko-kr/windows/win32/direct3d9/what-is-a-swap-chain-)
 
@@ -476,8 +480,83 @@ DirectX 11에서  `ID3D11Buffer`  **인터페이스로 캡슐화되며, CPU에�
 
 - [공식문서 - ID3D11DeviceContext::PSSetShader method (d3d11.h)](https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-pssetshader)
 
-- [티스토리 참고 - [DirectX11] DrawIndexedInstanced로 여러개의 인스턴스 그리기](https://mstone8370.tistory.com/21#:~:text=%EC%97%AC%EB%9F%AC%EA%B0%9C%EC%9D%98%20%EB%8F%99%EC%9D%BC%ED%95%9C%20%EB%AA%A8%EB%8D%B8%EC%9D%84%20%EA%B7%B8%EB%A0%A4%EC%95%BC%20%ED%95%98%EB%8A%94%20%EA%B2%BD%EC%9A%B0%20DrawIndexed%EB%A5%BC,%ED%9A%9F%EC%88%98%EB%A7%8C%ED%81%BC%20%EB%B0%B0%EC%97%B4%EC%9D%98%20%EC%9D%B8%EB%8D%B1%EC%8A%A4%EB%A5%BC%20%EB%8A%98%EB%A6%AC%EB%A9%B4%EC%84%9C%20%EA%B0%81%20%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%9D%98%20%EC%A0%95%EB%B3%B4%EC%97%90)
+- [공식문서 - Introduction to Buffers in Direct3D 11](https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-resources-buffers-intro)
+
+- [Directx Tutorial - Lesson 3: Preparing the Swap Chain](http://www.directxtutorial.com/lesson.aspx?lessonid=111-4-3)
+
+
+### **rastertek**
+
+- [rastertek - DirectX 11 on Windows 10 Tutorials](https://www.rastertek.com/tutdx11win10.html)
+
+- [rastertek - DirectX 11 on Windows 10 Tutorials 2](https://www.rastertek.com/tutdx11s2ter.html)
+
+### 환경 셋팅 관련
+
+- [stack overflow - Basic example for a CMake project definition using DirectX 11 on Windows 10?](https://stackoverflow.com/questions/73986114/basic-example-for-a-cmake-project-definition-using-directx-11-on-windows-10#:~:text=cmake_minimum_required%20(VERSION%203.13)%20project(CMakeDirect3DGame%20DESCRIPTION%20%22CMake%20example,_WIN32_WINNT=0x0601)%20endif()%20endif()%20set_property(DIRECTORY%20PROPERTY%20VS_STARTUP_PROJECT%20$%7BPROJECT_NAME%7D))
+
+- [티스토리 참고 : 나는 뉴비다 개발자편 - DirectX 11 최초 실행 환경 세팅하기](https://dev-nicitis.tistory.com/43)
+
+- [유튜브 - 환경 설정 | 홍정모, 프로그래밍 기초, 입문 프로그래밍, 게임 프로그래밍, 프로그래밍 강의, 컴퓨터 그래픽스, 게임 개발, 컴퓨터 작동원리, 코딩](https://www.youtube.com/watch?v=CcFtxKg55fM&list=PLNfg4W25Tapy3qmKqftWndwrIaQRzUmEg&index=9)
+
+- [벨로그 참고 - Imgui 사용법(charlese_note)](https://velog.io/@charlese_note/ImGUI)
+
+- [네이버 블로그 참고 - Dear ImGui를 공부해보자! 시작단계(AROMA)](https://m.blog.naver.com/sweetsmell9/221618574623)
+
+- [티스토리 참고 - Blender AO map Node | 엠비언트 맵 연결하기(lioicreim)](https://lioicreim.tistory.com/615)
+
+### 기본
+
+- [티스토리 참고 - DirectX 11 도형 출력(버텍스 버퍼, 버텍스 쉐이더, 픽셀 쉐이더 설정)(pub-repository)](https://pub-repository.tistory.com/97)
+
+- [티스토리 참고 - [DirectX11] 모델 가져오기(Model Import)(유니얼)](https://unialgames.tistory.com/entry/DirectX11ModelImport)
+
+- [티스토리 참고 - FBX SDK, FBX Importer, FBX 파일 불러오기, 3ds Max 등(최디디)](https://dlemrcnd.tistory.com/85)
+
+- [티스토리 참고 - 070 OBB(Oriented Bounding Box) collision(designerd)](https://designerd.tistory.com/entry/DirectX11-070-OBBOriented-Bounding-Box-collision#obb-%EC%B6%A9%EB%8F%8C---%EB%B6%84%EB%A6%AC%EC%B6%95-%EC%9D%B4%EB%A1%A0)
+
+- [티스토리 참고 - Collision과 SphereCollider(유니얼)](https://unialgames.tistory.com/entry/DirectX11CollisionAndSphereCollider)
+
+- [티스토리 참고 - Terrain 21 - 지형셀(copynull)](https://copynull.tistory.com/324)
+
+- [Velog 참고 - Terrain 지형 툴 연습(hoya1215)](https://velog.io/@hoya1215/Directx11-Terrain-%EC%A7%80%ED%98%95-%ED%88%B4-%EC%97%B0%EC%8A%B5)
+
+- [티스토리 참고 - DirectX11 3D(designerd)](https://designerd.tistory.com/category/%E2%AD%90%20DirectX/DirectX11%20%203D)
+
+- [네이버 블로그 참고 - DirectX 트리 ( 쿼드트리, 옥트리 ) 기본 설명(로기)](https://m.blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=jsjhahi&logNo=201309282)
+
+- [티스토리 참고 - 쿼드트리(copynull)](https://copynull.tistory.com/308)
+
+- [블로그 참고 - 1인칭 카메라 조작(mstone8370)](https://mstone8370.tistory.com/26)
+
+- [네이버 블로그(박경준) - DirectX11  파이프라인으로 보는  구조](https://m.blog.naver.com/danhana123/221962753174)
+
+- [reddit - DX11으로 바꾸면 실제로 뭐가 달라지는 거야?](https://www.reddit.com/r/Guildwars2/comments/psd9a0/what_does_change_to_dx11_actually_do/?tl=ko)
+
+- [티스토리 참고 - [알콜코더의 미리 배워보는DX11 입문편] DirectX 11의 특징들(Visual Studio 2010 공식 팀 블로그 @vsts2010:티스토리)](https://vsts2010.tistory.com/510#:~:text=Direct3D%2011%EC%9D%80%20%EC%9C%88%EB%8F%84%EC%9A%B0%20%EB%B9%84%EC%8A%A4%ED%83%80%2C%20%EC%9C%88%EB%8F%84%EC%9A%B0%207%EC%97%90%EC%84%9C%20%EC%A7%80%EC%9B%90%EB%90%98%EB%8A%94,%EB%B3%B4%EB%8B%A4%20%EC%9C%A0%EC%97%B0%ED%95%98%EA%B3%A0%20%EB%9B%B0%EC%96%B4%EB%82%9C%20%EA%B8%B0%EB%8A%A5%EB%93%A4%EC%9D%B4%20%EC%8B%AC%ED%94%8C%ED%95%9C%20API%EC%85%8B%ED%8A%B8%EB%A1%9C%20%EC%A0%9C%EA%B3%B5%EB%90%A9%EB%8B%88%EB%8B%A4.)
 
 - [네이버 블로그 참고(풍풍풍) -Rasterizer](https://blog.naver.com/sorkelf/40162947758)
 
 - [블로그 참고(titathecheese) - Rasterizer](https://titathecheese.tistory.com/category/DirectX%2011)
+
+### Ray
+
+- [블로그 참고 - 불륨마칭(maximeheckel)](https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/)
+
+- [hree.js forum 참고 - volumetric clouds - game ready](https://discourse.threejs.org/t/volumetric-clouds-game-ready/86598)
+
+- [goto Shader - cloud-material](https://godotshaders.com/shader/cloud-material/)
+
+- [github 참고 - Volumetric-Rendering(Chris' Graphics Blog)](https://wallisc.github.io/rendering/2020/05/02/Volumetric-Rendering-Part-1.html)
+
+- [티스토리 참고 - DirectX 11 Tone Mapping(kyuhwang)](https://kyuhwang.tistory.com/36)
+
+### 에셋 출처
+
+- [노이즈 텍스처 출처 - realtimevfx](https://realtimevfx.com/t/realistic-cloud-texture/19207)
+
+- [Stone 이용: sketchfab - Ground//Stone Sphere(Madee)](https://sketchfab.com/3d-models/groundstone-sphere-1c0f2b2e213348e6a760743a546dc7a6)
+
+- [normalMap 이용: filterforge `Cloud_normal.jpg`](https://www.filterforge.com/filters/6395-normal.html)
+
+- [Mountain 이용: sketchfab - Cloudy Mountain(Pers Scans)](https://sketchfab.com/3d-models/cloudy-mountain-f61d84c6534d4007accdeac35f433119)
