@@ -113,7 +113,7 @@ float fbm(float2 x, float time) {
 
 ## Res
 
-![]()
+![흐엉어엉](https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/terrain-fbm/%ED%9D%90%EC%96%B4%EC%97%89%EC%96%B4%EC%97%89%EC%96%B4%EC%96%B4.png?raw=true)
 
 ----
 
