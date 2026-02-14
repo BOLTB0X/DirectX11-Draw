@@ -38,6 +38,17 @@ bool DefaultModelBuffer::Init(ID3D11Device* device, DefaultModelType type)
 } // Init
 
 
+bool DefaultModelBuffer::Init(ID3D11Device* device,
+    const std::vector<VertexType>& vertices,
+    const std::vector<unsigned long>& indices)
+{
+    m_vertexCount = static_cast<int>(vertices.size());
+    m_indexCount = static_cast<int>(indices.size());
+
+    return InitBuffers(device, vertices, indices);
+} // Init
+
+
 void DefaultModelBuffer::Shutdown()
 {
     m_indexBuffer.Reset();
@@ -124,7 +135,46 @@ void DefaultModelBuffer::CreateCube(std::vector<VertexType>& vertices, std::vect
         { p[1], {0,0}, nRight }, { p[5], {1,0}, nRight }, { p[3], {0,1}, nRight }, { p[7], {1,1}, nRight }
     };
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
+        int offset = i * 4;
+        indices.push_back(offset + 0); indices.push_back(offset + 1); indices.push_back(offset + 2);
+        indices.push_back(offset + 2); indices.push_back(offset + 1); indices.push_back(offset + 3);
+    }
+} // CreateCube
+
+
+void DefaultModelBuffer::CreateCube(std::vector<VertexType>& vertices, std::vector<unsigned long>& indices,
+    float startX, float startY, float startZ,
+    float width, float height, float depth)
+{
+    float maxX = startX + width;
+    float maxY = startY + height;
+    float maxZ = startZ + depth;
+
+    // 8개의 꼭짓점을 영역에 맞춰 직접 정의
+    XMFLOAT3 p[8] = {
+        {startX, maxY, startZ}, {maxX,   maxY, startZ}, {startX, startY, startZ}, {maxX,   startY, startZ}, // Front 4
+        {startX, maxY, maxZ},   {maxX,   maxY, maxZ},   {startX, startY, maxZ},   {maxX,   startY, maxZ}    // Back 4
+    };
+
+    // 노말 정의
+    XMFLOAT3 nFront = { 0,0,-1 }, nBack = { 0,0,1 }, nTop = { 0,1,0 },
+        nBottom = { 0,-1,0 }, nLeft = { -1,0,0 }, nRight = { 1,0,0 };
+
+    // 버텍스 데이터 (UV는 0~1 사이로 기본 설정)
+    vertices = {
+        { p[0], {0,0}, nFront }, { p[1], {1,0}, nFront }, { p[2], {0,1}, nFront }, { p[3], {1,1}, nFront },
+        { p[5], {0,0}, nBack },  { p[4], {1,0}, nBack },  { p[7], {0,1}, nBack },  { p[6], {1,1}, nBack },
+        { p[4], {0,0}, nTop },   { p[5], {1,0}, nTop },   { p[0], {0,1}, nTop },   { p[1], {1,1}, nTop },
+        { p[2], {0,0}, nBottom }, { p[3], {1,0}, nBottom }, { p[6], {0,1}, nBottom }, { p[7], {1,1}, nBottom },
+        { p[4], {0,0}, nLeft },  { p[0], {1,0}, nLeft },  { p[6], {0,1}, nLeft },  { p[2], {1,1}, nLeft },
+        { p[1], {0,0}, nRight }, { p[5], {1,0}, nRight }, { p[3], {0,1}, nRight }, { p[7], {1,1}, nRight }
+    };
+
+    // 인덱스는 동일하게 6개 면 처리
+    for (int i = 0; i < 6; i++)
+    {
         int offset = i * 4;
         indices.push_back(offset + 0); indices.push_back(offset + 1); indices.push_back(offset + 2);
         indices.push_back(offset + 2); indices.push_back(offset + 1); indices.push_back(offset + 3);
@@ -173,3 +223,15 @@ void DefaultModelBuffer::CreateSphere(std::vector<VertexType>& vertices, std::ve
         } // for (int j = 0; j < sliceCount; ++j)
     } // for (int i = 0; i < stackCount; ++i)
 } // CreateSphere
+
+
+int DefaultModelBuffer::GetVertexCount() const
+{
+    return m_vertexCount;
+} // GetVertexCount
+
+
+int DefaultModelBuffer::GetIndexCount() const
+{
+    return m_indexCount;
+} // GetIndexCount

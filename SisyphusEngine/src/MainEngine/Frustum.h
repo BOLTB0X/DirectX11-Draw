@@ -1,4 +1,3 @@
-// Graphics/Camera/Frustum.h
 #pragma once
 #include <DirectXMath.h>
 

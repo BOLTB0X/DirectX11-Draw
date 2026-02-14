@@ -4,7 +4,6 @@
 #include <wrl/client.h>
 #include <vector>
 #include <memory>
-#include <vector>
 
 
 enum class DefaultModelType {
@@ -27,17 +26,19 @@ public:
     DefaultModelBuffer(const DefaultModelBuffer& other) = delete;
     ~DefaultModelBuffer();
 
-    bool Init(ID3D11Device* device, DefaultModelType);
+    bool Init(ID3D11Device*, DefaultModelType);
+	bool Init(ID3D11Device*, const std::vector<VertexType>&, const std::vector<unsigned long>&);
     void Shutdown();
 
-    void Render(ID3D11DeviceContext* context);
+    void Render(ID3D11DeviceContext*);
 
 public:
-    int GetVertexCount() const { return m_vertexCount; }
-    int GetIndexCount() const { return m_indexCount; }
+    int GetVertexCount() const;
+    int GetIndexCount() const;
+    void CreateCube(std::vector<VertexType>&, std::vector<unsigned long>&, float, float, float, float, float, float);
 
 private:
-    bool InitBuffers(ID3D11Device* device, std::vector<VertexType>, std::vector<unsigned long>);
+    bool InitBuffers(ID3D11Device*, std::vector<VertexType>, std::vector<unsigned long>);
 
     void CreateQuad(std::vector<VertexType>&, std::vector<unsigned long>&, float width = 2.0f, float height = 2.0f);
     void CreateCube(std::vector<VertexType>&, std::vector<unsigned long>&, float width = 2.0f, float height = 2.0f, float depth = 2.0f);

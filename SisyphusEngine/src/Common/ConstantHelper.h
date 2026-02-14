@@ -21,13 +21,6 @@ namespace ConstantHelper { // 모델 및 텍스처
     const std::string ASSET_PATH = "assets/";
     const std::string NOISE_PATH = ASSET_PATH + "Cloud/noise.png";
     const std::string BLUE_NOISE_PATH = ASSET_PATH + "Cloud/blue-noise.png";
-
-    const std::string GHOST = ASSET_PATH + "Lensflare/ghost.jpg";
-    const std::string GLOW = ASSET_PATH + "Lensflare/glow.jpg";
-	const std::string HALO1 = ASSET_PATH + "Lensflare/halo1.jpg";
-	const std::string HALO2 = ASSET_PATH + "Lensflare/halo2.jpg";
-    const std::string HALO3 = ASSET_PATH + "Lensflare/halo3.jpg";
-    const std::string STAR = ASSET_PATH + "Lensflare/star.jpg";
 }
 
 

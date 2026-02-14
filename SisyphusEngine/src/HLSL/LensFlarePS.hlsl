@@ -1,22 +1,44 @@
 // https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html
-// 존 챔피언 코드 기반으로 수정
+// https://www.shadertoy.com/view/XdfXRX
+// 존 챔피언, iceecool 님들의 코드 기반으로 수정
 #include "Common.hlsli"
 
+// main에서 사용할 상수 오프셋과 배율
 #define HALF 0.5f
 #define DISTORTION float3(-0.005, 0.0, 0.005)
-#define STAR_SCALE 0.8f
-#define PATTERN1_SCALE 0.35f
-#define PATTERN2_SCALE 0.3f
-#define PATTERN3_SCALE 0.2f
+#define STAR_SCALE  0.8f
+#define SUN_CORE_TIGHTNESS 36.0f  // 숫자가 클수록 태양 본체가 작아짐
+#define LUMINANCE float3(0.3, 0.59, 0.11)
+
+// 고스트 관련 오프셋과 배율
+#define GHOST_PULL 0.1f // 고스트가 태양으로부터 떨어지는 간격 배율
+#define GHOST_INTENSITY 1.2f // 전체 고스트 밝기 배율
+#define GHOST_FALLOFF_POW 1.5f // 숫자가 클수록 멀리 있는 고스트가 빨리 흐려짐
+
+// F2 오프셋과 배율
+#define F2_SHARPNESS 32.0f
+#define F2_OFFSET float3(0.80, 0.85, 0.90)
+#define F2_COLOR_MULT float3(0.25, 0.23, 0.21)
+
+// f4 오프셋과 배율
+#define F4_POWER  2.4f
+#define F4_OFFSET float3(0.40, 0.45, 0.50)
+#define F4_COLOR_MULT float3(6.0, 5.0, 3.0)
+
+// f5 오프셋과 배율
+#define F5_POWER  5.5f
+#define F5_OFFSET  float3(0.20, 0.40, 0.60)
+#define F5_COLOR_MULT float3(2.0, 2.0, 2.0)
+
+// f6 오프셋과 배율
+#define F6_POWER 1.6f
+#define F6_OFFSET float3(-0.3, -0.325, -0.35)
+#define F6_COLOR_MULT float3(6.0, 3.0, 5.0)
+
 
 Texture2D iSceneTex : register(t0);
-Texture2D iGhost : register(t1);
-Texture2D iGlow : register(t2);
-Texture2D iHalo1 : register(t3);
-Texture2D iHalo2 : register(t4);
-Texture2D iHalo3 : register(t5);
-Texture2D iStar : register(t6);
-Texture2D iDepthTex : register(t7);
+Texture2D iNoise : register(t1);
+Texture2D iDepthTex : register(t2);
 SamplerState iSampler : register(s0);
 
 
@@ -35,15 +57,16 @@ cbuffer LenFlareBuffer : register(b3)
 }; // GhostBuffer
 
 
-// 왜곡 샘플링 함수
-float3 sampleDistorted(Texture2D tex, float2 uv, float2 direction, float3 distortion)
+float noise(float t)
 {
-    return float3(
-        tex.Sample(iSampler, uv + direction * distortion.r).r,
-        tex.Sample(iSampler, uv + direction * distortion.g).g,
-        tex.Sample(iSampler, uv + direction * distortion.b).b
-    );
-} // SampleDistorted
+    return iNoise.Sample(iSampler, float2(t, 0.0f)).x;
+} // noise
+
+
+float noise(float2 t)
+{
+    return iNoise.Sample(iSampler, t + float2(iTime * 0.1f, iTime * 0.1f)).x;
+} // noise
 
 
 // 뎁스 테스트용
@@ -60,7 +83,7 @@ float4 testDepth()
 
 float getLuminance(float3 color)
 {
-    return dot(color, float3(0.3, 0.59, 0.11));
+    return dot(color, LUMINANCE);
 } // getLuminance
 
 
@@ -97,10 +120,7 @@ float calculateSunVisibility()
 // 가시성 판단
 float checkVisibility(float2 center)
 {
-    // 블러 및 임계값이 적용된 평균 휘도
     float avgLuma = calculateSunVisibility();
-
-    // 0.1~0.9 구간에서 부드럽게 가시성 결정
     float visibility = smoothstep(0.1f, 0.9f, avgLuma);
 
     // 화면 외곽 페이드 아웃
@@ -112,103 +132,113 @@ float checkVisibility(float2 center)
 
 
 // 광원 정중앙에 고정된 빛 갈라짐 효과
-float3 applyStar(float2 uv)
+float3 coreGlow(float2 uv)
 {
     float2 starOffset = iSunUV - uv;
     starOffset.x /= iAspect;
     float starSize = iGlowSize * STAR_SCALE;
     float2 starUV = starOffset / starSize + HALF;
+    
+    float2 main = uv - iSunUV;
+    
+    float dist = length(main);
+    float ang = atan2(main.y, main.x);
+    
+    // f0 기본 글로우
+    float f0 = 1.0f / (dist * SUN_CORE_TIGHTNESS + 1.0f);
+    
+    // 무작위 빛 갈라짐 효과
+    float n = noise(float2((ang - iTime / 9.0f) * 16.0f, pow(dist, 0.1f) * 32.0f));
+    f0 = f0 + f0 * (sin((ang + iTime / 18.0f + noise(abs(ang) + n / 2.0f) * 2.0f) * 12.0f) * 0.1f + pow(dist, 0.1f) * 0.1f + 0.8f);
 
-    if (all(starUV >= 0.0f && starUV <= 1.0f))
-    {
-        return iStar.Sample(iSampler, starUV).rgb * STAR_SCALE;
-    }
-    return float3(0, 0, 0);
-} // ApplyStar
+    float3(f0, f0, f0) * STAR_SCALE;
+
+    return float3(f0, f0, f0) * STAR_SCALE;
+} // coreGlow
+
+
+// f2
+float3 softHalo(float2 uvd, float2 pos)
+{
+    float3 color;
+    
+    color.r = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.r * pos), 2.0)), 0.0) * F2_COLOR_MULT.r;
+    color.g = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.g * pos), 2.0)), 0.0) * F2_COLOR_MULT.g;
+    color.b = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.b * pos), 2.0)), 0.0) * F2_COLOR_MULT.b;
+    return color;
+} // softHalo
+
+
+// f4, f5, f6
+float3 spotsPattern(float2 uvx, float2 pos, float3 offsets, float power, float3 intensity)
+{
+    float3 color;
+    
+    color.r = max(0.01 - pow(length(uvx + offsets.r * pos), power), 0.0) * intensity.r;
+    color.g = max(0.01 - pow(length(uvx + offsets.g * pos), power), 0.0) * intensity.g;
+    color.b = max(0.01 - pow(length(uvx + offsets.b * pos), power), 0.0) * intensity.b;
+    return color;
+} // spotsPattern
 
 
 float3 processLensFeatures(float2 uv, float2 center, float2 ghostVec, float2 direction, float3 distortion)
 {
-    float3 ghostColor = float3(0, 0, 0);
+    float3 totalColor = float3(0.0f, 0.0f, 0.0f);
+    
+    float2 uv_center = uv - 0.5f;
+    float2 pos_center = iSunUV - 0.5f;
+
+    // 3D 상의 렌즈 움직임을 2D 평면에 투영
+    uv_center = mul(float3(uv_center, 1.0f), (float3x3) iLensMatrix).xy;
+    
+    float2 uvd = uv_center * length(uv_center);
+    float2 uvx_5 = lerp(uv_center, uvd, -0.5f); // 4
+    float2 uvx_4 = lerp(uv_center, uvd, -0.4f); // 5
 
     [unroll(10)]
     for (int i = 0; i < iGhostCount; i++)
     {
-        float2 ghostPos = frac(iSunUV + ghostVec * (float) i);
-        
-        // 감쇄 계수
+        float2 loopOffset = ghostVec * (float) i * 0.1f;
+        float2 currentPos = pos_center + loopOffset;
+
         float falloff = 1.0f - ((float) i / (float) iGhostCount);
-        float weight = 1.0f - smoothstep(0.0f, 0.85f, distance(ghostPos, center));
+        float weight = 1.0f - smoothstep(0.0f, 0.85f, length(currentPos));
         
-        float2 offset = ghostPos - uv;
-        //offset.x /= iAspect;
+        float intensityScale = iGlowSize * 1.2f; // 전체 밝기 조절용
 
-        float3 texElement = float3(0, 0, 0);
-        float currentSize = iGlowSize * max(0.4f, falloff);
+        float3 element = float3(0, 0, 0);
+        int pattern = i % 4;
 
-        if (i == 0) // 태양 바로 옆의 큰 글로우
+        if (pattern == 0)
         {
-            float glowSize = iGlowSize * 3.0f;
-            float2 glowUV = offset / glowSize + HALF;
-
-            if (all(glowUV >= 0.0f && glowUV <= 1.0f))
-            {
-                float3 baseGlow = iGlow.Sample(iSampler, glowUV).rgb * HALF;
-        
-                // 할로들을 왜곡하여 중첩
-                float3 h1 = sampleDistorted(iHalo1, glowUV, direction, distortion * 0.5f);
-                float3 h2 = sampleDistorted(iHalo2, glowUV, direction, distortion * 0.8f);
-                float3 h3 = sampleDistorted(iHalo3, glowUV, direction, distortion * 1.2f);
-        
-                texElement = baseGlow + (h1 + h2 + h3) * 0.2f;
-        
-                // 드리프트 행렬 적용 
-                glowUV = mul(float3(glowUV, 1.0f), (float3x3)iLensMatrix).xy;
-            }
+            element = softHalo(uvd, currentPos);
+        }
+        else if (pattern == 1)
+        {
+            element = spotsPattern(uvx_5, currentPos, F4_OFFSET, F4_POWER, F4_COLOR_MULT);
+        }
+        else if (pattern == 2)
+        {
+            element = spotsPattern(uvx_4, currentPos, F5_OFFSET, F5_POWER, F5_COLOR_MULT);
         }
         else
         {
-            int pattern = i % 4;
-            
-            if (pattern == 1 || pattern == 2 || pattern == 3)
-            {
-                float haloScale = (pattern == 1) ? PATTERN1_SCALE : (pattern == 2 ? PATTERN2_SCALE : PATTERN3_SCALE);
-                currentSize *= haloScale;
-            }
-            else // 일반 육각 고스트 등
-            {
-                currentSize *= 0.25f;
-            }
-            
-            float2 localUV = offset / currentSize + HALF;
-            localUV = mul(float3(localUV, 1.0f), (float3x3) iLensMatrix).xy;
-                
-            if (pattern == 1)
-                texElement = sampleDistorted(iHalo1, localUV, direction, distortion);
-            else if (pattern == 2)
-                texElement = sampleDistorted(iHalo2, localUV, direction, distortion);
-            else if (pattern == 3)
-                texElement = sampleDistorted(iHalo3, localUV, direction, distortion);
-            else
-                texElement = iGhost.Sample(iSampler, localUV).rgb;
-                
-            texElement *= pow(falloff, 2.5f);
-            
+            element = spotsPattern(uvx_5, currentPos, F6_OFFSET, F6_POWER, F6_COLOR_MULT);
         }
-        ghostColor += texElement * weight;
+
+        // 거리 감쇄 및 합성
+        totalColor += element * weight * pow(falloff, GHOST_FALLOFF_POW) * intensityScale;
     }
-    
-    return ghostColor;
-} // applyGhosts
+
+    return totalColor;
+} // processLensFeatures
 
 
 float4 main(PixelInput input) : SV_TARGET
 {
     float2 uv = input.tex;
     float2 center = float2(HALF, HALF);
-    
-    //return testDepth();
-    
+
     float finalAlpha = checkVisibility(center);
 
     if (finalAlpha <= 0.0001f)
@@ -220,7 +250,7 @@ float4 main(PixelInput input) : SV_TARGET
     
     float3 finalColor = float3(0, 0, 0);
 
-    finalColor += applyStar(uv);
+    finalColor += coreGlow(uv);
     finalColor += processLensFeatures(uv, center, ghostVec, direction, distortion);
 
     return float4(finalColor * finalAlpha, 1.0f);

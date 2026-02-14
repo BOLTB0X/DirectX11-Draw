@@ -26,7 +26,23 @@ float rand(float3 p)
     return frac(sin(dot(p, float3(12.9898, 78.233, 45.164))) * 43758.5453123);
 } // rand
 
-//
+
+float hash11(float p)
+{
+    p = frac(p * 0.1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return frac(p);
+} // hash11
+
+
+float hash21(float2 p)
+{
+    float3 p3 = frac(float3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return frac((p3.x + p3.y) * p3.z);
+} // hash21
+
 
 // SDF(Signed DistanceFunction, or Signed Distance Field)
 

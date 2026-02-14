@@ -36,43 +36,6 @@ bool TexturesManager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         return false;
     }
 
-    if (GetTexture(device, context, GHOST) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + GHOST);
-        return false;
-    }
-
-    if (GetTexture(device, context, GLOW) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + GLOW);
-        return false;
-    }
-
-    if (GetTexture(device, context, HALO1) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + HALO1);
-        return false;
-    }
-
-    if (GetTexture(device, context, HALO2) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + HALO2);
-        return false;
-    }
-
-
-    if (GetTexture(device, context, HALO3) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + HALO3);
-        return false;
-    }
-
-    if (GetTexture(device, context, STAR) == nullptr)
-    {
-        DebugPrint("TexturesManager::Init 실패: " + STAR);
-        return false;
-    }
-
     return true;
 } // Init
 

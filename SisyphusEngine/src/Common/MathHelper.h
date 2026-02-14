@@ -36,6 +36,13 @@ namespace MathHelper { // 단위 변환 및 기본 수학 유틸리티 함수
     inline float Frac(float x) { return x - floorf(x); } // Frac
     inline float Lerp(float a, float b, float t) { return a + t * (b - a); } // Lerp
 
+
+    template<typename T>
+    inline T Min(T a, T b) { return (a < b) ? a : b; } // Min
+    template<typename T>
+    inline T Max(T a, T b) { return (a > b) ? a : b; } // Max
+
+
     template <typename T>
     T clamp(T value, T min_val, T max_val)
     {
@@ -52,74 +59,9 @@ namespace MathHelper { // 단위 변환 및 기본 수학 유틸리티 함수
 } // 단위 변환 및 기본 수학 유틸리티 함수
 
 
-//namespace MathHelper { // 셰이더 관련 함수
-//
-//    // frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453)
-//    inline float Hash(DirectX::XMFLOAT2 p)
-//    {
-//        float dotProduct = p.x * 12.9898f + p.y * 78.233f;
-//        return Frac(sinf(dotProduct) * 43758.5453f);
-//    } // Hash
-//
-//
-//    // 2D Value Noise (HLSL의 noise 함수 이식)
-//    inline float Noise(DirectX::XMFLOAT2 p)
-//    {
-//        DirectX::XMFLOAT2 i = { floorf(p.x), floorf(p.y) };
-//        DirectX::XMFLOAT2 f = { p.x - i.x, p.y - i.y };
-//
-//        float ux = f.x * f.x * (3.0f - 2.0f * f.x);
-//        float uy = f.y * f.y * (3.0f - 2.0f * f.y);
-//
-//        float a = Hash({ i.x, i.y });
-//        float b = Hash({ i.x + 1.0f, i.y });
-//        float c = Hash({ i.x, i.y + 1.0f });
-//        float d = Hash({ i.x + 1.0f, i.y + 1.0f });
-//
-//        return Lerp(Lerp(a, b, ux), Lerp(c, d, ux), uy);
-//    } // Noise
-//
-//
-//    // CPU용 FBM 높이 계산 함수
-//    inline float GetFBMHeight(float x, float z, float time)
-//    {
-//        float height = 0.0f;
-//        float amplitude = 0.5f;
-//        float frequency = 0.05f;
-//
-//        for (int i = 0; i < 6; i++)
-//        {
-//            height += Noise({ x * frequency + time * 0.2f,  z * frequency + time * 0.2f }) * amplitude;
-//            amplitude *= 0.45f;
-//            frequency *= 2.0f;
-//        }
-//
-//        return height * 15.0f;
-//    } // MathHelper
-//
-//} // 셰이더 관련 함수
-
-
 namespace MathHelper { // Graph
 
-    //inline DirectX::XMFLOAT3 GetTerrainNormal(float x, float z, float time)
-    //{
-    //    float d = 0.1f; // 샘플링 간격
-    //    float h = GetFBMHeight(x, z, time);
-    //    float hX = GetFBMHeight(x + d, z, time);
-    //    float hZ = GetFBMHeight(x, z + d, time);
-
-    //    // 두 개의 접선 벡터를 외적하여 법선 계산
-    //    DirectX::XMVECTOR v1 = DirectX::XMVectorSet(d, hX - h, 0.0f, 0.0f);
-    //    DirectX::XMVECTOR v2 = DirectX::XMVectorSet(0.0f, hZ - h, d, 0.0f);
-    //    DirectX::XMVECTOR n = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(v2, v1));
-
-    //    DirectX::XMFLOAT3 normal;
-    //    DirectX::XMStoreFloat3(&normal, n);
-    //    return normal;
-    //} // GetTerrainNormal
-
-
+   
     inline void CalculateTangentBinormal(
         const MeshVertex& v1, const MeshVertex& v2, const MeshVertex& v3,
         DirectX::XMFLOAT3& tangent, DirectX::XMFLOAT3& binormal)
