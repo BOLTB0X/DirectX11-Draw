@@ -2,38 +2,7 @@
 // https://www.shadertoy.com/view/XdfXRX
 // 존 챔피언, iceecool 님들의 코드 기반으로 수정
 #include "Common.hlsli"
-
-// main에서 사용할 상수 오프셋과 배율
 #define HALF 0.5f
-#define DISTORTION float3(-0.005, 0.0, 0.005)
-#define STAR_SCALE  0.8f
-#define SUN_CORE_TIGHTNESS 36.0f  // 숫자가 클수록 태양 본체가 작아짐
-#define LUMINANCE float3(0.3, 0.59, 0.11)
-
-// 고스트 관련 오프셋과 배율
-#define GHOST_PULL 0.1f // 고스트가 태양으로부터 떨어지는 간격 배율
-#define GHOST_INTENSITY 1.2f // 전체 고스트 밝기 배율
-#define GHOST_FALLOFF_POW 1.5f // 숫자가 클수록 멀리 있는 고스트가 빨리 흐려짐
-
-// F2 오프셋과 배율
-#define F2_SHARPNESS 32.0f
-#define F2_OFFSET float3(0.80, 0.85, 0.90)
-#define F2_COLOR_MULT float3(0.25, 0.23, 0.21)
-
-// f4 오프셋과 배율
-#define F4_POWER  2.4f
-#define F4_OFFSET float3(0.40, 0.45, 0.50)
-#define F4_COLOR_MULT float3(6.0, 5.0, 3.0)
-
-// f5 오프셋과 배율
-#define F5_POWER  5.5f
-#define F5_OFFSET  float3(0.20, 0.40, 0.60)
-#define F5_COLOR_MULT float3(2.0, 2.0, 2.0)
-
-// f6 오프셋과 배율
-#define F6_POWER 1.6f
-#define F6_OFFSET float3(-0.3, -0.325, -0.35)
-#define F6_COLOR_MULT float3(6.0, 3.0, 5.0)
 
 
 Texture2D iSceneTex : register(t0);
@@ -44,17 +13,66 @@ SamplerState iSampler : register(s0);
 
 cbuffer LenFlareBuffer : register(b3)
 {
-    int iGhostCount;
-    float iGhostSpacing;
-    float iGhostThreshold;
-    float iGhostAlpha;
-    
-    float iAspect;
-    float iGlowSize;
-    float2 iSunUV;
-    
+    // Row 1: 기본 고스트 제어
+    int iGhostCount; // 고스트 개수
+    float iGhostSpacing; // 고스트 간격
+    float iGhostThreshold; // 밝기 임계값
+    float iGhostAlpha; // 전체 투명도
+
+    // Row 2: 태양 위치 및 기본 글로우
+    float2 iSunUV; // 태양의 Screen UV
+    float iGlowSize; // 태양 주변 글로우 크기
+    float iStarScale;
+
+    // Row 3: 고스트 물리 속성 및 태양 코어
+    float iGhostPull;
+    float iGhostIntensity;
+    float iGhostFalloff;
+    float iSunCoreTight;
+
+    // Row 4: 왜곡 및 휘도
+    float3 iDistortion;
+    float iPadding1;
+
+    // Row 5: 휘도 기준
+    float3 iLuminance;
+    float iPadding2;
+
+    // Row 6: F2 설정
+    float3 iF2Offset;
+    float iF2Sharpness;
+
+    // Row 7: F2 색상
+    float3 iF2ColorMult;
+    float iPadding3;
+
+    // Row 8: F4 설정
+    float3 iF4Offset;
+    float iF4Power;
+
+    // Row 9: F4 색상
+    float3 iF4ColorMult;
+    float iPadding4;
+
+    // Row 10: F5 설정
+    float3 iF5Offset;
+    float iF5Power;
+
+    // Row 11: F5 색상
+    float3 iF5ColorMult;
+    float iPadding5;
+
+    // Row 12: F6 설정
+    float3 iF6Offset;
+    float iF6Power;
+
+    // Row 13: F6 색상
+    float3 iF6ColorMult;
+    float iPadding6;
+
+    // Row 14~17: 행렬
     float4x4 iLensMatrix;
-}; // GhostBuffer
+}; // LenFlareBuffer
 
 
 float noise(float t)
@@ -83,7 +101,7 @@ float4 testDepth()
 
 float getLuminance(float3 color)
 {
-    return dot(color, LUMINANCE);
+    return dot(color, iLuminance);
 } // getLuminance
 
 
@@ -91,7 +109,7 @@ float getLuminance(float3 color)
 float calculateSunVisibility()
 {
     // 텍스처 좌표 기준 오프셋
-    float2 blurOffset = float2(0.003f, 0.003f * iAspect);
+    float2 blurOffset = float2(0.003f, 0.003f * iResolution.x/iResolution.y);
     
     float3 samples[5];
     samples[0] = iSceneTex.Sample(iSampler, iSunUV).rgb;
@@ -135,8 +153,8 @@ float checkVisibility(float2 center)
 float3 coreGlow(float2 uv)
 {
     float2 starOffset = iSunUV - uv;
-    starOffset.x /= iAspect;
-    float starSize = iGlowSize * STAR_SCALE;
+    starOffset.x /= (iResolution.x/iResolution.y);
+    float starSize = iGlowSize * iStarScale;
     float2 starUV = starOffset / starSize + HALF;
     
     float2 main = uv - iSunUV;
@@ -145,15 +163,15 @@ float3 coreGlow(float2 uv)
     float ang = atan2(main.y, main.x);
     
     // f0 기본 글로우
-    float f0 = 1.0f / (dist * SUN_CORE_TIGHTNESS + 1.0f);
+    float f0 = 1.0f / (dist * iSunCoreTight + 1.0f);
     
     // 무작위 빛 갈라짐 효과
     float n = noise(float2((ang - iTime / 9.0f) * 16.0f, pow(dist, 0.1f) * 32.0f));
     f0 = f0 + f0 * (sin((ang + iTime / 18.0f + noise(abs(ang) + n / 2.0f) * 2.0f) * 12.0f) * 0.1f + pow(dist, 0.1f) * 0.1f + 0.8f);
 
-    float3(f0, f0, f0) * STAR_SCALE;
+    float3(f0, f0, f0) * iStarScale;
 
-    return float3(f0, f0, f0) * STAR_SCALE;
+    return float3(f0, f0, f0) * iStarScale;
 } // coreGlow
 
 
@@ -162,9 +180,9 @@ float3 softHalo(float2 uvd, float2 pos)
 {
     float3 color;
     
-    color.r = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.r * pos), 2.0)), 0.0) * F2_COLOR_MULT.r;
-    color.g = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.g * pos), 2.0)), 0.0) * F2_COLOR_MULT.g;
-    color.b = max(1.0 / (1.0 + F2_SHARPNESS * pow(length(uvd + F2_OFFSET.b * pos), 2.0)), 0.0) * F2_COLOR_MULT.b;
+    color.r = max(1.0 / (1.0 + iF2Sharpness * pow(length(uvd + iF2Offset.r * pos), 2.0)), 0.0) * iF2ColorMult.r;
+    color.g = max(1.0 / (1.0 + iF2Sharpness * pow(length(uvd + iF2Offset.g * pos), 2.0)), 0.0) * iF2ColorMult.g;
+    color.b = max(1.0 / (1.0 + iF2Sharpness * pow(length(uvd + iF2Offset.b * pos), 2.0)), 0.0) * iF2ColorMult.b;
     return color;
 } // softHalo
 
@@ -215,19 +233,19 @@ float3 processLensFeatures(float2 uv, float2 center, float2 ghostVec, float2 dir
         }
         else if (pattern == 1)
         {
-            element = spotsPattern(uvx_5, currentPos, F4_OFFSET, F4_POWER, F4_COLOR_MULT);
+            element = spotsPattern(uvx_5, currentPos, iF4Offset, iF4Power, iF4ColorMult);
         }
         else if (pattern == 2)
         {
-            element = spotsPattern(uvx_4, currentPos, F5_OFFSET, F5_POWER, F5_COLOR_MULT);
+            element = spotsPattern(uvx_4, currentPos, iF5Offset, iF5Power, iF5ColorMult);
         }
         else
         {
-            element = spotsPattern(uvx_5, currentPos, F6_OFFSET, F6_POWER, F6_COLOR_MULT);
+            element = spotsPattern(uvx_5, currentPos, iF6Offset, iF6Power, iF6ColorMult);
         }
 
         // 거리 감쇄 및 합성
-        totalColor += element * weight * pow(falloff, GHOST_FALLOFF_POW) * intensityScale;
+        totalColor += element * weight * pow(falloff, iGhostFalloff) * intensityScale;
     }
 
     return totalColor;
@@ -246,7 +264,7 @@ float4 main(PixelInput input) : SV_TARGET
 
     float2 ghostVec = (center - iSunUV) * iGhostSpacing;
     float2 direction = normalize(ghostVec);
-    float3 distortion = DISTORTION;
+    float3 distortion = iDistortion;
     
     float3 finalColor = float3(0, 0, 0);
 

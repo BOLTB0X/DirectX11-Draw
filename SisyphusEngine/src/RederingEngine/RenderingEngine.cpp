@@ -166,10 +166,12 @@ void RenderingEngine::DrawSky(ID3D11DeviceContext* context,
     using namespace ConstantHelper;
 
     XMMATRIX skyModel = XMMatrixTranslation(camPos.x, camPos.y, camPos.z);
+
     m_ShaderManager->UpdateGlobalBuffer(ShaderKeys::Sky,
         context, totalTime, (float)m_frameCount, camPos);
     m_ShaderManager->UpdateMatrixBuffer(ShaderKeys::Sky, context, skyModel, view, proj);
     m_ShaderManager->UpdateLightBuffer(ShaderKeys::Sky, context, m_Sun.get());
+
 
     SkyBuffer skyData;
     m_ShaderManager->UpdateSkyBuffer(context, skyData);
@@ -295,6 +297,5 @@ XMMATRIX RenderingEngine::CalculateLensMatrix(const XMMATRIX& view)
     float m01 = XMVectorGetY(view.r[0]);
     float camRot = atan2(m01, m00);
 
-    // UV 회전 행렬 생성 및 전치(Transpose)하여 셰이더용으로 반환
     return XMMatrixTranspose(MathHelper::TransformUVRotationMatrix(camRot));
-}
+} // CalculateLensMatrix

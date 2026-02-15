@@ -1,5 +1,6 @@
 #include "Common.hlsli"
 #include "Maths.hlsli"
+#define RESOLUTION 1024.0f
 
 
 Texture2D iNoise : register(t0); // 노이즈 텍스처
@@ -22,14 +23,36 @@ cbuffer CloudBuffer : register(b3)
     float iMarchSize;
 
     // Row 4
-    float radius;
-    float height;
-    float tickness;
+    float iRadius;
+    float iHeight;
+    float iTickness;
     float iNoiseRes;
     
-    // Row 5
-    float densityScale;
-    float3 padding;
+    // Row 5: 밀도 및 물리 감쇄 제어
+    float iDensityScale;
+    float iFalloffScale; 
+    float iMieIntensity;
+    float iMiePower;
+
+    // Row 6: 라이팅 디테일
+    float iDiffusePower;
+    float iLightMultiply;
+    float iShadowDist; //그림자 샘플링 거리
+    float iMaxDepth; // 최대 가시 거리
+    
+    // Row 7: FBM 및 애니메이션 제어
+    float3 iCloudWindDir;
+    float iCloudSpeed;
+
+    // Row 8: FBM 디테일 제어
+    float iFbmScale;
+    float iFbmFactor;
+    float iFbmIncrement;
+    float iFbmPersistance;
+    
+    // Row 9: 최적화 및 기타
+    int iFbmOctaves; // 루프 횟수
+    float3 iCloudPadding7;
 };
 
 
@@ -44,11 +67,7 @@ float GetNoise(float3 x, Texture2D tex, SamplerState samp, float resolution)
 
     // 3D 좌표를 2D 텍스처 좌표로 투영하는 기법
     float2 uv = (p.xy + float2(37.0f, 239.0f) * p.z) + f.xy;
-    
-    // 인자로 받은 resolution을 사용하여 샘플링 좌표 정규화
     float2 rg = tex.SampleLevel(samp, (uv + 0.5f) / resolution, 0.0f).yx;
-
-    // 0~1 범위를 -1~1 범위로 매핑
     return lerp(rg.x, rg.y, f.z) * 2.0f - 1.0f;
 } // GetNoise
 
@@ -57,19 +76,18 @@ float GetNoise(float3 x, Texture2D tex, SamplerState samp, float resolution)
 // 여러 옥타브의 노이즈를 중첩
 float fbm(float3 p, float time)
 {
-    // 시간에 따른 흐름 추가
-    float3 q = p + time * 0.5f * float3(1.0f, -0.2f, -1.0f);
+    float3 q = p + time * iCloudSpeed * iCloudWindDir;
     
     float f = 0.0f;
-    float scale = 0.5f;
-    float factor = 2.02f;
+    float scale = iFbmScale;
+    float factor = iFbmFactor;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < iFbmOctaves; i++)
     {
-        f += scale * GetNoise(q, iNoise, iSampler, 256.0f);
+        f += scale * GetNoise(q, iNoise, iSampler, iNoiseRes);
         q *= factor;
-        factor += 0.21f;
-        scale *= 0.5f;
+        factor += iFbmIncrement;
+        scale *= iFbmPersistance;
     }
 
     return f;
@@ -80,7 +98,7 @@ float fbm(float3 p, float time)
 float scene(float3 p)
 {
     float3 localP = p - iCameraPos;
-    float distance = sdSphere(p, radius);
+    float distance = sdSphere(p, iRadius);
     float f = fbm(p, iTime);
     
     return -distance + f;
@@ -89,45 +107,12 @@ float scene(float3 p)
 
 float planeScene(float3 p)
 {
-    // 두께가 있는 층(Slab) 느낌으로 변경
-    float distance = abs(p.y - height) - tickness;
-    
-    // 노이즈 샘플링 시 카메라 위치를 오프셋
+    float distance = abs(p.y - iHeight) - iTickness;
     float f = fbm(p, iTime);
     
     return -distance + f;
 } // planeScene
 
-
-float randomScene(float3 p)
-{
-    float3 p1 = p;
-    
-    // 회전
-    p1.xz = mul(p1.xz, rotate2D(-PI * 0.1f));
-    p1.yz = mul(p1.yz, rotate2D(PI * 0.3f));
-
-    // 각 SDF 계산
-    float s1 = sdTorus(p1, float2(1.3f, 0.9f));
-    float s2 = sdCross(p1 * 2.0f, 0.6f) / 2.0f; // 스케일링 보정
-    float s3 = sdSphere(p, 1.5f);
-    float s4 = sdCapsule(p, float3(-2.0f, -1.5f, 0.0f), float3(2.0f, 1.5f, 0.0f), 1.0f);
-
-    // 시간 기반 모핑 상태 계산
-    float stepValue = nextStep(iTime, 3.0f, 1.2f);
-    float t = stepValue % 4.0f;
-
-    // lerp(mix)를 이용한 부드러운 도형 전환
-    float d = lerp(s1, s2, clamp(t, 0.0f, 1.0f));
-    d = lerp(d, s3, clamp(t - 1.0f, 0.0f, 1.0f));
-    d = lerp(d, s4, clamp(t - 2.0f, 0.0f, 1.0f));
-    d = lerp(d, s1, clamp(t - 3.0f, 0.0f, 1.0f));
-
-    // fbm 합성
-    float f = fbm(p, iTime);
-
-    return -(d - f);
-} // randomScene
 
 
 float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDepth)
@@ -135,7 +120,7 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
     float4 res = float4(0, 0, 0, 0);
     
     // 블루 노이즈 디더링
-    float blueNoise = iBlueNoise.Sample(iSampler, uv * (iResolution / 1024.0f)).r;
+    float blueNoise = iBlueNoise.Sample(iSampler, uv * (iResolution / RESOLUTION)).r;
     float offset = frac(blueNoise + float(iFrame % 32) / sqrt(0.5));
     
     float depth = startDepth + (iMarchSize * offset);
@@ -152,55 +137,45 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
             case 0:
                 density = scene(p);
                 break;
-            case 1:
-                density = planeScene(p);
-                break;
             default:
-                density = randomScene(p);
+                density = planeScene(p);
                 break;
         }
         
         if (density > 0.0f)
         {
-            float shadowDist = 0.4f;
             float densityNearSun = 0.0f;
             
             switch (iCloudType)
             {
                 case 0:
-                    densityNearSun = scene(p + shadowDist * sunDirection);
-                    break;
-                case 1:
-                    densityNearSun = planeScene(p + shadowDist * sunDirection);
+                    densityNearSun = scene(p + iShadowDist * sunDirection);
                     break;
                 default:
-                    densityNearSun = randomScene(p + shadowDist * sunDirection);
+                    densityNearSun = planeScene(p + iShadowDist * sunDirection);
                     break;
             }
         
             
             // 확산광
-            float diffuse = pow(saturate((density - densityNearSun) / shadowDist), 2.0f);
+            float diffuse = pow(saturate((density - densityNearSun) / iShadowDist), iDiffusePower);
 
-            // 역제곱 법칙(Inverse Square Law) 느낌
-            // 중력, 전자기력, 빛의 세기 등 물리적 힘의 강도가 원천으로부터 거리의 제곱에 반비례하여 급격히 줄어드는 원리(위키백과)
-            // 태양과 현재 구름 입자(p) 사이의 거리 계산
+            // 역제곱 법칙(Inverse Square Law)
             float distToSun = length(sunPos - p);
-            float falloff = 1.0f / (1.0f + distToSun * 0.1f); // 거리에 따른 감쇄 수치
+            float falloff = 1.0f / (1.0f + distToSun * iFalloffScale); // 거리에 따른 감쇄 수치
 
-            // Mie Scattering (태양을 바라볼 때 구름 경계가 밝아짐)
+            // Mie Scattering
             float cosTheta = dot(rayDirection, sunDirection);
-            float mie = 0.5f + 0.5f * pow(saturate(cosTheta), 8.0f);
+            float mie = 0.5f + 0.5f * pow(saturate(cosTheta), iMiePower);
 
             // 최종 조명 색상 조합
-            //float3 cloudAmbient = float3(0.2f, 0.15f, 0.3f);
-            float3 lightEffect = iLightColor.rgb * iIntensity * diffuse * falloff * mie * 3.0f;
+            float3 lightEffect = iLightColor.rgb * iIntensity * diffuse * falloff * mie * iLightMultiply;
             
             float3 baseColor = lerp(iCloudBaseColor, iCloudShadowColor, density);
             float3 finalColor = baseColor * (iCloudAmbient + lightEffect);
 
             // 알파 블렌딩
-            float alpha = density * densityScale; // 부드러운 중첩을 위해 밀도 조절
+            float alpha = density * iDensityScale;
             res.rgb += (1.0f - res.a) * finalColor * alpha;
             res.a += (1.0f - res.a) * alpha;
             
@@ -209,9 +184,9 @@ float4 rayMarch(float3 rayOrigin, float3 rayDirection, float2 uv, float startDep
         }
 
         depth += iMarchSize;
-        if (depth > 50.0f)
+        if (depth > iMaxDepth)
             break;
-    }
+    } // for
 
     return res;
 } // rayMarch
