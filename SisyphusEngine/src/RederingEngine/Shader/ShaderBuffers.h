@@ -4,6 +4,7 @@
 #include "MathHelper.h"
 #include "ConstantHelper.h"
 
+
 struct GlobalBuffer {
     // Row 1
     float iTime;
@@ -38,35 +39,81 @@ struct CloudBuffer {
     // Row 1
     DirectX::XMFLOAT3 baseColor;
     float iCloudType;
+
     // Row 2
     DirectX::XMFLOAT3 ambient;
     float maxSteps;
+
     // Row 3
     DirectX::XMFLOAT3 shadowColor;
     float marchSize;
+
     // Row 4
     float radius;
     float height;
-	float thickness;
-    float iNoiseRes;
+    float thickness;
+    float noiseRes;
+
     // Row 5
     float densityScale;
+    float falloffScale;
+    float mieIntensity;
+    float miePower;
+
+    // Row 6
+    float diffusePower;
+    float lightMultiply;
+    float shadowDist;
+    float maxDepth;
+
+    // Row 7
+    DirectX::XMFLOAT3 windDir;
+    float cloudSpeed;
+
+    // Row 8
+    float fbmScale;
+    float fbmFactor;
+    float fbmIncrement;
+    float fbmPersistance;
+
+    // Row 9
+    int fbmOctaves;
     DirectX::XMFLOAT3 padding;
 
     CloudBuffer(float cloudType)
-		: iCloudType(cloudType)
+        : iCloudType(cloudType)
     {
-		baseColor = { 1.0f, 1.0f, 1.0f };
-		ambient = { 0.2f, 0.15f, 0.3f };
-		shadowColor = { 0.4f, 0.4f, 0.5f };
-		maxSteps = 100.0f;
-		marchSize = 0.08f;
-		radius = 2.0f;
-		height = 1.0f;
-		thickness = 2.0f;
-		iNoiseRes = 256.0f;
-		densityScale = 0.4f;
-		padding = { 0.0f, 0.0f, 0.0f };
+        baseColor = { 1.0f, 1.0f, 1.0f };
+        ambient = { 0.2f, 0.15f, 0.3f };
+        shadowColor = { 0.4f, 0.4f, 0.5f };
+        maxSteps = 100.0f;
+        marchSize = 0.08f;
+
+        radius = 2.0f;
+        height = 1.0f;
+        thickness = 2.0f;
+        noiseRes = 256.0f;
+
+        densityScale = 0.4f;
+        falloffScale = 0.1f;
+        mieIntensity = 3.0f; // 전방 산란 밝기
+        miePower = 8.0f; // 전방 산란 날카로움
+
+        diffusePower = 2.0f;
+        lightMultiply = 3.0f;
+        shadowDist = 0.4f;
+        maxDepth = 50.0f;
+
+        windDir = { 1.0f, -0.2f, -1.0f };
+        cloudSpeed = 0.5f;
+
+        fbmScale = 0.5f;
+        fbmFactor = 2.02f;
+        fbmIncrement = 0.21f;
+        fbmPersistance = 0.5f;
+        fbmOctaves = 6;
+
+        padding = { 0.0f, 0.0f, 0.0f };
     }
 }; // CloudBuffer
 
@@ -74,36 +121,54 @@ struct CloudBuffer {
 struct SkyBuffer {
     // Row 1
     DirectX::XMFLOAT3 topColor;
-    float padding1;
-
-    // Row 2 하늘
-    DirectX::XMFLOAT3 horizonColor;
     float skyExponent;
 
-    // Row 3 태양
+    // Row 2
+    DirectX::XMFLOAT3 horizonColor;
+    float sunDistScale;
+
+    // Row 3
+    DirectX::XMFLOAT3 lowerColor;
     float sunSize;
-    float sunBloom; // 태양 주변 광량 확산 속도
-    float sunIntensity;
-    float rayStrength;
 
     // Row 4
-    float rayAnimSpeed;
-    DirectX::XMFLOAT3 padding2;
+    DirectX::XMFLOAT3 atmosphereColor;
+    float wideGlowScale;
 
+    // Row 5
+    float sunBloom;
+    float sunIntensity;
+    float bloomMult;
+    float glowMult;
+
+    // Row 6
+    float rayFreq;
+    float rayTimeScale;
+    DirectX::XMFLOAT2 padding;
 
     SkyBuffer()
-     {
+    {
         topColor = { 0.05f, 0.1f, 0.3f };
-		padding1 = 0.0f;
-        horizonColor = { 0.5f, 0.2f, 0.4f };
         skyExponent = 0.3f;
+
+        horizonColor = { 0.5f, 0.2f, 0.4f };
+        sunDistScale = 0.2f;
+
+        lowerColor = { 0.05f, 0.02f, 0.1f };
         sunSize = 0.005f;
+
+        atmosphereColor = { 1.0f, 0.6f, 0.2f };
+        wideGlowScale = 10.0f;
+
         sunBloom = 80.0f;
         sunIntensity = 0.8f;
-        rayStrength = 0.4f;
-        rayAnimSpeed = 0.15f;
-		padding2 = { 0.0f, 0.0f, 0.0f };
-	}
+        bloomMult = 3.5f;
+        glowMult = 0.6f;
+
+        rayFreq = 3.0f;
+        rayTimeScale = 0.15f;
+        padding = { 0.0f, 0.0f };
+    }
 }; // SkyBuffer
 
 
@@ -120,31 +185,111 @@ struct ThresholdBuffer {
 
 
 struct LenFlareBuffer {
-	// Row 1
-    int count;
+    // Row 1: 기본 고스트 제어
+    int   count;
     float spacing;
     float threshold;
     float alpha;
-	// Row 2
+
+    // Row 2: 태양 위치 및 기본 글로우
+    DirectX::XMFLOAT2 sunUV;
     float glowSize;
-    float aspectRatio;
-	DirectX::XMFLOAT2 sunUV;
-	// Row 3
+    float starScale;
+
+    // Row 3: 고스트 물리 속성 및 태양 코어
+    float ghostPull;
+    float ghostIntensity;
+    float ghostFalloff;
+    float sunCoreTightness;
+
+    // Row 4: 왜곡 및 휘도
+    DirectX::XMFLOAT3 distortion;
+    float padding1;
+
+    // Row 5: 휘도 기준
+    DirectX::XMFLOAT3 luminance;
+    float padding2;
+
+    // Row 6: F2 설정 (Offset + Sharpness)
+    DirectX::XMFLOAT3 f2Offset;
+    float f2Sharpness;
+
+    // Row 7: F2 색상
+    DirectX::XMFLOAT3 f2ColorMult;
+    float padding3;
+
+    // Row 8: F4 설정 (Offset + Power)
+    DirectX::XMFLOAT3 f4Offset;
+    float f4Power;
+
+    // Row 9: F4 색상
+    DirectX::XMFLOAT3 f4ColorMult;
+    float padding4;
+
+    // Row 10: F5 설정 (Offset + Power)
+    DirectX::XMFLOAT3 f5Offset;
+    float f5Power;
+
+    // Row 11: F5 색상
+    DirectX::XMFLOAT3 f5ColorMult;
+    float padding5;
+
+    // Row 12: F6 설정 (Offset + Power)
+    DirectX::XMFLOAT3 f6Offset;
+    float f6Power;
+
+    // Row 13: F6 색상
+    DirectX::XMFLOAT3 f6ColorMult;
+    float padding6;
+
+    // Row 14~17: 행렬
     DirectX::XMMATRIX lensMatrix;
 
     LenFlareBuffer()
     {
-        count = 10;
-        spacing = 0.5f;
-        threshold = 0.8f;
+        // 기본 제어
+        count = 8;
+        spacing = 0.25f;
+        threshold = 0.9f;
         alpha = 1.0f;
 
-		glowSize = 0.2f;
-		aspectRatio = (float)ConstantHelper::SCREEN_WIDTH / (float)ConstantHelper::SCREEN_HEIGHT;
+        // 태양 관련
         sunUV = { 0.5f, 0.5f };
+        glowSize = (float)ConstantHelper::SCREEN_WIDTH / (float)ConstantHelper::SCREEN_HEIGHT;
+        starScale = 0.8f;
+
+        // 고스트 속성 (#define 값들 이식)
+        ghostPull = 0.1f;
+        ghostIntensity = 1.5f;
+        ghostFalloff = 1.0f;
+        sunCoreTightness = 36.0f;
+
+        distortion = { -0.005f, 0.0f, 0.005f };
+        luminance = { 0.3f, 0.59f, 0.11f };
+
+        // F2 파라미터
+        f2Offset = { 0.80f, 0.85f, 0.90f };
+        f2Sharpness = 32.0f;
+        f2ColorMult = { 0.25f, 0.23f, 0.21f };
+
+        // F4 파라미터
+        f4Offset = { 0.40f, 0.45f, 0.50f };
+        f4Power = 2.4f;
+        f4ColorMult = { 6.0f, 5.0f, 3.0f };
+
+        // F5 파라미터
+        f5Offset = { 0.20f, 0.40f, 0.60f };
+        f5Power = 5.5f;
+        f5ColorMult = { 2.0f, 2.0f, 2.0f };
+
+        // F6 파라미터
+        f6Offset = { -0.3f, -0.325f, -0.35f };
+        f6Power = 1.6f;
+        f6ColorMult = { 6.0f, 3.0f, 5.0f };
+
+        // 패딩 초기화
+        padding1 = padding2 = padding3 = padding4 = padding5 = padding6 = 0.0f;
 
         lensMatrix = DirectX::XMMatrixIdentity();
     }
 }; // LenFlareBuffer
-
-

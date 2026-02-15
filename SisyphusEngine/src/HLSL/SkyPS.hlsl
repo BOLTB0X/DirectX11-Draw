@@ -2,13 +2,6 @@
 #include "Common.hlsli"
 #include "Maths.hlsli"
 
-#define SKY_LOWER_COLOR float3(0.05f, 0.02f, 0.1f)
-#define SUN_DIST_SCALE 0.2f
-#define BLOOM_MULT 2.5f
-#define GLOW_MULT 0.6f
-#define RAY_FREQ 3.0f
-#define RAY_TIME_SCALE 0.15f
-
 
 struct PixelSkyInput
 {
@@ -19,45 +12,61 @@ struct PixelSkyInput
 
 cbuffer SkyBuffer : register(b3)
 {
-    // Row 1
+    // Row 1: 하늘 기본 색상
     float3 iSkyTopColor;
-    float sPadding1;
-
-    // Row 2
-    float3 iSkyHorizonColor;
     float iSkyExponent;
 
-    // Row 3
+    // Row 2: 지평선 및 태양 거리 스케일
+    float3 iSkyHorizonColor;
+    float iSunDistScale;
+
+    // Row 3: 하단 색상 및 태양 크기
+    float3 iSkyLowerColor;
     float iSunSize;
+
+    // Row 4: 태양 산란 색상 및 범위 제어
+    float3 iAtmosphereColor;
+    float iWideGlowScale;
+
+    // Row 5: 태양 강도 및 감쇄 속성
     float iSunBloom;
     float iSunIntensity;
-    float iRayStrength;
+    float iBloomMult;
+    float iGlowMult;
 
-    // Row 4
-    float iRayAnimSpeed;
-    float3 sPadding2;
+    // Row 6: 레이 및 시간 속성
+    float iRayFreq;
+    float iRayTimeScale;
+    float2 iPadding;
 }; // SkyBuffer
 
 
 // 태양과의 각도 거리 계산
 float getSunDistance(float3 rd, float3 sd)
 {
-    float sunDot = dot(rd, sd);
-    return acos(saturate(sunDot)) * SUN_DIST_SCALE;
+    float dotProduct = dot(rd, sd);
+    
+    if (dotProduct <= 0.0f)
+        return 999.0f;
+
+    float dist = length(rd / dotProduct - sd);
+    return dist * iSunDistScale;
 } // getSunDistance
 
 
-// 태양의 Core 및 Glow 색상 계산
+// 태양 본체와 주변 글로우 계산
 float3 coreGlow(float sunDist, float3 lightColor)
 {
-    float core = smoothstep(iSunSize, iSunSize * 0.4f, sunDist);
-    
-    //  Bloom & Wide Glow
-    float bloom = exp(-sunDist * iSunBloom) * BLOOM_MULT;
-    float wideGlow = exp(-sunDist * (iSunBloom * 0.125f)) * GLOW_MULT;
+    float core = smoothstep(iSunSize, iSunSize * 0.2f, sunDist);
+   
+    float bloomDist = sunDist;
+    float bloom = exp(-bloomDist * iSunBloom) * iBloomMult;
+    float wideGlow = pow(saturate(1.0 / (1.0 + sunDist * iWideGlowScale)), 2.0) * iGlowMult;
 
-    return lightColor * (core * iSunIntensity + bloom + wideGlow);
-} // CoreGlow
+    float3 atmosphereColor = lerp(lightColor, iAtmosphereColor, 0.3);
+
+    return (lightColor * core * iSunIntensity) + (atmosphereColor * (bloom + wideGlow));
+} // coreGlow
 
 
 // 배경이 되는 하늘의 그라데이션 계산
@@ -69,7 +78,7 @@ float3 skyBackground(float3 rd)
         return lerp(iSkyHorizonColor, iSkyTopColor, horizonFactor);
     
     // 지평선 아래는 어두운 색상으로 처리
-    return lerp(iSkyHorizonColor, SKY_LOWER_COLOR, horizonFactor);
+    return lerp(iSkyHorizonColor, iSkyLowerColor, horizonFactor);
 } // skyBackground
 
 
@@ -79,12 +88,9 @@ float4 main(PixelSkyInput input) : SV_TARGET
     float3 sd = normalize(iLightDirection);
     
     float3 finalColor = skyBackground(rd);
-
-    // 태양까지의 거리 계산
     float sunDist = getSunDistance(rd, sd);
     
-    // 태양 스타일링 적용 및 강도 조절
     finalColor += coreGlow(sunDist, iLightColor.rgb) * iIntensity;
-
+ 
     return float4(finalColor, 0.8f);
 } // main

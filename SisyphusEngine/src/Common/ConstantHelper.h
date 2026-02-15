@@ -19,8 +19,8 @@ namespace ConstantHelper {
 
 namespace ConstantHelper { // 모델 및 텍스처
     const std::string ASSET_PATH = "assets/";
-    const std::string NOISE_PATH = ASSET_PATH + "Cloud/noise.png";
-    const std::string BLUE_NOISE_PATH = ASSET_PATH + "Cloud/blue-noise.png";
+    const std::string NOISE_PATH = ASSET_PATH + "Noise/noise.png";
+    const std::string BLUE_NOISE_PATH = ASSET_PATH + "Noise/blue-noise.png";
 }
 
 

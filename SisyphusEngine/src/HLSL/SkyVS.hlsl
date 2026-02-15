@@ -37,8 +37,7 @@ PixelSkyInput main(VertexInput input)
     // 깊이값 고정
     output.position = output.position.xyww;
 
-    // 로컬 좌표 전달
     output.localPos = input.position;
-
+    
     return output;
 } // main
