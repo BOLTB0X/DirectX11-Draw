@@ -188,6 +188,7 @@
 
 - [shff - github : OpenGL Sky](https://github.com/shff/opengl_sky)
 
+
 </details>
 
 ---
@@ -204,72 +205,39 @@
              style="; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
         </p>
       </td>
+        <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B407_%EC%A0%88%EC%B0%A8%EC%A0%8100.png?raw=true" 
+             alt="image 2" 
+             style="; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
     </tr>
     <tr>
       <td style="text-align:center; font-size:14px; font-weight:bold;">
       <p align="center">
-      <a></a>LensFlare</a>
+      <a></a>texture LensFlare</a>
+      </p>
+      </td>
+            <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>noise LensFlare</a>
       </p>
       </td>
     </tr>
   </table>
 </p>
 
-렌즈 플레어 고정된 현상을 해결을 위해, [John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 을 기반으로 시지프스 엔진 환경에 맞춰 적용
+렌즈 플레어 고정된 현상을 해결을 위해,
 
-렌즈 플레어 고정된 현상을 해결을 위해, [John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 을 기반으로 시지프스 엔진 환경에 맞춰 적용
+[John Chapman의 Pseudo LensFlare](https://john-chapman-graphics.blogspot.com/2013/02/pseudo-lens-flare.html) 과 [shadertoy - musk's lens flare mod(icecool)](https://www.shadertoy.com/view/XdfXRX) 을 기반으로 렌즈플레어 적용
 
-- [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature): **Ghost-Halo-Glow Generation** , **Falloff** , **Visibility Check**
+- [feature](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature): **Ghost-Halo-Glow Generation** , **Falloff** , **Visibility Check** , **LensDrift**
 
 -  [자세한 README는 여기 클릭](https://github.com/BOLTB0X/DirectX11-Draw/tree/LensFlare/SisyphusEngine#feature) 
 
 <details>
 <summary> more 영상 </summary>
-
-<p align="center">
-  <table style="width:100%; text-align:center; border-spacing:20px;">
-    <tr>
-        <td style="text-align:center; vertical-align:middle;">
-        <p align="center">
-        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B401_Threshold.png?raw=true" 
-             alt="image 2" 
-             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
-        </p>
-      </td>
-      <td style="text-align:center; vertical-align:middle;">
-        <p align="center">
-        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B403_Halo_%EC%A1%B0%EC%A0%9501.png?raw=true" 
-             alt="image 2" 
-             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
-        </p>
-      </td>
-      <td style="text-align:center; vertical-align:middle;">
-        <p align="center">
-        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B403_Halo_%EC%A1%B0%EC%A0%9502.png?raw=true" 
-             alt="image 2" 
-             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:center; font-size:14px; font-weight:bold;">
-      <p align="center">
-      <a></a>Threshold</a>
-      </p>
-      </td>
-      <td style="text-align:center; font-size:14px; font-weight:bold;">
-      <p align="center">
-      <a></a>Ghost</a>
-      </p>
-      </td>
-            <td style="text-align:center; font-size:14px; font-weight:bold;">
-      <p align="center">
-      <a></a>Halo</a>
-      </p>
-      </td>
-    </tr>
-  </table>
-</p>
 
 <p align="center">
   <table style="width:100%; text-align:center; border-spacing:20px;">
@@ -291,12 +259,44 @@
     <tr>
       <td style="text-align:center; font-size:14px; font-weight:bold;">
       <p align="center">
-      <a></a>Distorted</a>
+      <a></a>Texture 기반(정면)</a>
       </p>
       </td>
       <td style="text-align:center; font-size:14px; font-weight:bold;">
       <p align="center">
-      <a></a>Dirft</a>
+      <a></a>Texture 기반(Drift)</a>
+      </p>
+      </td>
+    </tr>
+  </table>
+</p>
+
+<p align="center">
+  <table style="width:100%; text-align:center; border-spacing:20px;">
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B407_%EC%A0%88%EC%B0%A8%EC%A0%8102.gif?raw=true" 
+             alt="image 2" 
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+      <td style="text-align:center; vertical-align:middle;">
+        <p align="center">
+        <img src="https://github.com/BOLTB0X/DirectX11-Draw/blob/main/DemoGIF/lensFlare/%EB%A0%8C%EC%A6%88%ED%94%8C%EB%A0%88%EC%96%B407_%EC%A0%88%EC%B0%A8%EC%A0%8104_%EC%8B%9C%EC%95%BC.gif?raw=true" 
+             alt="image 2" 
+             style="width:600px; height:400px; object-fit:contain; border:1px solid #ddd; border-radius:4px;"/>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>Noise 기반 procedural(Drift)</a>
+      </p>
+      </td>
+      <td style="text-align:center; font-size:14px; font-weight:bold;">
+      <p align="center">
+      <a></a>Noise 기반 procedural(vision)</a>
       </p>
       </td>
     </tr>
